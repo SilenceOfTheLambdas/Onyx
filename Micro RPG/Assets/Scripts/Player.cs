@@ -27,12 +27,9 @@ public class Player : MonoBehaviour
     private float _lastAttackTime;       // last time we attacked
 
     private Vector2 _facingDirection;    // direction we're facing
-
-    [Header("Sprites")]
-    public Sprite downSprite;
-    public Sprite upSprite;
-    public Sprite leftSprite;
-    public Sprite rightSprite;
+    
+    // Movement vector
+    private Vector2 _movement;
 
     // components
     private Rigidbody2D _rig;
@@ -40,6 +37,10 @@ public class Player : MonoBehaviour
     private ParticleSystem _hitEffect;
     private Controls _controls = null;
     private PlayerUi _ui;
+    [SerializeField] private Animator animator; // The animation controller for the player movement etc.
+    private static readonly int Horizontal = Animator.StringToHash("Horizontal");
+    private static readonly int Vertical = Animator.StringToHash("Vertical");
+    private static readonly int Speed = Animator.StringToHash("Speed");
 
     void Awake ()
     {
@@ -64,6 +65,10 @@ public class Player : MonoBehaviour
 
     void Update ()
     {
+        // Update the animation params
+        animator.SetFloat(Horizontal, _movement.x);
+        animator.SetFloat(Vertical, _movement.y);
+        animator.SetFloat(Speed, _movement.sqrMagnitude);
         Move();
         CheckInteract();
     }
@@ -72,13 +77,13 @@ public class Player : MonoBehaviour
     {
         var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
 
-        var movement = new Vector2
+        _movement = new Vector2
         {
             x = movementInput.x,
             y = movementInput.y
         }.normalized;
 
-        switch (movement.x)
+        switch (_movement.x)
         {
             case -1:
                 _facingDirection = Vector2.left;
@@ -88,7 +93,7 @@ public class Player : MonoBehaviour
                 break;
         }
 
-        switch (movement.y)
+        switch (_movement.y)
         {
             case -1:
                 _facingDirection = Vector2.down;
@@ -97,24 +102,9 @@ public class Player : MonoBehaviour
                 _facingDirection = Vector2.up;
                 break;
         }
-        
-        UpdateSpriteDirection();
 
         // Update the players position
-        transform.Translate(movement * (moveSpeed * Time.deltaTime));
-    }
-
-    // change player sprite depending on where we're looking
-    void UpdateSpriteDirection ()
-    {
-        if (_facingDirection == Vector2.up)
-            _sr.sprite = upSprite;
-        else if (_facingDirection == Vector2.down)
-            _sr.sprite = downSprite;
-        else if (_facingDirection == Vector2.left)
-            _sr.sprite = leftSprite;
-        else if (_facingDirection == Vector2.right)
-            _sr.sprite = rightSprite;
+        transform.Translate(_movement * (moveSpeed * Time.deltaTime));
     }
 
     // shoot a raycast and deal damage if we hit an enemy
