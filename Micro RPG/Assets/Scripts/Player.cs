@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Timers;
+using Unity.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+
     [Header("Stats")]
     public int curHp;                   // our current health
     public int maxHp;                   // our maximum health
@@ -37,10 +37,12 @@ public class Player : MonoBehaviour
     private ParticleSystem _hitEffect;
     private Controls _controls = null;
     private PlayerUi _ui;
-    [SerializeField] private Animator animator; // The animation controller for the player movement etc.
+    [Header("Components")][SerializeField] private Animator animator; // The animation controller for the player movement etc.
     private static readonly int Horizontal = Animator.StringToHash("Horizontal");
     private static readonly int Vertical = Animator.StringToHash("Vertical");
     private static readonly int Speed = Animator.StringToHash("Speed");
+    private static readonly int LastDirectionX = Animator.StringToHash("LastDirectionX");
+    private static readonly int LastDirectionY = Animator.StringToHash("LastDirectionY");
 
     void Awake ()
     {
@@ -73,6 +75,10 @@ public class Player : MonoBehaviour
         CheckInteract();
     }
 
+    /// <summary>
+    /// This function controls the movement of the player; alongside keeping track of which direction the player is both
+    /// currently facing and the last facing direction. This is used to keep the players direction saved.
+    /// </summary>
     void Move ()
     {
         var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
@@ -87,9 +93,13 @@ public class Player : MonoBehaviour
         {
             case -1:
                 _facingDirection = Vector2.left;
+                animator.SetFloat(LastDirectionX, -1f);
+                animator.SetFloat(LastDirectionY, 0f); // The opposite axis has to be reset
                 break;
             case 1:
                 _facingDirection = Vector2.right;
+                animator.SetFloat(LastDirectionX, 1f);
+                animator.SetFloat(LastDirectionY, 0f); // The opposite axis has to be reset
                 break;
         }
 
@@ -97,9 +107,13 @@ public class Player : MonoBehaviour
         {
             case -1:
                 _facingDirection = Vector2.down;
+                animator.SetFloat(LastDirectionY, -1f);
+                animator.SetFloat(LastDirectionX, 0f); // The opposite axis has to be reset
                 break;
             case 1:
                 _facingDirection = Vector2.up;
+                animator.SetFloat(LastDirectionY, 1f);
+                animator.SetFloat(LastDirectionX, 0f); // The opposite axis has to be reset
                 break;
         }
 
@@ -107,7 +121,9 @@ public class Player : MonoBehaviour
         transform.Translate(_movement * (moveSpeed * Time.deltaTime));
     }
 
-    // shoot a raycast and deal damage if we hit an enemy
+    /// <summary>
+    /// Shoots a 2D raycast object, if this object hits an enemy it will take damage.
+    /// </summary>
     public void Attack ()
     {
         // can we attack?
@@ -129,7 +145,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    // manage interacting with objects
+    /// <summary>
+    /// Manages the interaction of objects in the scene.
+    /// </summary>
     public void CheckInteract ()
     {
         // shoot a raycast in the direction of where we're facing.
@@ -184,13 +202,19 @@ public class Player : MonoBehaviour
         _ui.UpdateHealthBar();
     }
 
-    // called when our hp reaches 0
+    /// <summary>
+    /// Kills the player when curHP = 0.
+    /// </summary>
     void Die()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
     }
 
-    // adds a new item to our inventory
+    /// <summary>
+    /// Adds a new item to the player's inventory.
+    /// TODO: Create a better system for storing the objects
+    /// </summary>
+    /// <param name="item">The item to store</param>
     public void AddItemToInventory(Item.Items item)
     {
         inventory.Add(item);
