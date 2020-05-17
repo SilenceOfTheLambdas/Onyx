@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 222617ebfdd6d004889867ec1d68956c, type: 3}
+  m_Name: Sword
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4165581387366722797, guid: 01490437fd3c6514f973259b198b77ef, type: 3}
+  type: 1
+  description: This is a mighy great sword; fell from a fallen enemy.
+  maxAttackDamage: 16
+  minAttackDamage: 12
+  attackRange: 3
+  bonusDamageChance: 11
+  DefenseType: 2
+  attackDefense: 0
+  spellDefense: 0
+  healOverTimeAmount: 0
+  healOverTime: 0

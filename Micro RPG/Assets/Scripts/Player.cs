@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Entities;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -13,7 +14,6 @@ public class Player : MonoBehaviour
     public float moveSpeed;             // how fast we move
     public int damage;                  // damage we deal
     public float interactRange;         // range at which we can interact
-    public List<Item.Items> inventory = new List<Item.Items>();
 
     [Header("Experience")]
     public int curLevel;                // our current level
@@ -37,7 +37,12 @@ public class Player : MonoBehaviour
     private ParticleSystem _hitEffect;
     private Controls _controls = null;
     private PlayerUi _ui;
-    [Header("Components")][SerializeField] private Animator animator; // The animation controller for the player movement etc.
+    [Header("Components")][SerializeField] 
+    private Animator animator; // The animation controller for the player movement etc.
+
+    public InventoryObject inventory;
+    public GameObject inventoryCanvas; // The UI for the inventory
+    private bool _inventoryOpen = false;
     private static readonly int Horizontal = Animator.StringToHash("Horizontal");
     private static readonly int Vertical = Animator.StringToHash("Vertical");
     private static readonly int Speed = Animator.StringToHash("Speed");
@@ -52,6 +57,16 @@ public class Player : MonoBehaviour
         _ui = FindObjectOfType<PlayerUi>();
         _controls = new Controls();
         _hitEffect = gameObject.GetComponentInChildren<ParticleSystem>();
+    }
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        var item = other.GetComponent<Item>();
+        if (item)
+        {
+            inventory.AddItem(item.item, 1);
+            Destroy(other.gameObject);
+        }
     }
 
     private void OnEnable() => _controls.Player.Enable();
@@ -71,8 +86,26 @@ public class Player : MonoBehaviour
         animator.SetFloat(Horizontal, _movement.x);
         animator.SetFloat(Vertical, _movement.y);
         animator.SetFloat(Speed, _movement.sqrMagnitude);
+        
+        // Check for input to then open the inventory GUI
+        if (_controls.Player.Inventory.triggered)
+        {
+            if (!_inventoryOpen)
+            {
+                inventoryCanvas.SetActive(true);
+                _inventoryOpen = true;   
+            }
+            else
+            {
+                inventoryCanvas.SetActive(false);
+                _inventoryOpen = false;
+            }
+        }
+        
         Move();
         CheckInteract();
+        
+        if ()
     }
 
     /// <summary>
@@ -210,14 +243,8 @@ public class Player : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
     }
 
-    /// <summary>
-    /// Adds a new item to the player's inventory.
-    /// TODO: Create a better system for storing the objects
-    /// </summary>
-    /// <param name="item">The item to store</param>
-    public void AddItemToInventory(Item.Items item)
+    private void OnApplicationQuit()
     {
-        inventory.Add(item);
-        _ui.UpdateInventoryText();
+        // inventory.Container.Clear();
     }
 }

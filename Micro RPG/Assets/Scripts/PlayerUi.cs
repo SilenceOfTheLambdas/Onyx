@@ -23,7 +23,7 @@ public class PlayerUi : MonoBehaviour
 
     public void UpdateLevelText()
     {
-        levelText.text = "Level\n" + _player.curLevel;
+        levelText.text = _player.curLevel.ToString();
     }
 
     public void UpdateHealthBar()
@@ -52,13 +52,13 @@ public class PlayerUi : MonoBehaviour
         }
     }
 
-    public void UpdateInventoryText()
-    {
-        inventoryText.text = "";
-
-        foreach (var item in _player.inventory)
-        {
-            inventoryText.text += item.ToString().Replace('_', ' ') + "\n";
-        }
-    }
+    // public void UpdateInventoryText()
+    // {
+    //     inventoryText.text = "";
+    //
+    //     foreach (var item in _player.inventory)
+    //     {
+    //         inventoryText.text += item.ToString().Replace('_', ' ') + "\n";
+    //     }
+    // }
 }
