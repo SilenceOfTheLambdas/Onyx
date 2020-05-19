@@ -10,8 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03c9d1f1d1631dc44ae9bbe02183a2b2, type: 3}
-  m_Name: New Default Object
+  m_Name: Book
   m_EditorClassIdentifier: 
-  prefab: {fileID: 4165581387366722797, guid: 01490437fd3c6514f973259b198b77ef, type: 3}
+  Id: 1
+  PSprite: {fileID: 6406520653115870016, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
   type: 2
-  description: This is a cool item!
+  description: A book, may contain some secrets!
+  buffs: []

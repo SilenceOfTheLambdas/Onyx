@@ -7,61 +7,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56bb0066f56ca3543ad45f51494914ee, type: 3}
   m_Name: PlayerInventory
   m_EditorClassIdentifier: 
+  savePath: /inventory.save
+  DatabaseObject: {fileID: 11400000, guid: 886f990771beda1438d50cfdc8e307fd, type: 2}
   Container:
-  - item: {fileID: 11400000, guid: 7e6849ca88450f74a81d9df262c308d3, type: 2}
-    amount: 235
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 532
-  - item: {fileID: 11400000, guid: 0288e27fab5a4164d8219610fdf3440e, type: 2}
-    amount: 532
-  - item: {fileID: 11400000, guid: 0288e27fab5a4164d8219610fdf3440e, type: 2}
-    amount: 353
-  - item: {fileID: 11400000, guid: 7e6849ca88450f74a81d9df262c308d3, type: 2}
-    amount: 235
-  - item: {fileID: 11400000, guid: 7e6849ca88450f74a81d9df262c308d3, type: 2}
-    amount: 3
-  - item: {fileID: 11400000, guid: 7e6849ca88450f74a81d9df262c308d3, type: 2}
-    amount: 2342
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 74
-  - item: {fileID: 11400000, guid: 0288e27fab5a4164d8219610fdf3440e, type: 2}
-    amount: 2
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 33
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 643
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 6
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 36
-  - item: {fileID: 11400000, guid: 0288e27fab5a4164d8219610fdf3440e, type: 2}
-    amount: 64
-  - item: {fileID: 11400000, guid: 7e6849ca88450f74a81d9df262c308d3, type: 2}
-    amount: 64
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 3
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 44
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 6
-  - item: {fileID: 11400000, guid: 0288e27fab5a4164d8219610fdf3440e, type: 2}
-    amount: 6
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 33
-  - item: {fileID: 11400000, guid: 0288e27fab5a4164d8219610fdf3440e, type: 2}
-    amount: 0
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 2
-  - item: {fileID: 11400000, guid: 7e6849ca88450f74a81d9df262c308d3, type: 2}
-    amount: 5
-  - item: {fileID: 11400000, guid: 7e6849ca88450f74a81d9df262c308d3, type: 2}
-    amount: 3
-  - item: {fileID: 11400000, guid: 0cd7e3a023f703846bb66e6920797634, type: 2}
-    amount: 5
-  slots: []
-  slotHolder: {fileID: 0}
+    Items: []
+  slotHolder: {fileID: 4165581387366722797, guid: 01490437fd3c6514f973259b198b77ef, type: 3}

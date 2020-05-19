@@ -4,59 +4,43 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Scriptable_Objects.Items.Scripts;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
-public class InventoryObject : ScriptableObject, ISerializationCallbackReceiver
+public class InventoryObject : ScriptableObject
 {
     public string savePath;
     public ItemDatabaseObject DatabaseObject;
-    public List<InventorySlot> Container = new List<InventorySlot>();
-    public GameObject[] slots;
+    public Inventory Container;
+    
     public GameObject slotHolder;
 
-    private void Awake()
+    public void AddItem(Item _item, int _amount)
     {
-        slots = new GameObject[24];
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < Container.Items.Count; i++)
         {
-            slots[i] = slotHolder.transform.GetChild(i).gameObject;
-        }
-    }
-
-    public void AddItem(ItemObject _item, int _amount)
-    {
-        for (int i = 0; i < Container.Count; i++)
-        {
-            if (Container[i].item == _item)
+            if (Container.Items[i].item.Id == _item.Id)
             {
-                Container[i].AddAmount(_amount);
+                Container.Items[i].AddAmount(_amount);
                 return;
             }
         }
-        Container.Add(new InventorySlot(DatabaseObject.getId[_item], _item, _amount));
+        Container.Items.Add(new InventorySlot(_item.Id, _item, _amount));
     }
 
-    public void OnBeforeSerialize()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnAfterDeserialize()
-    {
-        for (int i = 0; i < Container.Count; i++)
-            Container[i].item = DatabaseObject.getItem[Container[i].ID];
-    }
-
+    [ContextMenu("Save")]
     public void Save()
     {
-        string saveData = JsonUtility.ToJson(true, true);
+        string saveData = JsonUtility.ToJson(this, true);
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream fileStream = File.Create(string.Concat(Application.persistentDataPath, saveData));
-        bf.Serialize(fileStream, saveData);
-        fileStream.Close();
+        FileStream file = File.Create(string.Concat(Application.persistentDataPath, savePath));
+        bf.Serialize(file, saveData);
+        file.Close();
     }
 
+    [ContextMenu("Load")]
     public void Load()
     {
         if (File.Exists(string.Concat(Application.persistentDataPath, savePath)))
@@ -67,16 +51,22 @@ public class InventoryObject : ScriptableObject, ISerializationCallbackReceiver
             file.Close();
         }
     }
+
+    [ContextMenu("Clear")]
+    public void Clear()
+    {
+        Container = new Inventory();
+    }
 }
 
-[System.Serializable]
+[Serializable]
 public class InventorySlot
 {
     public int ID;
-    public ItemObject item;
+    public Item item;
     public int amount;
 
-    public InventorySlot(int _id, ItemObject _item, int _amount)
+    public InventorySlot(int _id, Item _item, int _amount)
     {
         ID = _id;
         item = _item;
@@ -87,4 +77,10 @@ public class InventorySlot
     {
         amount += value;
     }
+}
+
+[Serializable]
+public class Inventory
+{
+    public List<InventorySlot> Items = new List<InventorySlot>();
 }

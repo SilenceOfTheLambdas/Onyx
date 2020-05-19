@@ -61,10 +61,11 @@ public class Player : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        var item = other.GetComponent<Item>();
+        var item = other.GetComponent<GroundItem>();
         if (item)
         {
-            inventory.AddItem(item.item, 1);
+            Item _item = new Item(item.item);
+            inventory.AddItem(_item, 1);
             Destroy(other.gameObject);
         }
     }
@@ -105,7 +106,7 @@ public class Player : MonoBehaviour
         Move();
         CheckInteract();
         
-        if ()
+        
     }
 
     /// <summary>
@@ -245,6 +246,6 @@ public class Player : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        // inventory.Container.Clear();
+        inventory.Container.Items.Clear();
     }
 }
