@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace GGEZ
+namespace GGEZ.PerfectPixelCamera.Demo.Assets
 {
 public enum ZoomDemoMode
 {
@@ -51,7 +51,7 @@ void Start ()
 
 void Update ()
     {
-    PerfectPixelCamera perfectPixelCamera = this.MainCamera.GetComponent (typeof(PerfectPixelCamera)) as PerfectPixelCamera;
+    Scripts.PerfectPixelCamera perfectPixelCamera = this.MainCamera.GetComponent (typeof(Scripts.PerfectPixelCamera)) as Scripts.PerfectPixelCamera;
     bool mainCameraIsFixed = perfectPixelCamera != null && perfectPixelCamera.isActiveAndEnabled;
     float orthographicSize = this.MainCamera.orthographicSize;
     float orthographicSizeSnapped = orthographicSize;

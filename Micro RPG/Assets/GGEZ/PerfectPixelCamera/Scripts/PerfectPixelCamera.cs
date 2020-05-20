@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.Rendering;
 
-namespace GGEZ
+namespace GGEZ.PerfectPixelCamera.Scripts
 {
 
 [

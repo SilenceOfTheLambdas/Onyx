@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Input;
+using Scriptable_Objects.Inventory.Scripts;
+using Scriptable_Objects.Items.Scripts;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -42,7 +45,7 @@ public class Player : MonoBehaviour
 
     public InventoryObject inventory;
     public GameObject inventoryCanvas; // The UI for the inventory
-    private bool _inventoryOpen = false;
+    private bool _inventoryOpen;
     private static readonly int Horizontal = Animator.StringToHash("Horizontal");
     private static readonly int Vertical = Animator.StringToHash("Vertical");
     private static readonly int Speed = Animator.StringToHash("Speed");
@@ -88,9 +91,10 @@ public class Player : MonoBehaviour
         animator.SetFloat(Vertical, _movement.y);
         animator.SetFloat(Speed, _movement.sqrMagnitude);
         
-        // Check for input to then open the inventory GUI
         if (_controls.Player.Inventory.triggered)
         {
+            // Check for input to then open the inventory GUI
+            _inventoryOpen = inventoryCanvas.activeSelf; // First check to see of the inventory has been closed
             if (!_inventoryOpen)
             {
                 inventoryCanvas.SetActive(true);
@@ -246,6 +250,6 @@ public class Player : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        inventory.Container.Items.Clear();
+        inventory.container.Items = new InventorySlot[28];
     }
 }
