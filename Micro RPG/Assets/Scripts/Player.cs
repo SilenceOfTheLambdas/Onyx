@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Input;
+﻿using Input;
 using Scriptable_Objects.Inventory.Scripts;
 using Scriptable_Objects.Items.Scripts;
-using Unity.Collections;
-using Unity.Entities;
 using UnityEngine;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 public class Player : MonoBehaviour
 {
@@ -38,7 +34,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D _rig;
     private SpriteRenderer _sr;
     private ParticleSystem _hitEffect;
-    private Controls _controls = null;
+    private Controls _controls;
     private PlayerUi _ui;
     [Header("Components")][SerializeField] 
     private Animator animator; // The animation controller for the player movement etc.
@@ -98,7 +94,7 @@ public class Player : MonoBehaviour
             if (!_inventoryOpen)
             {
                 inventoryCanvas.SetActive(true);
-                _inventoryOpen = true;   
+                _inventoryOpen = true;
             }
             else
             {
@@ -106,6 +102,8 @@ public class Player : MonoBehaviour
                 _inventoryOpen = false;
             }
         }
+
+        Cursor.visible = inventoryCanvas.activeSelf;
         
         Move();
         CheckInteract();
