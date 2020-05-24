@@ -105,7 +105,8 @@ public class Player : MonoBehaviour
 
         Cursor.visible = inventoryCanvas.activeSelf;
         
-        Move();
+        // Only move when inventory screen is NOT open
+        if (!inventoryCanvas.activeSelf) Move();
         CheckInteract();
         
         
