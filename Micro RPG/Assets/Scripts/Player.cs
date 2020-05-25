@@ -1,6 +1,8 @@
 ﻿using Input;
 using Scriptable_Objects.Inventory.Scripts;
 using Scriptable_Objects.Items.Scripts;
+using Unity.Burst;
+using Unity.Entities;
 using UnityEngine;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -41,7 +43,9 @@ public class Player : MonoBehaviour
 
     public InventoryObject inventory;
     public GameObject inventoryCanvas; // The UI for the inventory
-    private bool _inventoryOpen;
+    public GameObject enemyInventoryCanvas; // The UI for the enemy inventory
+    private bool _inventoryOpen; // is the player's inventory open?
+    private bool _enemyInventoryOpen; // Is the enemies inventory open?
     private static readonly int Horizontal = Animator.StringToHash("Horizontal");
     private static readonly int Vertical = Animator.StringToHash("Vertical");
     private static readonly int Speed = Animator.StringToHash("Speed");
@@ -102,6 +106,20 @@ public class Player : MonoBehaviour
                 _inventoryOpen = false;
             }
         }
+        
+        if (_controls.Player.Inventory.triggered)
+        {
+            // Check for input to then open the inventory GUI
+            _enemyInventoryOpen = enemyInventoryCanvas.activeSelf; // First check to see of the inventory has been closed
+            if (!_enemyInventoryOpen)
+            {
+                OpenEnemyInventory();
+            }
+            else
+            {
+                enemyInventoryCanvas.SetActive(false);
+            }
+        }
 
         Cursor.visible = inventoryCanvas.activeSelf;
         
@@ -116,6 +134,7 @@ public class Player : MonoBehaviour
     /// This function controls the movement of the player; alongside keeping track of which direction the player is both
     /// currently facing and the last facing direction. This is used to keep the players direction saved.
     /// </summary>
+    [BurstCompile]
     void Move ()
     {
         var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
@@ -169,17 +188,33 @@ public class Player : MonoBehaviour
             _lastAttackTime = Time.time;
 
             // shoot a raycast in the direction of where we're facing.
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, _facingDirection, attackRange, 1 << 8);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, _facingDirection, attackRange, 1 << 9);
 
-            if(hit.collider != null)
+            if(hit.collider != null && !hit.collider.GetComponent<Enemy>().isDead)
+                // If the ray cast hits an object and the enemy is not dead
             {
-                Debug.Log("Play");
                 hit.collider.GetComponent<Enemy>().TakeDamage(damage);
                 // play hit effect
                 _hitEffect.transform.position = hit.collider.transform.position;
                 _hitEffect.Play();
-            }   
+            }
         }
+    }
+
+    /// <summary>
+    /// Opens the enemies inventory when a player is within range of a dead enemy. This method is activated from the
+    /// unity input system.
+    /// </summary>
+    public void OpenEnemyInventory()
+    {
+        // shoot a ray-cast in the direction of where we're facing.
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, _facingDirection, attackRange, 1 << 9);
+
+        if(hit.collider != null && hit.collider.GetComponent<Enemy>().isDead)
+            // If the ray cast hits an object and the enemy is not dead
+        {
+            enemyInventoryCanvas.SetActive(true);
+        } else enemyInventoryCanvas.SetActive(false);
     }
 
     /// <summary>
@@ -191,7 +226,7 @@ public class Player : MonoBehaviour
         // 9 == the intractable layer
         var hit = Physics2D.Raycast(transform.position, _facingDirection, interactRange, 1 << 9);
 
-        if(hit.collider != null)
+        if(hit.collider != null && hit.collider.GetComponent<Enemy>().isDead)
         {
             Interactable interactable = hit.collider.GetComponent<Interactable>();
             _ui.setInteractText(hit.collider.transform.position, interactable.interactDescription);

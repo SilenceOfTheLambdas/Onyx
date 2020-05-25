@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class Enemy : MonoBehaviour
 {
     [Header("Stats")] 
+    public bool isDead = false; /// <summary> Is the enemy dead? </summary>
     public float moveSpeed;
     [FormerlySerializedAs("curHP")] public int curHp;
     [FormerlySerializedAs("maxHP")] public int maxHp;
@@ -20,6 +22,8 @@ public class Enemy : MonoBehaviour
     public int xpToGive;
     public float attackRate;
     private float _lastAttackTime;
+    public TextMeshProUGUI interactText;
+    public Sprite deathSprite;
     
     private Player _player;
     
@@ -36,24 +40,27 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        float playerDist = Vector2.Distance(transform.position, _player.transform.position);
-
-        if (playerDist <= attackRange)
+        if (!isDead)
         {
-            // Attack the player
-            if (Time.time - _lastAttackTime >= attackRate)
+            float playerDist = Vector2.Distance(transform.position, _player.transform.position);
+
+            if (playerDist <= attackRange)
             {
-                Attack();
-            }
-            _rig.velocity = Vector2.zero;
+                // Attack the player
+                if (Time.time - _lastAttackTime >= attackRate)
+                {
+                    Attack();
+                }
+                _rig.velocity = Vector2.zero;
 
-        } else if (playerDist <= chaseRange)
-        {
-            Chase();
-        }
-        else
-        {
-            _rig.velocity = Vector2.zero;
+            } else if (playerDist <= chaseRange)
+            {
+                Chase();
+            }
+            else
+            {
+                _rig.velocity = Vector2.zero;
+            }   
         }
     }
 
@@ -74,7 +81,12 @@ public class Enemy : MonoBehaviour
     void Die()
     {
         _player.AddXp(xpToGive);
-        Destroy(gameObject);
+        isDead = true; // set the enemy to deadness :)
+        
+        // Change to death sprite
+        GetComponent<SpriteRenderer>().sprite = deathSprite;
+        interactText.gameObject.SetActive(true);
+        interactText.text = "Open Inventory";
     }
 
     void Attack()
