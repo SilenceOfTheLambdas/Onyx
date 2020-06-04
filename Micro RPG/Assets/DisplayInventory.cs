@@ -109,8 +109,7 @@ public class DisplayInventory : MonoBehaviour
         }
         else
         {
-            // inventory.RemoveItem(itemsDisplayed[obj].item);
-            inventory.MoveItem(itemsDisplayed[obj], itemsDisplayed[obj]);
+            inventory.MoveItem(itemsDisplayed[obj], itemsDisplayed[obj]); // Moves the item back when it's dragged in a bad area
         }
         Destroy(mouseItem.obj);
         mouseItem.item = null;

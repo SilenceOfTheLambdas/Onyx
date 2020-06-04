@@ -50,6 +50,11 @@ namespace Scriptable_Objects.Inventory.Scripts
             return null;
         }
 
+        /// <summary>
+        /// This will allow movement of items from one inventory slot to another.
+        /// </summary>
+        /// <param name="item1">The inventory slot to move.</param>
+        /// <param name="item2">The inventory slot to which the item will be moved to.</param>
         public void MoveItem(InventorySlot item1, InventorySlot item2)
         {
             InventorySlot temp = new InventorySlot(item2.ID, item2.item, item2.amount);

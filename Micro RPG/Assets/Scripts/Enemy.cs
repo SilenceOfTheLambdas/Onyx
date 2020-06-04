@@ -87,6 +87,8 @@ public class Enemy : MonoBehaviour
         GetComponent<SpriteRenderer>().sprite = deathSprite;
         interactText.gameObject.SetActive(true);
         interactText.text = "Open Inventory";
+
+        GetComponent<Rigidbody2D>().mass = 1000f; // Set the mass to a ridiculous amount to stop moving the player;
     }
 
     void Attack()
