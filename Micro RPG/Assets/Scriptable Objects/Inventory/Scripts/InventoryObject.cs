@@ -105,6 +105,8 @@ namespace Scriptable_Objects.Inventory.Scripts
     [Serializable]
     public class InventorySlot
     {
+        public ItemTypes[] AllowedItems = new ItemTypes[0];
+        public UserInterface parent;
         public int ID = -1;
         public Item item;
         public int amount;

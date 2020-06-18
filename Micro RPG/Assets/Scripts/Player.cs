@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
     [Header("Components")][SerializeField] 
     private Animator animator; // The animation controller for the player movement etc.
 
+    public MouseItem mouseItem = new MouseItem();
     public InventoryObject inventory;
     public GameObject inventoryCanvas; // The UI for the inventory
     public GameObject enemyInventoryCanvas; // The UI for the enemy inventory
