@@ -27,7 +27,7 @@ namespace Scriptable_Objects.Items.Scripts
     
         private void Awake()
         {
-            type = ItemTypes.Equipment;
+            type = ItemTypes.Chest;
         }
     }
 }

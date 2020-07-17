@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scriptable_Objects.Inventory.Scripts;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// A dynamic interface is used mainly for interfaces that change. For example; a player inventory would be dynamic,
@@ -11,11 +12,11 @@ using UnityEngine.EventSystems;
 public class DynamicInterface : UserInterface
 {
     public GameObject inventoryPrefab;
-    public int X_START;
-    public int Y_START;
-    public int X_SPACE_BETWEEN_ITEM;
-    public int NUMBER_OF_COLUMN;
-    public int Y_SPACE_BETWEEN_ITEMS;
+    [FormerlySerializedAs("X_START")] public int xStart;
+    [FormerlySerializedAs("Y_START")] public int yStart;
+    [FormerlySerializedAs("X_SPACE_BETWEEN_ITEM")] public int xSpaceBetweenItem;
+    [FormerlySerializedAs("NUMBER_OF_COLUMN")] public int numberOfColumn;
+    [FormerlySerializedAs("Y_SPACE_BETWEEN_ITEMS")] public int ySpaceBetweenItems;
     public override void CreateSlots()
     {
         itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
@@ -37,6 +38,6 @@ public class DynamicInterface : UserInterface
     
     private Vector3 GetPosition(int i)
     {
-        return new Vector3(X_START + (X_SPACE_BETWEEN_ITEM * (i % NUMBER_OF_COLUMN)), Y_START + (-Y_SPACE_BETWEEN_ITEMS * (i / NUMBER_OF_COLUMN)), 0f);
+        return new Vector3(xStart + (xSpaceBetweenItem * (i % numberOfColumn)), yStart + (-ySpaceBetweenItems * (i / numberOfColumn)), 0f);
     }
 }

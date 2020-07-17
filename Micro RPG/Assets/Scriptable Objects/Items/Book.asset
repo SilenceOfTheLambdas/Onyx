@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 1
   PSprite: {fileID: 6406520653115870016, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
-  type: 2
-  description: A book, may contain some secrets!
+  type: 6
+  description: An off-hand "weapon" that allows for the casting of spells.
   buffs: []

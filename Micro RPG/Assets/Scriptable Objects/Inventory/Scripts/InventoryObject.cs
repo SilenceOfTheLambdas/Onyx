@@ -105,7 +105,7 @@ namespace Scriptable_Objects.Inventory.Scripts
     [Serializable]
     public class InventorySlot
     {
-        public ItemTypes[] AllowedItems = new ItemTypes[0];
+        [FormerlySerializedAs("AllowedItems")] public ItemTypes[] allowedItems = new ItemTypes[0];
         public UserInterface parent;
         public int ID = -1;
         public Item item;
@@ -135,6 +135,19 @@ namespace Scriptable_Objects.Inventory.Scripts
             ID = _id;
             item = _item;
             amount = _amount;
+        }
+
+        public bool CanPlaceInSlot(ItemObject _item)
+        {
+            if (allowedItems.Length <= 0) return true;
+
+            for (int i = 0; i < allowedItems.Length; i++)
+            {
+                if (_item.type == allowedItems[i])
+                    return true;
+            }
+
+            return false;
         }
     }
 

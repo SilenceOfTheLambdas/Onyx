@@ -10,23 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 222617ebfdd6d004889867ec1d68956c, type: 3}
-  m_Name: Sword
+  m_Name: Legs
   m_EditorClassIdentifier: 
-  Id: 2
-  PSprite: {fileID: 8288462752014352371, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
-  type: 5
-  description: This is a mighy great sword; fell from a fallen enemy.
-  buffs:
-  - attribute: 0
-    value: 0
-    min: 2
-    max: 6
-  maxAttackDamage: 16
-  minAttackDamage: 12
-  attackRange: 3
-  bonusDamageChance: 18.8
+  Id: 5
+  PSprite: {fileID: 4361333614476648423, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
+  type: 3
+  description: 
+  buffs: []
+  maxAttackDamage: 0
+  minAttackDamage: 0
+  attackRange: 0
+  bonusDamageChance: 0
   DefenseType: 2
-  attackDefense: 0
-  spellDefense: 0
+  attackDefense: 5
+  spellDefense: 1
   healOverTimeAmount: 0
   healOverTime: 0

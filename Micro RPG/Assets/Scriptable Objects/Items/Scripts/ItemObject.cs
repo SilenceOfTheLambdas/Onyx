@@ -6,7 +6,12 @@ namespace Scriptable_Objects.Items.Scripts
     public enum ItemTypes
     {
         Consumable,
-        Equipment,
+        Helmet,
+        Chest,
+        Legs,
+        Boots,
+        MainWeapon,
+        OffHandWeapon,
         Default
     }
 

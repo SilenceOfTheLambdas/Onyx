@@ -16,40 +16,52 @@ MonoBehaviour:
   databaseObject: {fileID: 11400000, guid: 886f990771beda1438d50cfdc8e307fd, type: 2}
   container:
     Items:
-    - ID: -1
+    - allowedItems: 01000000
+      parent: {fileID: 0}
+      ID: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 02000000
+      parent: {fileID: 0}
+      ID: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 03000000
+      parent: {fileID: 0}
+      ID: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 04000000
+      parent: {fileID: 0}
+      ID: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 05000000
+      parent: {fileID: 0}
+      ID: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 06000000
+      parent: {fileID: 0}
+      ID: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
   slotHolder: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}

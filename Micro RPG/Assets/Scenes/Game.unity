@@ -2921,7 +2921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}
       propertyPath: m_Name
-      value: EquipmentSlotTemplate (2)
+      value: LegsSlot_Template
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 116c9183b7c906746962afc9713b2031, type: 3}
@@ -3028,7 +3028,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}
       propertyPath: m_Name
-      value: EquipmentSlotTemplate (4)
+      value: MainWeapon_Template
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 116c9183b7c906746962afc9713b2031, type: 3}
@@ -4940,7 +4940,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}
       propertyPath: m_Name
-      value: EquipmentSlotTemplate
+      value: HelmetSlot_Template
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 116c9183b7c906746962afc9713b2031, type: 3}
@@ -5181,7 +5181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}
       propertyPath: m_Name
-      value: EquipmentSlotTemplate (5)
+      value: OffHandSlot_Template
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 116c9183b7c906746962afc9713b2031, type: 3}
@@ -97552,11 +97552,11 @@ MonoBehaviour:
   player: {fileID: 2127663634}
   inventory: {fileID: 11400000, guid: 49dbb8068f50e494d87a5ddac359c89b, type: 2}
   inventoryPrefab: {fileID: 4165581387366722797, guid: 01490437fd3c6514f973259b198b77ef, type: 3}
-  X_START: -82
-  Y_START: 82
-  X_SPACE_BETWEEN_ITEM: 41
-  NUMBER_OF_COLUMN: 5
-  Y_SPACE_BETWEEN_ITEMS: 41
+  xStart: -82
+  yStart: 82
+  xSpaceBetweenItem: 41
+  numberOfColumn: 5
+  ySpaceBetweenItems: 41
 --- !u!1 &1739009861
 GameObject:
   m_ObjectHideFlags: 0
@@ -97950,7 +97950,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}
       propertyPath: m_Name
-      value: EquipmentSlotTemplate (3)
+      value: BootsSlot_Template
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 116c9183b7c906746962afc9713b2031, type: 3}
@@ -98418,7 +98418,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}
       propertyPath: m_Name
-      value: EquipmentSlotTemplate (1)
+      value: ChestSlot_Template
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 116c9183b7c906746962afc9713b2031, type: 3}
