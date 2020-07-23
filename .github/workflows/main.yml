@@ -26,8 +26,8 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           projectPath: Micro-RPG/
-          unityVersion: 2020.1.0b16-windows
-          targetPlatform: windows
+          unityVersion: 2020.1.0b16
+          targetPlatform: WebGL
 
       # Output
       - uses: actions/upload-artifact@v1
