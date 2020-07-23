@@ -1,0 +1,16 @@
+{
+    "name": "Unity.Platforms.Build.Tests",
+    "references": [
+		"Unity.Build",
+		"Unity.Platforms.Build",
+		"Unity.Properties"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

@@ -4,9 +4,6 @@ on:
   pull_request: {}
   push: { branches: [master] }
 
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-
 jobs:
   build:
     name: Build my project ✨
@@ -18,6 +15,12 @@ jobs:
         with:
           lfs: true
 
+      # Cache
+      - uses: actions/cache@v1.1.0
+        with:
+          path: Micro-RPG/Library
+          key: Library-test-project-StandaloneWindows
+
       # Build
       - uses: webbertakken/unity-builder@v1.1
         env:
@@ -27,7 +30,7 @@ jobs:
         with:
           projectPath: Micro-RPG/
           unityVersion: 2019.3.14f1
-          targetPlatform: WebGL
+          targetPlatform: StandaloneWindows
 
       # Output
       - uses: actions/upload-artifact@v1

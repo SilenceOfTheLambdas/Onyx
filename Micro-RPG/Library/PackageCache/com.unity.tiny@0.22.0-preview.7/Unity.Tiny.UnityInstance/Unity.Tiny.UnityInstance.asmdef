@@ -1,0 +1,21 @@
+{
+    "name": "Unity.Tiny.UnityInstance",
+    "references": [
+        "Unity.Collections",
+        "Unity.Entities",
+        "Unity.Tiny.Core",
+        "Unity.Tiny.Scenes",
+        "Unity.Platforms.RunLoop",
+        "Unity.ZeroJobs",
+        "Unity.Entities.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": ["UNITY_DOTSPLAYER"],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

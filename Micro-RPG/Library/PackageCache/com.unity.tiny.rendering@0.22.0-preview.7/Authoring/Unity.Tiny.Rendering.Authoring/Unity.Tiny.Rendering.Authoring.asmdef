@@ -1,0 +1,30 @@
+{
+    "name": "Unity.Tiny.Rendering.Authoring",
+    "references": [
+        "Unity.Collections",
+        "Unity.Entities",
+        "Unity.Entities.Hybrid",
+        "Unity.Entities.Runtime.Build",
+        "Unity.Mathematics",
+        "Unity.Mathematics.Extensions",
+        "Unity.Platforms",
+        "Unity.Build",
+        "Unity.Tiny.Authoring",
+        "Unity.Tiny.Core",
+        "Unity.Tiny.Rendering",
+        "Unity.Tiny.Rendering.Native",
+        "Unity.Transforms",
+        "Unity.Assertions",
+        "Unity.Burst",
+        "Unity.Properties",
+        "Unity.Tiny.Scenes.Authoring"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": ["UNITY_EDITOR"],
+    "versionDefines": []
+}
