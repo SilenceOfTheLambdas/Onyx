@@ -1,9 +1,42 @@
-- uses: webbertakken/unity-builder@2020.1.0b7
-  env:
-    UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-    UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-    UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-  with:
-    projectPath: /Micro RPG/
-    unityVersion: 2020.1.0b7
-    targetPlatform: WebGL
+name: Actions 😎
+
+on:
+  pull_request: {}
+  push: { branches: [master] }
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  build:
+    name: Build my project ✨
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      # Cache
+      - uses: actions/cache@v1.1.0
+        with:
+          path: Micro-RPG/Library
+          key: Library
+
+      # Build
+      - uses: webbertakken/unity-builder@<version>
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: Micro-RPG/
+          unityVersion: 2020.1.0f1
+          targetPlatform: WebGL
+
+      # Output
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Build
+          path: build
