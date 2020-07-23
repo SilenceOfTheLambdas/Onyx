@@ -1,14 +1,9 @@
-- uses: webbertakken/unity-builder@<version>
+- uses: webbertakken/unity-builder@2020.1.0b7
   env:
     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
     UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
   with:
-    projectPath: 
-    unityVersion: 2020.1.0
+    projectPath: /Micro RPG/
+    unityVersion: 2020.1.0b7
     targetPlatform: WebGL
-
-- uses: actions/upload-artifact@v1
-  with:
-    name: Build
-    path: build
