@@ -25,7 +25,7 @@ jobs:
           key: Library
 
       # Build
-      - uses: webbertakken/unity-builder@2019.3
+      - uses: webbertakken/unity-builder@2019.4.4f1-windows
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
