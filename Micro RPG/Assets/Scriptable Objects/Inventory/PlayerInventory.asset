@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56bb0066f56ca3543ad45f51494914ee, type: 3}
   m_Name: PlayerInventory
   m_EditorClassIdentifier: 
-  savePath: /inventory.save
+  savePath: /player_inventory.save
   databaseObject: {fileID: 11400000, guid: 886f990771beda1438d50cfdc8e307fd, type: 2}
   container:
     Items:
@@ -166,4 +166,22 @@ MonoBehaviour:
         Id: 0
         Buffs: []
       amount: 0
-  slotHolder: {fileID: 3456386786749452518, guid: 9f41bbc2af6749842ba8e9d3ada3f6aa, type: 3}
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+        Buffs: []
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+        Buffs: []
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+        Buffs: []
+      amount: 0
+  slotHolder: {fileID: 4165581387366722797, guid: 01490437fd3c6514f973259b198b77ef, type: 3}

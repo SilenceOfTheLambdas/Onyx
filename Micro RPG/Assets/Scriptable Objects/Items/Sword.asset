@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 2
   PSprite: {fileID: 8288462752014352371, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
-  type: 1
+  type: 5
   description: This is a mighy great sword; fell from a fallen enemy.
   buffs:
   - attribute: 0

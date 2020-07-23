@@ -6,7 +6,12 @@ namespace Scriptable_Objects.Items.Scripts
     public enum ItemTypes
     {
         Consumable,
-        Equipment,
+        Helmet,
+        Chest,
+        Legs,
+        Boots,
+        MainWeapon,
+        OffHandWeapon,
         Default
     }
 
@@ -40,6 +45,12 @@ namespace Scriptable_Objects.Items.Scripts
         public int Id;
         public ItemBuff[] Buffs;
 
+        public Item()
+        {
+            Name = "";
+            Id = -1;
+        }
+        
         public Item(ItemObject item)
         {
             Name = item.name;

@@ -109,8 +109,7 @@ public class DisplayInventory : MonoBehaviour
         }
         else
         {
-            // inventory.RemoveItem(itemsDisplayed[obj].item);
-            inventory.MoveItem(itemsDisplayed[obj], itemsDisplayed[obj]);
+            inventory.MoveItem(itemsDisplayed[obj], itemsDisplayed[obj]); // Moves the item back when it's dragged in a bad area
         }
         Destroy(mouseItem.obj);
         mouseItem.item = null;
@@ -126,11 +125,4 @@ public class DisplayInventory : MonoBehaviour
     {
         return new Vector3(X_START + (X_SPACE_BETWEEN_ITEM * (i % NUMBER_OF_COLUMN)), Y_START + (-Y_SPACE_BETWEEN_ITEMS * (i / NUMBER_OF_COLUMN)), 0f);
     }
-}
-public class MouseItem
-{
-    public GameObject obj;
-    public InventorySlot item;
-    public InventorySlot hoverItem;
-    public GameObject hoverObj;
 }

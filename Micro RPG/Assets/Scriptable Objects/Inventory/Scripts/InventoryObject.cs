@@ -50,6 +50,11 @@ namespace Scriptable_Objects.Inventory.Scripts
             return null;
         }
 
+        /// <summary>
+        /// This will allow movement of items from one inventory slot to another.
+        /// </summary>
+        /// <param name="item1">The inventory slot to move.</param>
+        /// <param name="item2">The inventory slot to which the item will be moved to.</param>
         public void MoveItem(InventorySlot item1, InventorySlot item2)
         {
             InventorySlot temp = new InventorySlot(item2.ID, item2.item, item2.amount);
@@ -93,13 +98,15 @@ namespace Scriptable_Objects.Inventory.Scripts
         [ContextMenu("Clear")]
         public void Clear()
         {
-            container = new Inventory();
+            container.Clear();
         }
     }
 
     [Serializable]
     public class InventorySlot
     {
+        [FormerlySerializedAs("AllowedItems")] public ItemTypes[] allowedItems = new ItemTypes[0];
+        public UserInterface parent;
         public int ID = -1;
         public Item item;
         public int amount;
@@ -129,11 +136,32 @@ namespace Scriptable_Objects.Inventory.Scripts
             item = _item;
             amount = _amount;
         }
+
+        public bool CanPlaceInSlot(ItemObject _item)
+        {
+            if (allowedItems.Length <= 0) return true;
+
+            for (int i = 0; i < allowedItems.Length; i++)
+            {
+                if (_item.type == allowedItems[i])
+                    return true;
+            }
+
+            return false;
+        }
     }
 
     [Serializable]
     public class Inventory
     {
         public InventorySlot[] Items = new InventorySlot[25];
+
+        public void Clear()
+        {
+            for (int i = 0; i < Items.Length; i++)
+            {
+                Items[i].UpdateSlot(-1, new Item(), 0);
+            }
+        }
     }
 }
