@@ -25,15 +25,15 @@ jobs:
           key: Library
 
       # Build
-      - uses: webbertakken/unity-builder@unity3d:2019.4.4f1-windows
+      - uses: webbertakken/unity-builder@v1.1
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           projectPath: Micro-RPG/
-          unityVersion: 2019.4
-          targetPlatform: WebGL
+          unityVersion: 2020.1.0b16-windows
+          targetPlatform: Windows
 
       # Output
       - uses: actions/upload-artifact@v1
