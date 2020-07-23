@@ -26,7 +26,7 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           projectPath: Micro-RPG/
-          unityVersion: 2020.1.0b16
+          unityVersion: 2019.3.14f1
           targetPlatform: WebGL
 
       # Output
