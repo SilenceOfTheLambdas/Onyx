@@ -3,7 +3,6 @@ using Scriptable_Objects.Inventory.Scripts;
 using Scriptable_Objects.Items.Scripts;
 using TMPro;
 using Unity.Burst;
-using Unity.Entities;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
