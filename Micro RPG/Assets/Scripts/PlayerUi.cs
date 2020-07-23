@@ -10,6 +10,7 @@ public class PlayerUi : MonoBehaviour
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI inventoryText;
     public TextMeshProUGUI interactText;
+    public TextMeshProUGUI xpFillText; // The text showing that shows: currentXP/XP to next level
     public Image healthBarFill;
     public Image xpBarFill;
 
@@ -34,14 +35,15 @@ public class PlayerUi : MonoBehaviour
     public void UpdateXpBar()
     {
         xpBarFill.fillAmount = (float) _player.curXp / _player.xpToNextLevel;
+        xpFillText.text = _player.curXp + "/" + _player.xpToNextLevel;
     }
 
-    public void setInteractText(Vector3 pos, string text)
+    public void SetInteractText(Vector3 pos, string text)
     {
         interactText.gameObject.SetActive(true);
         interactText.text = text;
 
-        if (Camera.main != null) interactText.transform.position = Camera.main.WorldToScreenPoint(pos + Vector3.up);
+        if (Camera.main != null) interactText.transform.position = Camera.main.WorldToScreenPoint(pos + new Vector3(0, 0.5f, 0));
     }
 
     public void DisableInteractText()

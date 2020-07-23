@@ -14,14 +14,6 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "d3fa1e81-0604-4dcb-b90d-f0289b5b9bb3",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Inventory",
                     "type": "Button",
                     "id": "19c53936-0b31-4a07-a91f-fbe78b8363bf",
@@ -140,17 +132,6 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "be01bbe1-7d19-422c-a230-0525e8ac7712",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "Normalize(max=1)",
-                    "groups": "",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 },
                 {
                     "name": "",

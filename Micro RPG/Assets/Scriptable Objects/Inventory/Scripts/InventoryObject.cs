@@ -98,7 +98,7 @@ namespace Scriptable_Objects.Inventory.Scripts
         [ContextMenu("Clear")]
         public void Clear()
         {
-            container = new Inventory();
+            container.Clear();
         }
     }
 
@@ -155,5 +155,13 @@ namespace Scriptable_Objects.Inventory.Scripts
     public class Inventory
     {
         public InventorySlot[] Items = new InventorySlot[25];
+
+        public void Clear()
+        {
+            for (int i = 0; i < Items.Length; i++)
+            {
+                Items[i].UpdateSlot(-1, new Item(), 0);
+            }
+        }
     }
 }

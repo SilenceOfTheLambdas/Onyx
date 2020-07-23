@@ -45,6 +45,12 @@ namespace Scriptable_Objects.Items.Scripts
         public int Id;
         public ItemBuff[] Buffs;
 
+        public Item()
+        {
+            Name = "";
+            Id = -1;
+        }
+        
         public Item(ItemObject item)
         {
             Name = item.name;

@@ -1,13 +1,23 @@
-﻿using Input;
+﻿using System;
 using Scriptable_Objects.Inventory.Scripts;
 using Scriptable_Objects.Items.Scripts;
+using TMPro;
 using Unity.Burst;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
+
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 public class Player : MonoBehaviour
 {
+    
+    private enum State
+    {
+        Normal,
+        Attacking
+    }
 
     [Header("Stats")]
     public int curHp;                   // our current health
@@ -28,6 +38,7 @@ public class Player : MonoBehaviour
     private float _lastAttackTime;       // last time we attacked
 
     private Vector2 _facingDirection;    // direction we're facing
+    private State _state;
     
     // Movement vector
     private Vector2 _movement;
@@ -38,8 +49,11 @@ public class Player : MonoBehaviour
     private ParticleSystem _hitEffect;
     private Controls _controls;
     private PlayerUi _ui;
-    [Header("Components")][SerializeField] 
-    private Animator animator; // The animation controller for the player movement etc.
+    
+    [Header("Components")]
+    public Animator animator; // The animation controller for the player movement etc.
+    [FormerlySerializedAs("_cameraController")] public CameraController cameraController;
+    public TextMeshProUGUI interactText;
 
     public MouseItem mouseItem = new MouseItem();
     public InventoryObject inventory;
@@ -52,7 +66,7 @@ public class Player : MonoBehaviour
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int LastDirectionX = Animator.StringToHash("LastDirectionX");
     private static readonly int LastDirectionY = Animator.StringToHash("LastDirectionY");
-
+    
     void Awake ()
     {
         // get components
@@ -61,6 +75,7 @@ public class Player : MonoBehaviour
         _ui = FindObjectOfType<PlayerUi>();
         _controls = new Controls();
         _hitEffect = gameObject.GetComponentInChildren<ParticleSystem>();
+        _state = State.Normal;
     }
 
     public void OnTriggerEnter2D(Collider2D other)
@@ -108,34 +123,18 @@ public class Player : MonoBehaviour
             }
         }
         
-        if (_controls.Player.Inventory.triggered)
-        {
-            // Check for input to then open the inventory GUI
-            _enemyInventoryOpen = enemyInventoryCanvas.activeSelf; // First check to see of the inventory has been closed
-            if (!_enemyInventoryOpen)
-            {
-                OpenEnemyInventory();
-            }
-            else
-            {
-                enemyInventoryCanvas.SetActive(false);
-            }
-        }
-
-        Cursor.visible = inventoryCanvas.activeSelf;
-        
         // Only move when inventory screen is NOT open
         if (!inventoryCanvas.activeSelf) Move();
         CheckInteract();
         
-        
+        // Attacking
+        Attack();
     }
-
+    
     /// <summary>
     /// This function controls the movement of the player; alongside keeping track of which direction the player is both
     /// currently facing and the last facing direction. This is used to keep the players direction saved.
     /// </summary>
-    [BurstCompile]
     void Move ()
     {
         var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
@@ -181,41 +180,27 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Shoots a 2D raycast object, if this object hits an enemy it will take damage.
     /// </summary>
-    public void Attack ()
+    private void Attack ()
     {
-        // can we attack?
-        if (Time.time - _lastAttackTime >= attackRate)
-        {
-            _lastAttackTime = Time.time;
+        // Attack function
+        if (!Input.GetMouseButtonDown(0)) return;
+        if (!(Time.time - _lastAttackTime >= attackRate)) return;
+        
+        _lastAttackTime = Time.time;
+        var mousePosition = CameraController.GetMouseWorldPosition();
+        var attackDirection = (mousePosition - transform.position).normalized;
+        _state = State.Attacking;
 
-            // shoot a raycast in the direction of where we're facing.
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, _facingDirection, attackRange, 1 << 9);
+        // shoot a raycast in the direction of where we're facing.
+        var hit = Physics2D.Raycast(gameObject.transform.position, attackDirection, attackRange, 1 << 9);
 
-            if(hit.collider != null && !hit.collider.GetComponent<Enemy>().isDead)
-                // If the ray cast hits an object and the enemy is not dead
-            {
-                hit.collider.GetComponent<Enemy>().TakeDamage(damage);
-                // play hit effect
-                _hitEffect.transform.position = hit.collider.transform.position;
-                _hitEffect.Play();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Opens the enemies inventory when a player is within range of a dead enemy. This method is activated from the
-    /// unity input system.
-    /// </summary>
-    public void OpenEnemyInventory()
-    {
-        // shoot a ray-cast in the direction of where we're facing.
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, _facingDirection, attackRange, 1 << 9);
-
-        if(hit.collider != null && hit.collider.GetComponent<Enemy>().isDead)
-            // If the ray cast hits an object and the enemy is not dead
-        {
-            enemyInventoryCanvas.SetActive(true);
-        } else enemyInventoryCanvas.SetActive(false);
+        if (hit.collider == null || hit.collider.GetComponent<Enemy>() is null ||
+            hit.collider.GetComponent<Enemy>().isDead) return;
+        
+        hit.collider.GetComponent<Enemy>().TakeDamage(damage);
+        // play hit effect
+        _hitEffect.transform.position = hit.collider.transform.position;
+        _hitEffect.Play();
     }
 
     /// <summary>
@@ -223,22 +208,13 @@ public class Player : MonoBehaviour
     /// </summary>
     public void CheckInteract ()
     {
-        // shoot a raycast in the direction of where we're facing.
-        // 9 == the intractable layer
-        var hit = Physics2D.Raycast(transform.position, _facingDirection, interactRange, 1 << 9);
-
-        if(hit.collider != null && hit.collider.GetComponent<Enemy>().isDead)
+        
+        if (cameraController.GetGroundItemOnCursor(interactRange) != null)
         {
-            Interactable interactable = hit.collider.GetComponent<Interactable>();
-            _ui.setInteractText(hit.collider.transform.position, interactable.interactDescription);
-            // If and when the player hits the attack button, the interact() method is invoked
-            if (_controls.Player.Attack.ReadValue<float>() == 1)
-                interactable.Interact();
-        }
-        else
-        {
+            _ui.SetInteractText(cameraController.GetGroundItemOnCursor(interactRange).transform.position,
+                cameraController.GetGroundItemOnCursor(interactRange).item.name);
+        } else if (cameraController.GetGroundItemOnCursor(interactRange) == null)
             _ui.DisableInteractText();
-        }
     }
 
     // called when we gain xp
