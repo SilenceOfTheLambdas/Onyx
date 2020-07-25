@@ -42,23 +42,23 @@ TagManager:
     uniqueID: 0
     locked: 0
   - name: Background
-    uniqueID: 3537191273
+    uniqueID: 3504784913
     locked: 0
   - name: Collision
-    uniqueID: 152565373
+    uniqueID: 1064483105
     locked: 0
   - name: Inbetween Collision
-    uniqueID: 170943743
+    uniqueID: 450699973
     locked: 0
   - name: Collision 2
-    uniqueID: 1453137021
+    uniqueID: 158981017
     locked: 0
   - name: Player
-    uniqueID: 2529939695
+    uniqueID: 3339610713
     locked: 0
   - name: Player_armour
-    uniqueID: 69363879
+    uniqueID: 1141235797
     locked: 0
   - name: Foreground
-    uniqueID: 2710121997
+    uniqueID: 1717359475
     locked: 0

@@ -10,7 +10,7 @@ public class GroundItem : MonoBehaviour, ISerializationCallbackReceiver
     public void OnBeforeSerialize()
     {
         GetComponent<SpriteRenderer>().sprite = item.PSprite;
-        EditorUtility.SetDirty(GetComponent<SpriteRenderer>());
+        // EditorUtility.SetDirty(GetComponent<SpriteRenderer>());
     }
 
     public void OnAfterDeserialize()
