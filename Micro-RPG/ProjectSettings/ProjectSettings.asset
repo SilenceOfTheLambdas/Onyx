@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: DefaultCompany
   productName: MicroRPG
-  defaultCursor: {fileID: 2800000, guid: 59e98a386dc50e14aaff2bd2f87055bf, type: 3}
+  defaultCursor: {fileID: 2800000, guid: 63f713d7af3a7fe46ac8c1a047f3fc05, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1

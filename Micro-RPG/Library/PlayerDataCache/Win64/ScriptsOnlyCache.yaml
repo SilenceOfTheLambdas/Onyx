@@ -3,6 +3,7 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - CameraController
     - Chest
+    - CursorController
     - DisplayInventory
     - DynamicInterface
     - Enemy
@@ -155,6 +156,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 15622}
     - Class: 114
       Script: {instanceID: 15840}
+    - Class: 114
+      Script: {instanceID: 49742}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1026,6 +1029,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner
     className: PlaymodeTestsController
+  - hash:
+      serializedVersion: 2
+      Hash: 29188c4735bd6c5667823b865977cdb8
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CursorController
   platform: 19
   scenePathNames:
   - Assets/Scenes/Game.unity

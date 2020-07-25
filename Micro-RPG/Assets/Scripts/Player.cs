@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
     private float _lastAttackTime;       // last time we attacked
 
     private Vector2 _facingDirection;    // direction we're facing
-    private State _state;
+    private State _state = State.Normal;
     
     // Movement vector
     private Vector2 _movement;
