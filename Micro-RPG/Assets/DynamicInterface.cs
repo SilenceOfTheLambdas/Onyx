@@ -12,17 +12,18 @@ using UnityEngine.Serialization;
 public class DynamicInterface : UserInterface
 {
     public GameObject inventoryPrefab;
-    [FormerlySerializedAs("X_START")] public int xStart;
-    [FormerlySerializedAs("Y_START")] public int yStart;
-    [FormerlySerializedAs("X_SPACE_BETWEEN_ITEM")] public int xSpaceBetweenItem;
-    [FormerlySerializedAs("NUMBER_OF_COLUMN")] public int numberOfColumn;
-    [FormerlySerializedAs("Y_SPACE_BETWEEN_ITEMS")] public int ySpaceBetweenItems;
+    public Transform  slotHolder;
+    public int        xStart;
+    public int        yStart;
+    public int        xSpaceBetweenItem;
+    public int        numberOfColumn;
+    public int        ySpaceBetweenItems;
     public override void CreateSlots()
     {
         itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
-        for (int i = 0; i < inventory.container.Items.Length; i++)
+        for (int i = 0; i < inventory.container.items.Length; i++)
         {
-            var obj = Instantiate(inventoryPrefab, Vector3.zero, Quaternion.identity, transform);
+            var obj = Instantiate(inventoryPrefab, Vector3.zero, Quaternion.identity, slotHolder);
             obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
 
             AddEvent(obj, EventTriggerType.PointerEnter, delegate { OnEnter(obj); });
@@ -32,7 +33,7 @@ public class DynamicInterface : UserInterface
             AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
 
 
-            itemsDisplayed.Add(obj, inventory.container.Items[i]);
+            itemsDisplayed.Add(obj, inventory.container.items[i]);
         }
     }
     

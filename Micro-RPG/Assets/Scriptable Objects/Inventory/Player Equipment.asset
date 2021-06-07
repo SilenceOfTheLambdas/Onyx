@@ -15,53 +15,53 @@ MonoBehaviour:
   savePath: /player_equipment.save
   databaseObject: {fileID: 11400000, guid: 886f990771beda1438d50cfdc8e307fd, type: 2}
   container:
-    Items:
+    items:
     - allowedItems: 01000000
       parent: {fileID: 0}
-      ID: -1
+      id: -1
       item:
         Name: 
-        Id: -1
+        Id: 0
         Buffs: []
       amount: 0
     - allowedItems: 02000000
       parent: {fileID: 0}
-      ID: -1
+      id: -1
       item:
         Name: 
-        Id: -1
+        Id: 0
         Buffs: []
       amount: 0
     - allowedItems: 03000000
       parent: {fileID: 0}
-      ID: -1
+      id: -1
       item:
         Name: 
-        Id: -1
+        Id: 0
         Buffs: []
       amount: 0
     - allowedItems: 04000000
       parent: {fileID: 0}
-      ID: -1
+      id: -1
       item:
         Name: 
-        Id: -1
+        Id: 0
         Buffs: []
       amount: 0
     - allowedItems: 05000000
       parent: {fileID: 0}
-      ID: -1
+      id: -1
       item:
         Name: 
-        Id: -1
+        Id: 0
         Buffs: []
       amount: 0
     - allowedItems: 06000000
       parent: {fileID: 0}
-      ID: -1
+      id: 1
       item:
-        Name: 
-        Id: -1
+        Name: Book
+        Id: 1
         Buffs: []
-      amount: 0
+      amount: 1
   slotHolder: {fileID: 3237153436677866434, guid: 116c9183b7c906746962afc9713b2031, type: 3}

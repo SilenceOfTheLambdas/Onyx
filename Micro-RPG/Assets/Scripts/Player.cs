@@ -80,12 +80,11 @@ public class Player : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D other)
     {
         var item = other.GetComponent<GroundItem>();
-        if (item)
-        {
-            Item _item = new Item(item.item);
-            inventory.AddItem(_item, 1);
-            Destroy(other.gameObject);
-        }
+        if (!item) return;
+        
+        var newItem = new Item(item.item);
+        inventory.AddItem(newItem, 1);
+        Destroy(other.gameObject);
     }
 
     private void OnEnable() => _controls.Player.Enable();
@@ -260,6 +259,6 @@ public class Player : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        inventory.container.Items = new InventorySlot[28];
+        inventory.container.items = new InventorySlot[28];
     }
 }

@@ -15,173 +15,229 @@ MonoBehaviour:
   savePath: /player_inventory.save
   databaseObject: {fileID: 11400000, guid: 886f990771beda1438d50cfdc8e307fd, type: 2}
   container:
-    Items:
-    - ID: -1
+    items:
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
-    - ID: -1
+    - allowedItems: 
+      parent: {fileID: 0}
+      id: -1
       item:
         Name: 
-        Id: 0
+        Id: -1
         Buffs: []
       amount: 0
   slotHolder: {fileID: 4165581387366722797, guid: 01490437fd3c6514f973259b198b77ef, type: 3}

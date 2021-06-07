@@ -33,7 +33,7 @@ public class DisplayInventory : MonoBehaviour
     public void CreateSlots()
     {
         itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
-        for (int i = 0; i < inventory.container.Items.Length; i++)
+        for (int i = 0; i < inventory.container.items.Length; i++)
         {
             var obj = Instantiate(inventoryPrefab, Vector3.zero, Quaternion.identity, transform);
             obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
@@ -45,14 +45,14 @@ public class DisplayInventory : MonoBehaviour
             AddEvent(obj, EventTriggerType.Drag, delegate { OnDrag(obj); });
 
 
-            itemsDisplayed.Add(obj, inventory.container.Items[i]);
+            itemsDisplayed.Add(obj, inventory.container.items[i]);
         }
     }
     public void UpdateSlots()
     {
         foreach (KeyValuePair<GameObject, InventorySlot> _slot in itemsDisplayed)
         {
-            if (_slot.Value.ID >= 0)
+            if (_slot.Value.id >= 0)
             {
                 _slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().sprite = inventory.databaseObject.getItem[_slot.Value.item.Id].PSprite;
                 _slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
@@ -92,10 +92,10 @@ public class DisplayInventory : MonoBehaviour
         var rt = mouseObject.AddComponent<RectTransform>();
         rt.sizeDelta = new Vector2(50, 50);
         mouseObject.transform.SetParent(transform.parent);
-        if (itemsDisplayed[obj].ID >= 0)
+        if (itemsDisplayed[obj].id >= 0)
         {
             var img = mouseObject.AddComponent<Image>();
-            img.sprite = inventory.databaseObject.getItem[itemsDisplayed[obj].ID].PSprite;
+            img.sprite = inventory.databaseObject.getItem[itemsDisplayed[obj].id].PSprite;
             img.raycastTarget = false;
         }
         mouseItem.obj = mouseObject;

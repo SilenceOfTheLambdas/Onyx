@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using Scriptable_Objects.Items.Scripts;
 using UnityEngine;
@@ -16,33 +17,38 @@ namespace Scriptable_Objects.Inventory.Scripts
     
         public GameObject slotHolder;
 
-        public void AddItem(Item _item, int _amount)
+        private void Awake()
         {
-            if (_item.Buffs.Length > 0)
+            container = Inventory.Instance;
+        }
+
+        public void AddItem(Item item, int amount)
+        {
+            if (item.Buffs.Length > 0)
             {
-                SetEmptySlot(_item, _amount);
+                SetEmptySlot(item, amount);
                 return;
             }
 
-            for (int i = 0; i < container.Items.Length; i++)
+            for (int i = 0; i < container.items.Length; i++)
             {
-                if (container.Items[i].ID == _item.Id)
+                if (container.items[i].id == item.Id)
                 {
-                    container.Items[i].AddAmount(_amount);
+                    container.items[i].AddAmount(amount);
                     return;
                 }
             }
-            SetEmptySlot(_item, _amount);
+            SetEmptySlot(item, amount);
         }
 
         public InventorySlot SetEmptySlot(Item _item, int _amount)
         {
-            for (int i = 0; i < container.Items.Length; i++)
+            foreach (var inventorySlot in container.items)
             {
-                if (container.Items[i].ID <= -1)
+                if (inventorySlot.id <= -1)
                 {
-                    container.Items[i].UpdateSlot(_item.Id, _item, _amount);
-                    return container.Items[i];
+                    inventorySlot.UpdateSlot(_item.Id, _item, _amount);
+                    return inventorySlot;
                 }
             }
 
@@ -57,20 +63,33 @@ namespace Scriptable_Objects.Inventory.Scripts
         /// <param name="item2">The inventory slot to which the item will be moved to.</param>
         public void MoveItem(InventorySlot item1, InventorySlot item2)
         {
-            InventorySlot temp = new InventorySlot(item2.ID, item2.item, item2.amount);
-            item2.UpdateSlot(item1.ID, item1.item, item1.amount);
-            item1.UpdateSlot(temp.ID, temp.item, temp.amount);
+            InventorySlot temp = new InventorySlot(item2.id, item2.item, item2.amount);
+            item2.UpdateSlot(item1.id, item1.item, item1.amount);
+            item1.UpdateSlot(temp.id, temp.item, temp.amount);
         }
 
         public void RemoveItem(Item _item)
         {
-            for (int i = 0; i < container.Items.Length; i++)
+            for (int i = 0; i < container.items.Length; i++)
             {
-                if (container.Items[i].item == _item)
+                if (container.items[i].item == _item)
                 {
-                    container.Items[i].UpdateSlot(-1, null, 0);
+                    container.items[i].UpdateSlot(-1, null, 0);
                 }
             }
+        }
+
+        public bool ContainsItem(int idOfItem)
+        {
+            for (var i = 0; i < container.items.Length; i++)
+            {
+                if (container.items[i].item.Id == idOfItem)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         [ContextMenu("Save")]
@@ -105,24 +124,24 @@ namespace Scriptable_Objects.Inventory.Scripts
     [Serializable]
     public class InventorySlot
     {
-        [FormerlySerializedAs("AllowedItems")] public ItemTypes[] allowedItems = new ItemTypes[0];
+        public ItemTypes[]   allowedItems = new ItemTypes[0];
         public UserInterface parent;
-        public int ID = -1;
-        public Item item;
-        public int amount;
+        public int           id;
+        public Item          item;
+        public int           amount;
 
         public InventorySlot()
         {
-            ID = -1;
+            id = -1;
             item = null;
             amount = 0;
         }
     
-        public InventorySlot(int _id, Item _item, int _amount)
+        public InventorySlot(int id, Item item, int amount)
         {
-            ID = _id;
-            item = _item;
-            amount = _amount;
+            this.id = id;
+            this.item = item;
+            this.amount = amount;
         }
 
         public void AddAmount(int value)
@@ -132,7 +151,7 @@ namespace Scriptable_Objects.Inventory.Scripts
 
         public void UpdateSlot(int _id, Item _item, int _amount)
         {
-            ID = _id;
+            id = _id;
             item = _item;
             amount = _amount;
         }
@@ -152,15 +171,25 @@ namespace Scriptable_Objects.Inventory.Scripts
     }
 
     [Serializable]
-    public class Inventory
+    public class Inventory : MonoBehaviour
     {
-        public InventorySlot[] Items = new InventorySlot[25];
+        public        InventorySlot[] items = new InventorySlot[25];
+        public static Inventory       Instance;
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            } else 
+                Destroy(Instance);
+        }
 
         public void Clear()
         {
-            for (int i = 0; i < Items.Length; i++)
+            for (int i = 0; i < items.Length; i++)
             {
-                Items[i].UpdateSlot(-1, new Item(), 0);
+                items[i].UpdateSlot(-1, new Item(), 0);
             }
         }
     }

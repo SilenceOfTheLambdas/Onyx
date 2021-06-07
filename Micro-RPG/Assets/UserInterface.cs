@@ -16,9 +16,9 @@ public abstract class UserInterface : MonoBehaviour
     public Dictionary<GameObject, InventorySlot> itemsDisplayed = new Dictionary<GameObject, InventorySlot>();
     void Start()
     {
-        for (int i = 0; i < inventory.container.Items.Length; i++)
+        for (int i = 0; i < inventory.container.items.Length; i++)
         {
-            inventory.container.Items[i].parent = this;
+            inventory.container.items[i].parent = this;
         }
         CreateSlots();
     }
@@ -34,7 +34,7 @@ public abstract class UserInterface : MonoBehaviour
     {
         foreach (KeyValuePair<GameObject, InventorySlot> _slot in itemsDisplayed)
         {
-            if (_slot.Value.ID >= 0)
+            if (_slot.Value.id >= 0)
             {
                 _slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().sprite = inventory.databaseObject.getItem[_slot.Value.item.Id].PSprite;
                 _slot.Key.transform.GetChild(0).GetComponentInChildren<Image>().color = new Color(1, 1, 1, 1);
@@ -74,10 +74,10 @@ public abstract class UserInterface : MonoBehaviour
         var rt = mouseObject.AddComponent<RectTransform>();
         rt.sizeDelta = new Vector2(50, 50);
         mouseObject.transform.SetParent(transform.parent);
-        if (itemsDisplayed[obj].ID >= 0)
+        if (itemsDisplayed[obj].id >= 0)
         {
             var img = mouseObject.AddComponent<Image>();
-            img.sprite = inventory.databaseObject.getItem[itemsDisplayed[obj].ID].PSprite;
+            img.sprite = inventory.databaseObject.getItem[itemsDisplayed[obj].id].PSprite;
             img.raycastTarget = false;
         }
         player.mouseItem.obj = mouseObject;
@@ -92,7 +92,7 @@ public abstract class UserInterface : MonoBehaviour
         
         if (mouseHoverObj)
         {
-            if (mouseHoverItem.CanPlaceInSlot(GetItemObject[itemsDisplayed[obj].ID]) && 
+            if (mouseHoverItem.CanPlaceInSlot(GetItemObject[itemsDisplayed[obj].id]) && 
                 (mouseHoverItem.item.Id <= -1 || (mouseHoverItem.item.Id >= 0 && itemsDisplayed[obj].CanPlaceInSlot(GetItemObject[mouseHoverItem.item.Id]))))
                 inventory.MoveItem(itemsDisplayed[obj], mouseHoverItem.parent.itemsDisplayed[itemOnMouse.hoverObj]);
         }
