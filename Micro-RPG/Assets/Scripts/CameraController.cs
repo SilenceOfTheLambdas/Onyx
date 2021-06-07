@@ -70,24 +70,4 @@ public class CameraController : MonoBehaviour
 
         return null;
     }
-    
-    /// <summary>
-    /// Will return the game object that is underneath the cursor.
-    /// </summary>
-    /// <param name="distance">The distance in which the raycast will be sent.</param>
-    /// <returns>The GameObject</returns>
-    public GroundItem GetGroundItemOnCursor(float distance)
-    {
-        var mousePosition = GetMouseWorldPosition();
-        // shoot a raycast
-        var hit = Physics2D.Raycast(mousePosition, mousePosition, distance, 1 << 9);
-        
-        if(hit.collider != null && !(hit.collider.GetComponent<GameObject>() is null))
-            // If the ray cast hits a GameObject
-        {
-            return hit.collider.GetComponent<GroundItem>();
-        }
-
-        return null;
-    }
 }

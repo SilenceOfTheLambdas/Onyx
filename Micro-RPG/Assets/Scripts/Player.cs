@@ -1,11 +1,9 @@
 ﻿using System;
-using Scriptable_Objects.Inventory.Scripts;
-using Scriptable_Objects.Items.Scripts;
+using Inventory_System;
 using TMPro;
-using Unity.Burst;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using Item = Inventory_System.Item;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -42,29 +40,27 @@ public class Player : MonoBehaviour
     // Movement vector
     private Vector2 _movement;
 
+    [Header("Components")]
     // components
     private Rigidbody2D _rig;
-    private SpriteRenderer _sr;
-    private ParticleSystem _hitEffect;
-    private Controls _controls;
-    private PlayerUi _ui;
-    
-    [Header("Components")]
+    private                  SpriteRenderer _sr;
+    private                  ParticleSystem _hitEffect;
+    private                  Controls       _controls;
+    private                  PlayerUi       _ui;
+    private                  Inventory      _inventory;
+    [SerializeField] private UI_Inventory   uiInventory;
+
     public Animator animator; // The animation controller for the player movement etc.
-    [FormerlySerializedAs("_cameraController")] public CameraController cameraController;
+    public CameraController cameraController;
     public TextMeshProUGUI interactText;
 
-    public MouseItem mouseItem = new MouseItem();
-    public InventoryObject inventory;
-    public GameObject inventoryCanvas; // The UI for the inventory
-    public GameObject enemyInventoryCanvas; // The UI for the enemy inventory
-    private bool _inventoryOpen; // is the player's inventory open?
-    private bool _enemyInventoryOpen; // Is the enemies inventory open?
-    private static readonly int Horizontal = Animator.StringToHash("Horizontal");
-    private static readonly int Vertical = Animator.StringToHash("Vertical");
-    private static readonly int Speed = Animator.StringToHash("Speed");
-    private static readonly int LastDirectionX = Animator.StringToHash("LastDirectionX");
-    private static readonly int LastDirectionY = Animator.StringToHash("LastDirectionY");
+    private                 bool       _inventoryOpen; // is the player's inventory open?
+    private                 bool       _enemyInventoryOpen; // Is the enemies inventory open?
+    private static readonly int        Horizontal     = Animator.StringToHash("Horizontal");
+    private static readonly int        Vertical       = Animator.StringToHash("Vertical");
+    private static readonly int        Speed          = Animator.StringToHash("Speed");
+    private static readonly int        LastDirectionX = Animator.StringToHash("LastDirectionX");
+    private static readonly int        LastDirectionY = Animator.StringToHash("LastDirectionY");
     
     void Awake ()
     {
@@ -75,16 +71,21 @@ public class Player : MonoBehaviour
         _controls = new Controls();
         _hitEffect = gameObject.GetComponentInChildren<ParticleSystem>();
         _state = State.Normal;
+        
+        // Instantiate the inventory
+        _inventory = new Inventory(UseItem);
+        uiInventory.SetPlayer(this);
+        uiInventory.SetInventory(_inventory);
     }
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        var item = other.GetComponent<GroundItem>();
-        if (item)
+        ItemWorld itemWorld = other.GetComponent<ItemWorld>();
+        if (itemWorld != null)
         {
-            Item _item = new Item(item.item);
-            inventory.AddItem(_item, 1);
-            Destroy(other.gameObject);
+            // If we are touching an item
+            _inventory.AddItem(itemWorld.GetItem());
+            itemWorld.DestroySelf();
         }
     }
 
@@ -105,29 +106,33 @@ public class Player : MonoBehaviour
         animator.SetFloat(Horizontal, _movement.x);
         animator.SetFloat(Vertical, _movement.y);
         animator.SetFloat(Speed, _movement.sqrMagnitude);
-        
-        if (_controls.Player.Inventory.triggered)
-        {
-            // Check for input to then open the inventory GUI
-            _inventoryOpen = inventoryCanvas.activeSelf; // First check to see of the inventory has been closed
-            if (!_inventoryOpen)
-            {
-                inventoryCanvas.SetActive(true);
-                _inventoryOpen = true;
-            }
-            else
-            {
-                inventoryCanvas.SetActive(false);
-                _inventoryOpen = false;
-            }
-        }
-        
-        // Only move when inventory screen is NOT open
-        if (!inventoryCanvas.activeSelf) Move();
-        CheckInteract();
-        
+        Move();
+
         // Attacking
         Attack();
+    }
+
+    private void UseItem(Item item)
+    {
+        switch (item.itemType)
+        {
+            case Item.ItemType.Sword:
+                break;
+            case Item.ItemType.SpellBook:
+                break;
+            case Item.ItemType.HealthPotion:
+                Debug.Log("Used Health Potion");
+                _inventory.RemoveItem(new Item { itemType = Item.ItemType.HealthPotion, amount = 1});
+                break;
+            case Item.ItemType.ManaPotion:
+                Debug.Log("Used Mana Potion");
+                _inventory.RemoveItem(new Item { itemType = Item.ItemType.ManaPotion, amount = 1});
+                break;
+            case Item.ItemType.Coin:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
     
     /// <summary>
@@ -202,20 +207,6 @@ public class Player : MonoBehaviour
         _hitEffect.Play();
     }
 
-    /// <summary>
-    /// Manages the interaction of objects in the scene.
-    /// </summary>
-    public void CheckInteract ()
-    {
-        
-        if (cameraController.GetGroundItemOnCursor(interactRange) != null)
-        {
-            _ui.SetInteractText(cameraController.GetGroundItemOnCursor(interactRange).transform.position,
-                cameraController.GetGroundItemOnCursor(interactRange).item.name);
-        } else if (cameraController.GetGroundItemOnCursor(interactRange) == null)
-            _ui.DisableInteractText();
-    }
-
     // called when we gain xp
     public void AddXp (int xp)
     {
@@ -260,6 +251,6 @@ public class Player : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        inventory.container.Items = new InventorySlot[28];
+        
     }
 }
