@@ -1,4 +1,5 @@
 ﻿using System;
+using Enemies;
 using Inventory_System;
 using TMPro;
 using UnityEngine;
@@ -40,33 +41,27 @@ public class Player : MonoBehaviour
     // Movement vector
     private Vector2 _movement;
 
-    [Header("Components")]
-    // components
-    private Rigidbody2D _rig;
-    private                  SpriteRenderer _sr;
     private                  ParticleSystem _hitEffect;
     private                  Controls       _controls;
     private                  PlayerUi       _ui;
     private                  Inventory      _inventory;
     [SerializeField] private UI_Inventory   uiInventory;
 
-    public Animator animator; // The animation controller for the player movement etc.
-    public CameraController cameraController;
-    public TextMeshProUGUI interactText;
+    public Animator        animator; // The animation controller for the player movement etc.
 
-    private                 bool       _inventoryOpen; // is the player's inventory open?
-    private                 bool       _enemyInventoryOpen; // Is the enemies inventory open?
+    private                  bool       _inventoryOpen; // is the player's inventory open?
+    [SerializeField] private GameObject inventoryScreen; // Reference to the inventory UI
+    
+    
     private static readonly int        Horizontal     = Animator.StringToHash("Horizontal");
     private static readonly int        Vertical       = Animator.StringToHash("Vertical");
     private static readonly int        Speed          = Animator.StringToHash("Speed");
     private static readonly int        LastDirectionX = Animator.StringToHash("LastDirectionX");
     private static readonly int        LastDirectionY = Animator.StringToHash("LastDirectionY");
-    
-    void Awake ()
+
+    private void Awake ()
     {
         // get components
-        _rig = GetComponent<Rigidbody2D>();
-        _sr = GetComponent<SpriteRenderer>();
         _ui = FindObjectOfType<PlayerUi>();
         _controls = new Controls();
         _hitEffect = gameObject.GetComponentInChildren<ParticleSystem>();
@@ -93,21 +88,40 @@ public class Player : MonoBehaviour
 
     private void OnDisable() => _controls.Player.Disable();
 
-    void Start ()
+    private void Start ()
     {
         _ui.UpdateHealthBar();
         _ui.UpdateLevelText();
         _ui.UpdateXpBar();
+        inventoryScreen.gameObject.SetActive(false);
     }
 
-    void Update ()
+    private void Update ()
     {
         // Update the animation params
         animator.SetFloat(Horizontal, _movement.x);
         animator.SetFloat(Vertical, _movement.y);
         animator.SetFloat(Speed, _movement.sqrMagnitude);
-        Move();
-
+        
+        // If the inventory is open, pause the game
+        if (_inventoryOpen)
+        {
+            // Pause the game
+            Time.timeScale = 0f;
+        }
+        else // The player can only move if the inventory is NOT open
+        {
+            Time.timeScale = 1f;
+            Move();
+        }
+        
+        // Open and close the inventory screen
+        if (_controls.Player.Inventory.triggered)
+        {
+            _inventoryOpen = !_inventoryOpen;
+            inventoryScreen.SetActive(_inventoryOpen);
+        }
+        
         // Attacking
         Attack();
     }
@@ -139,16 +153,16 @@ public class Player : MonoBehaviour
     /// This function controls the movement of the player; alongside keeping track of which direction the player is both
     /// currently facing and the last facing direction. This is used to keep the players direction saved.
     /// </summary>
-    void Move ()
+    private void Move ()
     {
         var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
-
+    
         _movement = new Vector2
         {
             x = movementInput.x,
             y = movementInput.y
         }.normalized;
-
+    
         switch (_movement.x)
         {
             case -1:
@@ -162,7 +176,7 @@ public class Player : MonoBehaviour
                 animator.SetFloat(LastDirectionY, 0f); // The opposite axis has to be reset
                 break;
         }
-
+    
         switch (_movement.y)
         {
             case -1:
@@ -176,7 +190,7 @@ public class Player : MonoBehaviour
                 animator.SetFloat(LastDirectionX, 0f); // The opposite axis has to be reset
                 break;
         }
-
+    
         // Update the players position
         transform.Translate(_movement * (moveSpeed * Time.deltaTime));
     }
@@ -220,7 +234,7 @@ public class Player : MonoBehaviour
     }
 
     // called when our xp reaches the max for this level
-    void LevelUp ()
+    private void LevelUp ()
     {
         curXp = 0;
         curLevel++;
@@ -244,13 +258,8 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Kills the player when curHP = 0.
     /// </summary>
-    void Die()
+    private static void Die()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
-    }
-
-    private void OnApplicationQuit()
-    {
-        
     }
 }
