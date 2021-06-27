@@ -1,18 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Enemies;
+﻿using System;
+using AI;
+using AI.States;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
+using UnityEngine.AI;
 
-/// <summary>
-/// A mage uses magic to eliminate enemies.
-/// They have a medium health pool,
-/// Ranged Weapons
-/// </summary>
-public class Mage : Enemy
+namespace Enemies
 {
-    public Mage()
+    /// <summary>
+    /// A mage uses magic to eliminate enemies.
+    /// They have a medium health pool,
+    /// Ranged Weapons
+    /// </summary>
+    public class Mage : MonoBehaviour
     {
-        maxHp = (20 + enemyLevel);
+
+        private StateMachine _stateMachine;
+
+        private void Awake()
+        {
+            var animator = GetComponent<Animator>();
+        }
+
+        public Mage()
+        {
+            
+        }
     }
 }

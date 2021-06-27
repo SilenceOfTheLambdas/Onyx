@@ -1,5 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using AI;
+using AI.States;
+using Pathfinding;
+using UnityEngine;
+using Patrol = AI.States.Patrol;
 
 namespace Enemies
 {
@@ -19,6 +24,10 @@ namespace Enemies
         /// </summary>
         public EnemyType enemyType;
 
+        [Header("Enemy Movement")] [Range(0f, 100f)]
+        public float moveSpeed = 38f; // These are set by the items the enemy carries/spawns with
+        [SerializeField] private List<Transform> patrolPoints;
+        
         /// <summary>
         /// This will specify the maximum amount of HP the enemy has,
         /// along with the max damage within it's class' restrictions,
@@ -27,23 +36,21 @@ namespace Enemies
         public int enemyLevel = 1;
     
         // Set according to the enemy's type/tier
-        private                                 int   _curHp;
-        [FormerlySerializedAs("_maxHp")] public int   maxHp;
-        public                                  float chaseRange = 3;
-
+        private int   _curHp;
+        public  int   maxHp;
+        public  float chaseRange = 3;
+        
         /// <summary>
         /// This will be set according the the enemies level and their level,
         /// it's calculated as follows:
         /// <code>(damage + level)</code>
         /// </summary>
         private int _xpToGive;
-    
-        // These are set by the items the enemy carries/spawns with
+
         /// <summary>
-        /// This will most likely be set via items like:
-        /// Boots, Necklace, Rings
+        /// The any force that needs to be applied to the rigidbody.
         /// </summary>
-        private float moveSpeed = 1f;
+        private Vector2 _movementForce;
     
         // These options are set via weapons
         private float attackRange = 1; // The maximum range in which the enemy can hit the player
@@ -55,7 +62,8 @@ namespace Enemies
 
         public Player _player;
 
-        private float _lastAttackTime;
+        private float        _lastAttackTime;
+        private StateMachine _stateMachine;
 
         // Components
         private Rigidbody2D _rig;
@@ -67,32 +75,39 @@ namespace Enemies
             _rig = GetComponent<Rigidbody2D>();
             _curHp = maxHp;
             _xpToGive = damage + enemyLevel;
+            _stateMachine = new StateMachine();
+
+            var idle   = new Idle();
+            var patrol = new Patrol(this, GetComponentInChildren<Animator>(), GetComponent<Seeker>() ,1f, patrolPoints);
+            _stateMachine.AddTransition(idle, patrol, () => true);
+            _stateMachine.SetState(patrol);
         }
 
         private void Update()
         {
-            if (!isDead)
-            {
-                float playerDist = Vector2.Distance(transform.position, _player.transform.position);
+            // Update State Machine
+            _stateMachine.Tick();
+            
+            // if (!isDead)
+            // {
+            //     float playerDist = Vector2.Distance(transform.position, _player.transform.position);
+            //
+            //     if (playerDist <= attackRange)
+            //     {
+            //         // Attack the player
+            //         if (Time.time - _lastAttackTime >= attackRate)
+            //         {
+            //             Attack();
+            //         }
+            //         _rig.velocity = Vector2.zero;
+            //
+            //     }  
+            // }
+        }
 
-                if (playerDist <= attackRange)
-                {
-                    // Attack the player
-                    if (Time.time - _lastAttackTime >= attackRate)
-                    {
-                        Attack();
-                    }
-                    _rig.velocity = Vector2.zero;
-
-                } else if (playerDist <= chaseRange)
-                {
-                    Chase();
-                }
-                else
-                {
-                    _rig.velocity = Vector2.zero;
-                }   
-            }
+        private void FixedUpdate()
+        {
+            _stateMachine.FixedTick();
         }
 
         private void Chase()
