@@ -1,9 +1,7 @@
 ﻿using System;
 using Enemies;
 using Inventory_System;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Item = Inventory_System.Item;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -17,12 +15,29 @@ public class Player : MonoBehaviour
         Attacking
     }
 
-    [Header("Stats")]
-    public int curHp;                   // our current health
-    public int maxHp;                   // our maximum health
-    public float moveSpeed;             // how fast we move
-    public int damage;                  // damage we deal
-    public float interactRange;         // range at which we can interact
+    #region Properties
+
+    public int CurrentHp
+    {
+        get => _curHp;
+        set => _curHp = Mathf.Clamp(value, 0, maxHp);
+    }
+
+    public int CurrentMana
+    {
+        get => _currentMana;
+        set => _currentMana = Mathf.Clamp(value, 0, maxMana);
+    }
+
+    #endregion
+
+    [Header("Stats")] public int   maxHp;                   // our maximum health
+    public                   float moveSpeed;             // how fast we move
+    public                   int   damage;                  // damage we deal
+    public                   float interactRange;         // range at which we can interact
+    public                   int   maxMana;
+    private                  int   _curHp;                   // our current health
+    private                  int   _currentMana;
 
     [Header("Experience")]
     public int curLevel;                // our current level
@@ -71,11 +86,17 @@ public class Player : MonoBehaviour
         _inventory = new Inventory(UseItem);
         uiInventory.SetPlayer(this);
         uiInventory.SetInventory(_inventory);
+        
+        // Set current HP and mana values
+        _curHp = maxHp / 2;
+        _currentMana = maxMana / 2;
+        CurrentHp = maxHp / 2;
+        CurrentMana = maxMana / 2;
     }
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        ItemWorld itemWorld = other.GetComponent<ItemWorld>();
+        var itemWorld = other.GetComponent<ItemWorld>();
         if (itemWorld != null)
         {
             // If we are touching an item
@@ -135,12 +156,18 @@ public class Player : MonoBehaviour
             case Item.ItemType.SpellBook:
                 break;
             case Item.ItemType.HealthPotion:
-                Debug.Log("Used Health Potion");
-                _inventory.RemoveItem(new Item { itemType = Item.ItemType.HealthPotion, amount = 1});
+                if (CurrentHp != maxHp)
+                {
+                    IncreaseHp(ItemDatabase.Instance.healthPotionRestoreAmount);
+                    _inventory.RemoveItem(new Item { itemType = Item.ItemType.HealthPotion, amount = 1});
+                }
                 break;
             case Item.ItemType.ManaPotion:
-                Debug.Log("Used Mana Potion");
-                _inventory.RemoveItem(new Item { itemType = Item.ItemType.ManaPotion, amount = 1});
+                if (CurrentMana != maxMana)
+                {
+                    IncreaseMana(ItemDatabase.Instance.manaPotionRestoreAmount);
+                    _inventory.RemoveItem(new Item { itemType = Item.ItemType.ManaPotion, amount = 1});
+                }
                 break;
             case Item.ItemType.Coin:
                 break;
@@ -248,11 +275,28 @@ public class Player : MonoBehaviour
     // called when an enemy attacks us
     public void TakeDamage(int damageTaken)
     {
-        curHp -= damageTaken;
+        CurrentHp -= damageTaken;
 
-        if(curHp <= 0)
+        if(CurrentHp <= 0)
             Die();
         _ui.UpdateHealthBar();
+    }
+
+    private void IncreaseHp(int amount)
+    {
+        // If adding this amount of HP takes us over the limit
+        if (CurrentHp + amount >= maxHp)
+            CurrentHp = maxHp;
+        else
+            CurrentHp += amount;
+    }
+
+    private void IncreaseMana(int amount)
+    {
+        if (CurrentMana + amount >= maxMana)
+            CurrentMana = maxMana;
+        else
+            CurrentMana += amount;
     }
 
     /// <summary>

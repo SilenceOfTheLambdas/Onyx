@@ -29,7 +29,7 @@ public class PlayerUi : MonoBehaviour
 
     public void UpdateHealthBar()
     {
-        healthBarFill.fillAmount = (float)_player.curHp / _player.maxHp;
+        healthBarFill.fillAmount = (float)_player.CurrentHp / _player.maxHp;
     }
 
     public void UpdateXpBar()

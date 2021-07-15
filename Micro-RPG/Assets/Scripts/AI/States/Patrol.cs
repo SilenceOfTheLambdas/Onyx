@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Enemies;
 using Pathfinding;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace AI.States
 {
@@ -101,7 +103,6 @@ namespace AI.States
 
         public void OnExit()
         {
-            throw new System.NotImplementedException();
         }
     }
 }

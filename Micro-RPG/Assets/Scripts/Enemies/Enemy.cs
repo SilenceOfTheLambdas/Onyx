@@ -27,7 +27,10 @@ namespace Enemies
         [Header("Enemy Movement")] [Range(0f, 100f)]
         public float moveSpeed = 38f; // These are set by the items the enemy carries/spawns with
         [SerializeField] private List<Transform> patrolPoints;
-        
+
+        [Header("Enemy AI Parameters")] 
+        [SerializeField] public float playerDetectionRadius; // The radius of the circle used to detect the player
+
         /// <summary>
         /// This will specify the maximum amount of HP the enemy has,
         /// along with the max damage within it's class' restrictions,
@@ -67,6 +70,7 @@ namespace Enemies
 
         // Components
         private Rigidbody2D _rig;
+
         private void Awake()
         {
             // Get the player target
@@ -76,10 +80,16 @@ namespace Enemies
             _curHp = maxHp;
             _xpToGive = damage + enemyLevel;
             _stateMachine = new StateMachine();
+        }
 
+        private void Start()
+        {
             var idle   = new Idle();
-            var patrol = new Patrol(this, GetComponentInChildren<Animator>(), GetComponent<Seeker>() ,1f, patrolPoints);
+            var patrol = new Patrol(this, GetComponentInChildren<Animator>(), GetComponent<Seeker>(),1f, patrolPoints);
+            var chasePlayer = new Chase(_player.gameObject, this, GetComponent<Seeker>());
             _stateMachine.AddTransition(idle, patrol, () => true);
+            _stateMachine.AddAnyTransition(chasePlayer, IsPlayerWithinRange);
+            _stateMachine.AddTransition(chasePlayer, patrol, () => Vector2.Distance(_rig.position, _player.transform.position) > playerDetectionRadius);
             _stateMachine.SetState(patrol);
         }
 
@@ -88,33 +98,11 @@ namespace Enemies
             // Update State Machine
             _stateMachine.Tick();
             
-            // if (!isDead)
-            // {
-            //     float playerDist = Vector2.Distance(transform.position, _player.transform.position);
-            //
-            //     if (playerDist <= attackRange)
-            //     {
-            //         // Attack the player
-            //         if (Time.time - _lastAttackTime >= attackRate)
-            //         {
-            //             Attack();
-            //         }
-            //         _rig.velocity = Vector2.zero;
-            //
-            //     }  
-            // }
         }
 
         private void FixedUpdate()
         {
             _stateMachine.FixedTick();
-        }
-
-        private void Chase()
-        {
-            Vector2 dir = (_player.transform.position - transform.position).normalized;
-
-            _rig.velocity = dir * moveSpeed;
         }
 
         public void TakeDamage(int damageTaken)
@@ -136,5 +124,18 @@ namespace Enemies
             _lastAttackTime = Time.time;
             _player.TakeDamage(damage);
         }
+
+        #region Helper
+
+        private bool IsPlayerWithinRange() => Vector2.Distance(_rig.position, _player.gameObject.transform.position) <= playerDetectionRadius;
+        
+        private void OnDrawGizmosSelected()
+        {
+            // Draw player detection radius circle
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, playerDetectionRadius);
+        }
+
+        #endregion
     }
 }
