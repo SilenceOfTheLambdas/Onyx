@@ -239,10 +239,10 @@ public class Player : MonoBehaviour
         // shoot a raycast in the direction of where we're facing.
         var hit = Physics2D.Raycast(gameObject.transform.position, attackDirection, attackRange, 1 << 9);
 
-        if (hit.collider == null || hit.collider.GetComponent<Enemy>() is null ||
-            hit.collider.GetComponent<Enemy>().isDead) return;
+        if (hit.collider == null || hit.collider.GetComponentInParent<Enemy>() is null ||
+            hit.collider.GetComponentInParent<Enemy>().isDead) return;
         
-        hit.collider.GetComponent<Enemy>().TakeDamage(damage);
+        hit.collider.GetComponentInParent<Enemy>().TakeDamage(damage);
         // play hit effect
         _hitEffect.transform.position = hit.collider.transform.position;
         _hitEffect.Play();
@@ -289,6 +289,7 @@ public class Player : MonoBehaviour
             CurrentHp = maxHp;
         else
             CurrentHp += amount;
+        _ui.UpdateHealthBar();
     }
 
     private void IncreaseMana(int amount)

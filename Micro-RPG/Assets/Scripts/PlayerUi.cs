@@ -53,14 +53,4 @@ public class PlayerUi : MonoBehaviour
             interactText.gameObject.SetActive(false);
         }
     }
-
-    // public void UpdateInventoryText()
-    // {
-    //     inventoryText.text = "";
-    //
-    //     foreach (var item in _player.inventory)
-    //     {
-    //         inventoryText.text += item.ToString().Replace('_', ' ') + "\n";
-    //     }
-    // }
 }

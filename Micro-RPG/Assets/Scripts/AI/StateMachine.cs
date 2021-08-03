@@ -60,6 +60,11 @@ namespace AI
         {
             _anyTransitions.Add(new Transition(state, predicate));
         }
+
+        public IState GetCurrentState()
+        {
+            return _currentState;
+        }
     
         private class Transition
         {

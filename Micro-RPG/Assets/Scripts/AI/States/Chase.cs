@@ -76,8 +76,8 @@ namespace AI.States
             _rigidbody2D.AddForce(force);
 
             var distance = Vector2.Distance(_rigidbody2D.position, _path.vectorPath[_currentWaypoint]);
-
-            if (distance < 0.3f)
+            
+            if (distance < _enemy.enemyStoppingDistance)
                 _currentWaypoint++;
         }
 

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AI;
 using AI.States;
 using Pathfinding;
 using UnityEngine;
+using UnityEngine.UI;
 using Patrol = AI.States.Patrol;
 
 namespace Enemies
@@ -31,6 +31,10 @@ namespace Enemies
         [Header("Enemy AI Parameters")] 
         [SerializeField] public float playerDetectionRadius; // The radius of the circle used to detect the player
 
+        [SerializeField] private float fov = 90f;
+
+        [Header("Enemy HUD")] [SerializeField] private Image hpFillImage;
+        
         /// <summary>
         /// This will specify the maximum amount of HP the enemy has,
         /// along with the max damage within it's class' restrictions,
@@ -41,8 +45,7 @@ namespace Enemies
         // Set according to the enemy's type/tier
         private int   _curHp;
         public  int   maxHp;
-        public  float chaseRange = 3;
-        
+
         /// <summary>
         /// This will be set according the the enemies level and their level,
         /// it's calculated as follows:
@@ -56,9 +59,10 @@ namespace Enemies
         private Vector2 _movementForce;
     
         // These options are set via weapons
-        private float attackRange = 1; // The maximum range in which the enemy can hit the player
-        public  int   damage      = 2; // The maximum amount of damage the enemy can do
-        public  float attackRate  = 1; // How quick the enemy can attack the player
+        public float attackRange = 1; // The maximum range in which the enemy can hit the player
+        public float enemyStoppingDistance;
+        public int   damage     = 2; // The maximum amount of damage the enemy can do
+        public float attackRate = 1; // How quick the enemy can attack the player
 
         // Is the enemy dead?
         public bool isDead = false;
@@ -69,7 +73,7 @@ namespace Enemies
         private StateMachine _stateMachine;
 
         // Components
-        private Rigidbody2D _rig;
+        private                  Rigidbody2D _rig;
 
         private void Awake()
         {
@@ -87,17 +91,30 @@ namespace Enemies
             var idle   = new Idle();
             var patrol = new Patrol(this, GetComponentInChildren<Animator>(), GetComponent<Seeker>(),1f, patrolPoints);
             var chasePlayer = new Chase(_player.gameObject, this, GetComponent<Seeker>());
+            var attackPlayer = new MeleeAttack(this);
             _stateMachine.AddTransition(idle, patrol, () => true);
-            _stateMachine.AddAnyTransition(chasePlayer, IsPlayerWithinRange);
-            _stateMachine.AddTransition(chasePlayer, patrol, () => Vector2.Distance(_rig.position, _player.transform.position) > playerDetectionRadius);
+            
+            // Go from patrolling to chasing the player, is the player is in the enemies' sight
+            _stateMachine.AddTransition(patrol, chasePlayer, IsPlayerInSight);
+            // While the enemy is chasing the player, if they lose sight of the player, the enemy will go back to patrolling
+            _stateMachine.AddTransition(chasePlayer, patrol, () => !IsPlayerInSight());
+            // At any point, the enemy will attack the player if they are in sight, and within the melee attack range
+            _stateMachine.AddAnyTransition(attackPlayer, () => IsPlayerInSight() && IsPlayerWithinMeleeAttackRange());
+            // If the player moves outside of the enemies' melee attack range, but it still in sight, the enemy will chase the player
+            _stateMachine.AddTransition(attackPlayer, chasePlayer, () => IsPlayerInSight() && !IsPlayerWithinMeleeAttackRange());
+            
+            // Set the default state to patrolling
             _stateMachine.SetState(patrol);
+            
+            // Update enemy HP HUD
+            UpdateEnemyHpBarFill();
         }
 
         private void Update()
         {
             // Update State Machine
             _stateMachine.Tick();
-            
+            Debug.Log($"Current State: {_stateMachine.GetCurrentState()}");
         }
 
         private void FixedUpdate()
@@ -108,7 +125,7 @@ namespace Enemies
         public void TakeDamage(int damageTaken)
         {
             _curHp -= damageTaken;
-
+            UpdateEnemyHpBarFill();
             if (_curHp <= 0) Die();
         }
 
@@ -119,7 +136,7 @@ namespace Enemies
             Destroy(gameObject);
         }
 
-        private void Attack()
+        public void Attack()
         {
             _lastAttackTime = Time.time;
             _player.TakeDamage(damage);
@@ -127,7 +144,26 @@ namespace Enemies
 
         #region Helper
 
-        private bool IsPlayerWithinRange() => Vector2.Distance(_rig.position, _player.gameObject.transform.position) <= playerDetectionRadius;
+        private bool IsPlayerInSight()
+        {
+            if (Vector3.Distance(transform.position, _player.transform.position) < playerDetectionRadius)
+            {
+                var directionToPlayer = (_player.transform.position - transform.position).normalized;
+                var aimDirection      = ((Vector3.down * playerDetectionRadius) - transform.position).normalized;
+                if (Vector3.Angle(aimDirection, directionToPlayer) < fov)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        
+        private bool IsPlayerWithinRange() => Vector2.Distance(_rig.position, _player.gameObject.transform.position) <= playerDetectionRadius 
+                                              && Vector2.Distance(_rig.position, _player.gameObject.transform.position) >= enemyStoppingDistance;
+        private bool IsPlayerWithinMeleeAttackRange() => Vector2.Distance(_rig.position, _player.gameObject.transform.position) <= attackRange;
+
+        private void UpdateEnemyHpBarFill() => hpFillImage.fillAmount = (float) _curHp / maxHp;
         
         private void OnDrawGizmosSelected()
         {

@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         var position = target.transform.position;
-        transform.position = Vector3.Lerp(transform.position, new Vector3(position.x, position.y, -10), t);
+        transform.position = Vector3.Lerp(transform.position, new Vector3(position.x, position.y, -10), t * Time.deltaTime);
         
         // Update cursor texture when hovering over an enemy
         if (GetEnemyOnCursor(1) != null && GetEnemyOnCursor(1).CompareTag("Enemy"))
@@ -57,16 +57,17 @@ public class CameraController : MonoBehaviour
     /// Returns an Enemy that is underneath the cursor.
     /// </summary>
     /// <returns>The Enemy that is under the mouse pointer.</returns>
-    public Enemy GetEnemyOnCursor(float distance)
+    private Enemy GetEnemyOnCursor(float distance)
     {
         var mousePosition = GetMouseWorldPosition();
         // shoot a raycast
         var hit = Physics2D.Raycast(mousePosition, mousePosition, distance, 1 << 9);
         
-        if(hit.collider != null && !(hit.collider.GetComponent<Enemy>() is null))
-            // If the ray cast hits a GameObject
+        // If we hit a game object and it is tagged as an Enemy
+        if(hit.collider != null && hit.collider.gameObject.CompareTag("Enemy"))
         {
-            return hit.collider.GetComponent<Enemy>();
+            return hit.collider.GetComponentInParent<Enemy>(); // We are getting the component from the parent in the enemy,
+            // as the collider is stored in a child game object
         }
 
         return null;
