@@ -114,7 +114,7 @@ namespace Enemies
         {
             // Update State Machine
             _stateMachine.Tick();
-            Debug.Log($"Current State: {_stateMachine.GetCurrentState()}");
+            //Debug.Log($"Current State: {_stateMachine.GetCurrentState()}");
         }
 
         private void FixedUpdate()

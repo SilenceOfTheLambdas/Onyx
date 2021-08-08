@@ -46,18 +46,19 @@ public class Player : MonoBehaviour
     public float levelXpModifier;       // modifier applied to 'xpToNextLevel' when we level up
 
     [Header("Combat")]
+    [SerializeField] private Transform projectileSpawnPoint;    // Transform component that projectiles will spawn from
     public float attackRange;           // range we can deal damage to an enemy
-    public float attackRate;            // minimum time between attacks
-    private float _lastAttackTime;       // last time we attacked
+    public                   float     attackRate;            // minimum time between attacks
+    private                  float     _lastAttackTime;       // last time we attacked
 
-    private Vector2 _facingDirection;    // direction we're facing
+    public Vector2 facingDirection;    // direction we're facing
     private State _state = State.Normal;
     
     // Movement vector
     private Vector2 _movement;
 
     private                  ParticleSystem _hitEffect;
-    private                  Controls       _controls;
+    public                   Controls       Controls;
     private                  PlayerUi       _ui;
     private                  Inventory      _inventory;
     [SerializeField] private UI_Inventory   uiInventory;
@@ -78,7 +79,7 @@ public class Player : MonoBehaviour
     {
         // get components
         _ui = FindObjectOfType<PlayerUi>();
-        _controls = new Controls();
+        Controls = new Controls();
         _hitEffect = gameObject.GetComponentInChildren<ParticleSystem>();
         _state = State.Normal;
         
@@ -105,9 +106,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnEnable() => _controls.Player.Enable();
+    private void OnEnable() => Controls.Player.Enable();
 
-    private void OnDisable() => _controls.Player.Disable();
+    private void OnDisable() => Controls.Player.Disable();
 
     private void Start ()
     {
@@ -137,7 +138,7 @@ public class Player : MonoBehaviour
         }
         
         // Open and close the inventory screen
-        if (_controls.Player.Inventory.triggered)
+        if (Controls.Player.Inventory.triggered)
         {
             _inventoryOpen = !_inventoryOpen;
             inventoryScreen.SetActive(_inventoryOpen);
@@ -182,7 +183,7 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Move ()
     {
-        var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
+        var movementInput = Controls.Player.Movement.ReadValue<Vector2>();
     
         _movement = new Vector2
         {
@@ -193,12 +194,12 @@ public class Player : MonoBehaviour
         switch (_movement.x)
         {
             case -1:
-                _facingDirection = Vector2.left;
+                facingDirection = Vector2.left;
                 animator.SetFloat(LastDirectionX, -1f);
                 animator.SetFloat(LastDirectionY, 0f); // The opposite axis has to be reset
                 break;
             case 1:
-                _facingDirection = Vector2.right;
+                facingDirection = Vector2.right;
                 animator.SetFloat(LastDirectionX, 1f);
                 animator.SetFloat(LastDirectionY, 0f); // The opposite axis has to be reset
                 break;
@@ -207,12 +208,12 @@ public class Player : MonoBehaviour
         switch (_movement.y)
         {
             case -1:
-                _facingDirection = Vector2.down;
+                facingDirection = Vector2.down;
                 animator.SetFloat(LastDirectionY, -1f);
                 animator.SetFloat(LastDirectionX, 0f); // The opposite axis has to be reset
                 break;
             case 1:
-                _facingDirection = Vector2.up;
+                facingDirection = Vector2.up;
                 animator.SetFloat(LastDirectionY, 1f);
                 animator.SetFloat(LastDirectionX, 0f); // The opposite axis has to be reset
                 break;
