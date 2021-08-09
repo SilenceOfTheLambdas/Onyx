@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AI;
 using AI.States;
 using Pathfinding;
+using Skills;
 using UnityEngine;
 using UnityEngine.UI;
 using Patrol = AI.States.Patrol;
@@ -115,6 +117,15 @@ namespace Enemies
             // Update State Machine
             _stateMachine.Tick();
             //Debug.Log($"Current State: {_stateMachine.GetCurrentState()}");
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.GetComponent<SkillProjectile>())
+            {
+                TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage);
+                Destroy(other);
+            }
         }
 
         private void FixedUpdate()

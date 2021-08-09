@@ -1,10 +1,11 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Skills
 {
-    [CreateAssetMenu(menuName = "Skills/Create Skill")]
-    public class Skill : ScriptableObject
+    public class Skill : MonoBehaviour
     {
         /// <summary>
         /// The description of this skill.
@@ -26,6 +27,14 @@ namespace Skills
         /// before cooldown is activated.
         /// </summary>
         public int stackSize;
+        /// <summary>
+        /// The image used to represent the cooldown timer.
+        /// </summary>
+        public Image coolDownImage;
+        /// <summary>
+        /// The text that displays the timer;
+        /// </summary>
+        public TextMeshProUGUI coolDownText;
 
         [NonSerialized] public bool  HasBeenUsed;
         [NonSerialized] public bool  InCoolDown;
