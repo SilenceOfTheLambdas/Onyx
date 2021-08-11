@@ -105,13 +105,6 @@ public class Player : MonoBehaviour
             _inventory.AddItem(itemWorld.GetItem());
             itemWorld.DestroySelf();
         }
-
-        // If we are hit by an enemy projectile skill
-        if (other.CompareTag("Enemy") && other.GetComponent<SkillProjectile>())
-        {
-            TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage);
-            // Destroy(other.gameObject);
-        }
     }
 
     private void OnEnable() => Controls.Player.Enable();

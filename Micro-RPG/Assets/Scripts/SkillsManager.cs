@@ -12,10 +12,12 @@ public class SkillsManager : MonoBehaviour
     public                   List<Skill> activeSkills = new List<Skill>();
     [SerializeField] private Transform   projectileSpawnPoint;
     private                  Controls    _playerControls;
+    private                  Camera      _camera;
 
     private void Start()
     {
         _playerControls = GetComponent<Player>().Controls;
+        _camera = Camera.main;
     }
 
     private void Update()
@@ -42,10 +44,19 @@ public class SkillsManager : MonoBehaviour
     {
         if (_playerControls.Player.Skill1.triggered && !skill.InCoolDown)
         {
+            // Computer where the mouse is
+            var mousePos     = new Vector2
+            {
+                x = Input.mousePosition.x,
+                y = Input.mousePosition.y
+            };
+            var position = transform.position;
+            var direction = -(new Vector3(position.x, position.y) - _camera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y))).normalized; // negate it
+            
             skill.InCoolDown = true;
             skill.HasBeenUsed = true;
             var projectile = Instantiate(skill.skillEffect, projectileSpawnPoint.position, Quaternion.Euler(new Vector2(0, 0)));
-            projectile.GetComponent<Rigidbody2D>().velocity = GetComponent<Player>().facingDirection * projectile.GetComponent<SkillProjectile>().projectileSpeed;
+            projectile.GetComponent<Rigidbody2D>().AddForce(direction * projectile.GetComponent<SkillProjectile>().projectileSpeed, ForceMode2D.Impulse);
             projectile.GetComponent<SkillProjectile>().Skill = skill;
         }
 

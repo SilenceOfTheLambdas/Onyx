@@ -132,6 +132,7 @@ namespace Enemies
             if (other.GetComponent<SkillProjectile>() && !other.gameObject.CompareTag("Enemy"))
             {
                 TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage);
+                Debug.Log(other.name + "|" + other.tag);
                 Destroy(other.gameObject);
             }
         }
