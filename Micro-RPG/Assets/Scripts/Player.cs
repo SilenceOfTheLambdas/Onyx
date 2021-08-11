@@ -1,6 +1,7 @@
 ﻿using System;
 using Enemies;
 using Inventory_System;
+using Skills;
 using UnityEngine;
 using Item = Inventory_System.Item;
 
@@ -103,6 +104,13 @@ public class Player : MonoBehaviour
             // If we are touching an item
             _inventory.AddItem(itemWorld.GetItem());
             itemWorld.DestroySelf();
+        }
+
+        // If we are hit by an enemy projectile skill
+        if (other.CompareTag("Enemy") && other.GetComponent<SkillProjectile>())
+        {
+            TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage);
+            // Destroy(other.gameObject);
         }
     }
 
@@ -218,7 +226,6 @@ public class Player : MonoBehaviour
                 animator.SetFloat(LastDirectionX, 0f); // The opposite axis has to be reset
                 break;
         }
-    
         // Update the players position
         transform.Translate(_movement * (moveSpeed * Time.deltaTime));
     }

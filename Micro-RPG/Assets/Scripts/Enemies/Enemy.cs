@@ -15,7 +15,7 @@ namespace Enemies
         public enum EnemyType
         {
             Mage,
-            Soilder,
+            Soldier,
             Warrior,
             Knight,
             Thief
@@ -26,6 +26,8 @@ namespace Enemies
         /// </summary>
         public EnemyType enemyType;
 
+        [SerializeField] private Skill attackSkill;
+        
         [Header("Enemy Movement")] [Range(0f, 100f)]
         public float moveSpeed = 38f; // These are set by the items the enemy carries/spawns with
         [SerializeField] private List<Transform> patrolPoints;
@@ -69,7 +71,7 @@ namespace Enemies
         // Is the enemy dead?
         public bool isDead = false;
 
-        public Player _player;
+        public Player player;
 
         private float        _lastAttackTime;
         private StateMachine _stateMachine;
@@ -80,7 +82,7 @@ namespace Enemies
         private void Awake()
         {
             // Get the player target
-            _player = FindObjectOfType<Player>();
+            player = FindObjectOfType<Player>();
             // Get the rigid body comp
             _rig = GetComponent<Rigidbody2D>();
             _curHp = maxHp;
@@ -92,7 +94,7 @@ namespace Enemies
         {
             var idle   = new Idle();
             var patrol = new Patrol(this, GetComponentInChildren<Animator>(), GetComponent<Seeker>(),1f, patrolPoints);
-            var chasePlayer = new Chase(_player.gameObject, this, GetComponent<Seeker>());
+            var chasePlayer = new Chase(player.gameObject, this, GetComponent<Seeker>());
             var attackPlayer = new MeleeAttack(this);
             _stateMachine.AddTransition(idle, patrol, () => true);
             
@@ -104,6 +106,12 @@ namespace Enemies
             _stateMachine.AddAnyTransition(attackPlayer, () => IsPlayerInSight() && IsPlayerWithinMeleeAttackRange());
             // If the player moves outside of the enemies' melee attack range, but it still in sight, the enemy will chase the player
             _stateMachine.AddTransition(attackPlayer, chasePlayer, () => IsPlayerInSight() && !IsPlayerWithinMeleeAttackRange());
+
+            if (enemyType == EnemyType.Mage)
+            {
+                var attackPlayerWithFlameShot = new FlameShotAttack(player.gameObject, transform, attackSkill);
+                _stateMachine.AddAnyTransition(attackPlayerWithFlameShot, IsPlayerInSight);
+            }
             
             // Set the default state to patrolling
             _stateMachine.SetState(patrol);
@@ -116,15 +124,15 @@ namespace Enemies
         {
             // Update State Machine
             _stateMachine.Tick();
-            //Debug.Log($"Current State: {_stateMachine.GetCurrentState()}");
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.GetComponent<SkillProjectile>())
+            // If the enemy is hit with a projectile that IS NOT tagged enemy
+            if (other.GetComponent<SkillProjectile>() && !other.gameObject.CompareTag("Enemy"))
             {
                 TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage);
-                Destroy(other);
+                Destroy(other.gameObject);
             }
         }
 
@@ -142,7 +150,7 @@ namespace Enemies
 
         private void Die()
         {
-            _player.AddXp(_xpToGive);
+            player.AddXp(_xpToGive);
             isDead = true; // set the enemy to deadness :)
             Destroy(gameObject);
         }
@@ -150,16 +158,16 @@ namespace Enemies
         public void Attack()
         {
             _lastAttackTime = Time.time;
-            _player.TakeDamage(damage);
+            player.TakeDamage(damage);
         }
 
         #region Helper
 
         private bool IsPlayerInSight()
         {
-            if (Vector3.Distance(transform.position, _player.transform.position) < playerDetectionRadius)
+            if (Vector3.Distance(transform.position, player.transform.position) < playerDetectionRadius)
             {
-                var directionToPlayer = (_player.transform.position - transform.position).normalized;
+                var directionToPlayer = (player.transform.position - transform.position).normalized;
                 var aimDirection      = ((Vector3.down * playerDetectionRadius) - transform.position).normalized;
                 if (Vector3.Angle(aimDirection, directionToPlayer) < fov)
                 {
@@ -170,9 +178,9 @@ namespace Enemies
             return false;
         }
         
-        private bool IsPlayerWithinRange() => Vector2.Distance(_rig.position, _player.gameObject.transform.position) <= playerDetectionRadius 
-                                              && Vector2.Distance(_rig.position, _player.gameObject.transform.position) >= enemyStoppingDistance;
-        private bool IsPlayerWithinMeleeAttackRange() => Vector2.Distance(_rig.position, _player.gameObject.transform.position) <= attackRange;
+        private bool IsPlayerWithinRange() => Vector2.Distance(_rig.position, player.gameObject.transform.position) <= playerDetectionRadius 
+                                              && Vector2.Distance(_rig.position, player.gameObject.transform.position) >= enemyStoppingDistance;
+        private bool IsPlayerWithinMeleeAttackRange() => Vector2.Distance(_rig.position, player.gameObject.transform.position) <= attackRange;
 
         private void UpdateEnemyHpBarFill() => hpFillImage.fillAmount = (float) _curHp / maxHp;
         
