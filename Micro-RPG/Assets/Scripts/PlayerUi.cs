@@ -8,11 +8,10 @@ using TMPro;
 public class PlayerUi : MonoBehaviour
 {
     public TextMeshProUGUI levelText;
-    public TextMeshProUGUI inventoryText;
     public TextMeshProUGUI interactText;
     public TextMeshProUGUI xpFillText; // The text showing that shows: currentXP/XP to next level
-    public Image healthBarFill;
-    public Image xpBarFill;
+    public Image           healthBarFill;
+    public Image           xpBarFill;
 
     private Player _player;
 

@@ -5,12 +5,12 @@ namespace AI
 {
     public class StateMachine
     {
-        private IState                             _currentState;
-        private Dictionary<Type, List<Transition>> _transitions        = new Dictionary<Type, List<Transition>>();
-        private List<Transition>                   _currentTransitions = new List<Transition>();
-        private List<Transition>                   _anyTransitions     = new List<Transition>();
+        private          IState                             _currentState;
+        private readonly Dictionary<Type, List<Transition>> _transitions        = new Dictionary<Type, List<Transition>>();
+        private          List<Transition>                   _currentTransitions = new List<Transition>();
+        private readonly List<Transition>                   _anyTransitions     = new List<Transition>();
 
-        private static List<Transition> EmptyTransitions = new List<Transition>();
+        private static readonly List<Transition> EmptyTransitions = new List<Transition>();
 
         public void Tick()
         {
@@ -39,8 +39,7 @@ namespace AI
             _currentState = state;
 
             _transitions.TryGetValue(_currentState.GetType(), out _currentTransitions);
-            if (_currentTransitions == null)
-                _currentTransitions = EmptyTransitions;
+            _currentTransitions ??= EmptyTransitions;
         
             _currentState.OnEnter();
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using Enemies;
 using Inventory_System;
-using Skills;
 using UnityEngine;
 using Item = Inventory_System.Item;
 
@@ -21,10 +20,10 @@ public class Player : MonoBehaviour
     public int CurrentHp
     {
         get => _curHp;
-        set => _curHp = Mathf.Clamp(value, 0, maxHp);
+        private set => _curHp = Mathf.Clamp(value, 0, maxHp);
     }
 
-    public int CurrentMana
+    private int CurrentMana
     {
         get => _currentMana;
         set => _currentMana = Mathf.Clamp(value, 0, maxMana);
@@ -35,7 +34,6 @@ public class Player : MonoBehaviour
     [Header("Stats")] public int   maxHp;                   // our maximum health
     public                   float moveSpeed;             // how fast we move
     public                   int   damage;                  // damage we deal
-    public                   float interactRange;         // range at which we can interact
     public                   int   maxMana;
     private                  int   _curHp;                   // our current health
     private                  int   _currentMana;
@@ -64,17 +62,17 @@ public class Player : MonoBehaviour
     private                  Inventory      _inventory;
     [SerializeField] private UI_Inventory   uiInventory;
 
-    public Animator        animator; // The animation controller for the player movement etc.
+    public Animator animator; // The animation controller for the player movement etc.
 
     private                  bool       _inventoryOpen; // is the player's inventory open?
     [SerializeField] private GameObject inventoryScreen; // Reference to the inventory UI
-    
-    
-    private static readonly int        Horizontal     = Animator.StringToHash("Horizontal");
-    private static readonly int        Vertical       = Animator.StringToHash("Vertical");
-    private static readonly int        Speed          = Animator.StringToHash("Speed");
-    private static readonly int        LastDirectionX = Animator.StringToHash("LastDirectionX");
-    private static readonly int        LastDirectionY = Animator.StringToHash("LastDirectionY");
+
+
+    private static readonly int Horizontal     = Animator.StringToHash("Horizontal");
+    private static readonly int Vertical       = Animator.StringToHash("Vertical");
+    private static readonly int Speed          = Animator.StringToHash("Speed");
+    private static readonly int LastDirectionX = Animator.StringToHash("LastDirectionX");
+    private static readonly int LastDirectionY = Animator.StringToHash("LastDirectionY");
 
     private void Awake ()
     {

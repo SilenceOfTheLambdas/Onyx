@@ -45,7 +45,7 @@ public class SkillsManager : MonoBehaviour
         if (_playerControls.Player.Skill1.triggered && !skill.InCoolDown)
         {
             // Computer where the mouse is
-            var mousePos     = new Vector2
+            var mousePos = new Vector2
             {
                 x = Input.mousePosition.x,
                 y = Input.mousePosition.y
@@ -63,7 +63,7 @@ public class SkillsManager : MonoBehaviour
         if (skill.InCoolDown)
         {
             skill.SkillTimer += Time.deltaTime;
-            int textTimer = (int)(skill.coolDownTime - skill.SkillTimer) + 1;
+            var textTimer = (int)(skill.coolDownTime - skill.SkillTimer) + 1;
             skill.coolDownText.SetText(textTimer.ToString());
             skill.coolDownImage.fillAmount = 1 - (skill.SkillTimer / skill.coolDownTime);
             if (skill.SkillTimer >= skill.coolDownTime)

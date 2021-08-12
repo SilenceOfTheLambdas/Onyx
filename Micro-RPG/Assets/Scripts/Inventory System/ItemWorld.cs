@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -9,9 +8,9 @@ namespace Inventory_System
     {
         public static ItemWorld SpawnItemWorld(Vector3 position, Item item)
         {
-            Transform transform = Instantiate(ItemAssets.Instance.pfItemWorld, position, Quaternion.identity);
+            var transform = Instantiate(ItemAssets.Instance.pfItemWorld, position, Quaternion.identity);
 
-            ItemWorld itemWorld = transform.GetComponent<ItemWorld>();
+            var itemWorld = transform.GetComponent<ItemWorld>();
             itemWorld.SetItem(item);
             
             return itemWorld;
@@ -27,18 +26,11 @@ namespace Inventory_System
             _textMeshPro = transform.Find("Text").GetComponent<TextMeshPro>();
         }
 
-        public void SetItem(Item item)
+        private void SetItem(Item item)
         {
             _item = item;
             _spriteRenderer.sprite = item.GetSprite();
-            if (item.amount > 1)
-            {
-                _textMeshPro.SetText(item.amount.ToString());
-            }
-            else
-            {
-                _textMeshPro.SetText("");
-            }
+            _textMeshPro.SetText(item.amount > 1 ? item.amount.ToString() : "");
         }
 
         public Item GetItem()
@@ -54,8 +46,7 @@ namespace Inventory_System
         public static ItemWorld DropItem(Vector3 dropPosition, Item item)
         {
             Vector3   randomDirection = Random.insideUnitCircle.normalized;
-            ItemWorld itemWorld       = SpawnItemWorld(dropPosition + randomDirection * 1f, item);
-            //itemWorld.GetComponent<Rigidbody2D>().AddForce(randomDirection * 0.1f, ForceMode2D.Impulse);
+            var itemWorld       = SpawnItemWorld(dropPosition + randomDirection * 1f, item);
             return itemWorld;
         }
     }

@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    [FormerlySerializedAs("DoorEntryPosition")] public Transform doorEntryPosition;
+    public Transform doorEntryPosition;
 
     public void OpenDoor()
     {

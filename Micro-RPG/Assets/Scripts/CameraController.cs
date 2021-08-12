@@ -57,7 +57,7 @@ public class CameraController : MonoBehaviour
     /// Returns an Enemy that is underneath the cursor.
     /// </summary>
     /// <returns>The Enemy that is under the mouse pointer.</returns>
-    private Enemy GetEnemyOnCursor(float distance)
+    private static Enemy GetEnemyOnCursor(float distance)
     {
         var mousePosition = GetMouseWorldPosition();
         // shoot a raycast

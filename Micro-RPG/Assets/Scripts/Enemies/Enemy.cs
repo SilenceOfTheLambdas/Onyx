@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AI;
 using AI.States;
 using Pathfinding;
@@ -20,6 +19,7 @@ namespace Enemies
             Knight,
             Thief
         }
+
         /// <summary>
         /// This will specify what items this enemy can carry,
         /// the loot it can have, and the sprite set (how the enemy will look)
@@ -27,28 +27,29 @@ namespace Enemies
         public EnemyType enemyType;
 
         [SerializeField] private Skill attackSkill;
-        
+
         [Header("Enemy Movement")] [Range(0f, 100f)]
         public float moveSpeed = 38f; // These are set by the items the enemy carries/spawns with
+
         [SerializeField] private List<Transform> patrolPoints;
 
-        [Header("Enemy AI Parameters")] 
-        [SerializeField] public float playerDetectionRadius; // The radius of the circle used to detect the player
+        [Header("Enemy AI Parameters")] [SerializeField]
+        public float playerDetectionRadius; // The radius of the circle used to detect the player
 
         [SerializeField] private float fov = 90f;
 
         [Header("Enemy HUD")] [SerializeField] private Image hpFillImage;
-        
+
         /// <summary>
         /// This will specify the maximum amount of HP the enemy has,
         /// along with the max damage within it's class' restrictions,
         /// and Chase Range 
         /// </summary>
         public int enemyLevel = 1;
-    
+
         // Set according to the enemy's type/tier
-        private int   _curHp;
-        public  int   maxHp;
+        private int _curHp;
+        public  int maxHp;
 
         /// <summary>
         /// This will be set according the the enemies level and their level,
@@ -61,7 +62,7 @@ namespace Enemies
         /// The any force that needs to be applied to the rigidbody.
         /// </summary>
         private Vector2 _movementForce;
-    
+
         // These options are set via weapons
         public float attackRange = 1; // The maximum range in which the enemy can hit the player
         public float enemyStoppingDistance;
@@ -77,7 +78,7 @@ namespace Enemies
         private StateMachine _stateMachine;
 
         // Components
-        private                  Rigidbody2D _rig;
+        private Rigidbody2D _rig;
 
         private void Awake()
         {
@@ -92,12 +93,12 @@ namespace Enemies
 
         private void Start()
         {
-            var idle   = new Idle();
-            var patrol = new Patrol(this, GetComponentInChildren<Animator>(), GetComponent<Seeker>(),1f, patrolPoints);
+            var idle = new Idle();
+            var patrol = new Patrol(this, GetComponentInChildren<Animator>(), GetComponent<Seeker>(), 1f, patrolPoints);
             var chasePlayer = new Chase(player.gameObject, this, GetComponent<Seeker>());
             var attackPlayer = new MeleeAttack(this);
             _stateMachine.AddTransition(idle, patrol, () => true);
-            
+
             // Go from patrolling to chasing the player, is the player is in the enemies' sight
             _stateMachine.AddTransition(patrol, chasePlayer, IsPlayerInSight);
             // While the enemy is chasing the player, if they lose sight of the player, the enemy will go back to patrolling
@@ -105,17 +106,18 @@ namespace Enemies
             // At any point, the enemy will attack the player if they are in sight, and within the melee attack range
             _stateMachine.AddAnyTransition(attackPlayer, () => IsPlayerInSight() && IsPlayerWithinMeleeAttackRange());
             // If the player moves outside of the enemies' melee attack range, but it still in sight, the enemy will chase the player
-            _stateMachine.AddTransition(attackPlayer, chasePlayer, () => IsPlayerInSight() && !IsPlayerWithinMeleeAttackRange());
+            _stateMachine.AddTransition(attackPlayer, chasePlayer,
+                () => IsPlayerInSight() && !IsPlayerWithinMeleeAttackRange());
 
             if (enemyType == EnemyType.Mage)
             {
                 var attackPlayerWithFlameShot = new FlameShotAttack(player.gameObject, transform, attackSkill);
                 _stateMachine.AddAnyTransition(attackPlayerWithFlameShot, IsPlayerInSight);
             }
-            
+
             // Set the default state to patrolling
             _stateMachine.SetState(patrol);
-            
+
             // Update enemy HP HUD
             UpdateEnemyHpBarFill();
         }
@@ -178,13 +180,17 @@ namespace Enemies
 
             return false;
         }
-        
-        private bool IsPlayerWithinRange() => Vector2.Distance(_rig.position, player.gameObject.transform.position) <= playerDetectionRadius 
-                                              && Vector2.Distance(_rig.position, player.gameObject.transform.position) >= enemyStoppingDistance;
-        private bool IsPlayerWithinMeleeAttackRange() => Vector2.Distance(_rig.position, player.gameObject.transform.position) <= attackRange;
 
-        private void UpdateEnemyHpBarFill() => hpFillImage.fillAmount = (float) _curHp / maxHp;
-        
+        private bool IsPlayerWithinRange() => Vector2.Distance(_rig.position, player.gameObject.transform.position) <=
+                                              playerDetectionRadius
+                                              && Vector2.Distance(_rig.position,
+                                                  player.gameObject.transform.position) >= enemyStoppingDistance;
+
+        private bool IsPlayerWithinMeleeAttackRange() =>
+            Vector2.Distance(_rig.position, player.gameObject.transform.position) <= attackRange;
+
+        private void UpdateEnemyHpBarFill() => hpFillImage.fillAmount = (float)_curHp / maxHp;
+
         private void OnDrawGizmosSelected()
         {
             // Draw player detection radius circle

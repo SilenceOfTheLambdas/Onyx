@@ -7,14 +7,14 @@ namespace Inventory_System
     public class UI_Inventory : MonoBehaviour
     {
         private Inventory _inventory;
-        private Transform itemSlotContainer;
-        private Transform itemSlotTemplate;
+        private Transform _itemSlotContainer;
+        private Transform _itemSlotTemplate;
         private Player    _player;
 
         private void Awake()
         {
-            itemSlotContainer = transform.Find("itemSlotContainer");
-            itemSlotTemplate = itemSlotContainer.Find("itemSlotTemplate");
+            _itemSlotContainer = transform.Find("itemSlotContainer");
+            _itemSlotTemplate = _itemSlotContainer.Find("itemSlotTemplate");
         }
 
         public void SetPlayer(Player player)
@@ -36,9 +36,9 @@ namespace Inventory_System
 
         private void RefreshInventoryItems()
         {
-            foreach (Transform child in itemSlotContainer)
+            foreach (Transform child in _itemSlotContainer)
             {
-                if (child == itemSlotTemplate) continue;
+                if (child == _itemSlotTemplate) continue;
                 Destroy(child.gameObject);
             }
             var x                = 0;
@@ -47,8 +47,8 @@ namespace Inventory_System
             
             foreach (var item in _inventory.GetItemList())
             {
-                RectTransform itemSlotRectTransform =
-                    Instantiate(itemSlotTemplate, itemSlotContainer).GetComponent<RectTransform>();
+                var itemSlotRectTransform =
+                    Instantiate(_itemSlotTemplate, _itemSlotContainer).GetComponent<RectTransform>();
                 itemSlotRectTransform.gameObject.SetActive(true);
                 
                 // TODO: Might want to use a grid component instead
@@ -64,17 +64,17 @@ namespace Inventory_System
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseRightClickFunc = () =>
                 {
                     // Drop Item
-                    Item duplicateItem = new Item {itemType = item.itemType, amount = item.amount};
+                    var duplicateItem = new Item {itemType = item.itemType, amount = item.amount};
                     _inventory.RemoveItem(item);
                     ItemWorld.DropItem(_player.transform.position, duplicateItem);
                 };
                 
                 itemSlotRectTransform.anchoredPosition = new Vector2(x * itemSlotCellSize, y * itemSlotCellSize);
                 
-                Image image = itemSlotRectTransform.Find("image").GetComponent<Image>();
+                var image = itemSlotRectTransform.Find("image").GetComponent<Image>();
                 image.sprite = item.GetSprite();
 
-                TextMeshProUGUI uiText = itemSlotRectTransform.Find("amountText").GetComponent<TextMeshProUGUI>();
+                var uiText = itemSlotRectTransform.Find("amountText").GetComponent<TextMeshProUGUI>();
                 uiText.SetText(item.amount > 1 ? item.amount.ToString() : "");
                 x++;
                 if (x > 4)

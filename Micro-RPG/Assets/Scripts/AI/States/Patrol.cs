@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Enemies;
 using Pathfinding;
 using UnityEngine;
@@ -13,12 +11,12 @@ namespace AI.States
     /// </summary>
     public class Patrol : IState
     {
-        private readonly Enemy         _enemy;
-        private          Animator      _animator;
-        private          float         _patrolRadius;
-        private          Rigidbody2D   _rigidbody2D;
-        private          Seeker        _seeker;
-        private          List<Transform> _patrolPoints;
+        private readonly Enemy           _enemy;
+        private          Animator        _animator;
+        private          float           _patrolRadius;
+        private          Rigidbody2D     _rigidbody2D;
+        private readonly Seeker          _seeker;
+        private readonly List<Transform> _patrolPoints;
 
         private Path    _path;
         private int     _currentWaypoint  = 0;
