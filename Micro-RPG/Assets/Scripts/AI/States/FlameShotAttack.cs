@@ -30,6 +30,7 @@ namespace AI.States
             if (!_skill.InCoolDown)
             {
                 SpawnProjectile();
+                Debug.Log("Spawn Projectile");
             }
             else if (_projectile != null)
             {
