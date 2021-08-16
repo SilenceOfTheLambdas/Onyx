@@ -64,7 +64,7 @@ namespace Inventory_System
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseRightClickFunc = () =>
                 {
                     // Drop Item
-                    var duplicateItem = new Item {itemType = item.itemType, amount = item.amount};
+                    var duplicateItem = item;
                     _inventory.RemoveItem(item);
                     ItemWorld.DropItem(_player.transform.position, duplicateItem);
                 };

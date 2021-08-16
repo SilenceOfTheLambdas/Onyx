@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Inventory_System
 {
@@ -13,9 +14,6 @@ namespace Inventory_System
         {
             this.useItemAction = useItemAction;
             itemList = new List<Item>();
-            AddItem(new Item { itemType = Item.ItemType.HealthPotion, amount = 1});
-            AddItem(new Item { itemType = Item.ItemType.Sword, amount = 1});
-            AddItem(new Item { itemType = Item.ItemType.ManaPotion, amount = 1});
         }
 
         public void AddItem(Item item)
@@ -25,7 +23,7 @@ namespace Inventory_System
                 var itemAlreadyInInventory = false;
                 foreach (var inventoryItem in itemList)
                 {
-                    if (inventoryItem.itemType == item.itemType)
+                    if (inventoryItem.Equals(item))
                     {
                         inventoryItem.amount += item.amount;
                         itemAlreadyInInventory = true;
@@ -55,9 +53,9 @@ namespace Inventory_System
                 Item itemInInventory = null;
                 foreach (var inventoryItem in itemList)
                 {
-                    if (inventoryItem.itemType == item.itemType)
+                    if (inventoryItem.Equals(item))
                     {
-                        inventoryItem.amount -= item.amount;
+                        inventoryItem.amount -= 1;
                         itemInInventory = inventoryItem;
                     }
                 }

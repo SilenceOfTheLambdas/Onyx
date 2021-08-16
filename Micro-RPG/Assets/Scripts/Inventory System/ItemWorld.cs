@@ -10,9 +10,9 @@ namespace Inventory_System
         {
             var transform = Instantiate(ItemAssets.Instance.pfItemWorld, position, Quaternion.identity);
 
-            var itemWorld = transform.GetComponent<ItemWorld>();
-            itemWorld.SetItem(item);
-            
+            var  itemWorld     = transform.GetComponent<ItemWorld>();
+            var newUniqueItem = Object.Instantiate(item);
+            itemWorld.SetItem(newUniqueItem);
             return itemWorld;
         }
         
@@ -45,8 +45,9 @@ namespace Inventory_System
 
         public static ItemWorld DropItem(Vector3 dropPosition, Item item)
         {
-            Vector3   randomDirection = Random.insideUnitCircle.normalized;
-            var itemWorld       = SpawnItemWorld(dropPosition + randomDirection * 1f, item);
+            Vector3 randomDirection = Random.insideUnitCircle.normalized;
+            item.amount = 1; // Reset the amount back to 1, as we only drop 1 item at a time
+            var     itemWorld       = SpawnItemWorld(dropPosition + randomDirection * 1f, item);
             return itemWorld;
         }
     }

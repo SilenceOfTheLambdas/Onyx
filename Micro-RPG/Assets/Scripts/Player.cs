@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
     private                  ParticleSystem _hitEffect;
     public                   Controls       Controls;
     private                  PlayerUi       _ui;
-    private                  Inventory      _inventory;
+    public                   Inventory      Inventory;
     [SerializeField] private UI_Inventory   uiInventory;
 
     public Animator animator; // The animation controller for the player movement etc.
@@ -67,6 +67,7 @@ public class Player : MonoBehaviour
     private                  bool       _inventoryOpen; // is the player's inventory open?
     [SerializeField] private GameObject inventoryScreen; // Reference to the inventory UI
 
+    private PlayerEquipmentManager _playerEquipmentManager;
 
     private static readonly int Horizontal     = Animator.StringToHash("Horizontal");
     private static readonly int Vertical       = Animator.StringToHash("Vertical");
@@ -83,15 +84,16 @@ public class Player : MonoBehaviour
         _state = State.Normal;
         
         // Instantiate the inventory
-        _inventory = new Inventory(UseItem);
+        Inventory = new Inventory(UseItem);
         uiInventory.SetPlayer(this);
-        uiInventory.SetInventory(_inventory);
-        
+        uiInventory.SetInventory(Inventory);
+
         // Set current HP and mana values
         _curHp = maxHp / 2;
         _currentMana = maxMana / 2;
         CurrentHp = maxHp / 2;
         CurrentMana = maxMana / 2;
+        _playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
     }
 
     public void OnTriggerEnter2D(Collider2D other)
@@ -100,7 +102,7 @@ public class Player : MonoBehaviour
         if (itemWorld != null)
         {
             // If we are touching an item
-            _inventory.AddItem(itemWorld.GetItem());
+            Inventory.AddItem(itemWorld.GetItem());
             itemWorld.DestroySelf();
         }
     }
@@ -149,30 +151,31 @@ public class Player : MonoBehaviour
 
     private void UseItem(Item item)
     {
-        switch (item.itemType)
+        if (item is WeaponItem weaponItem)
         {
-            case Item.ItemType.Sword:
-                break;
-            case Item.ItemType.SpellBook:
-                break;
-            case Item.ItemType.HealthPotion:
-                if (CurrentHp != maxHp)
-                {
-                    IncreaseHp(ItemDatabase.Instance.healthPotionRestoreAmount);
-                    _inventory.RemoveItem(new Item { itemType = Item.ItemType.HealthPotion, amount = 1});
-                }
-                break;
-            case Item.ItemType.ManaPotion:
-                if (CurrentMana != maxMana)
-                {
-                    IncreaseMana(ItemDatabase.Instance.manaPotionRestoreAmount);
-                    _inventory.RemoveItem(new Item { itemType = Item.ItemType.ManaPotion, amount = 1});
-                }
-                break;
-            case Item.ItemType.Coin:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            if (!_playerEquipmentManager.hasWeaponEquipped) 
+            {
+                _playerEquipmentManager.EquipWeapon(weaponItem);
+                Inventory.RemoveItem(item);
+            }
+        }
+
+        if (item is HealthPotion healthPotion)
+        {
+            if (CurrentHp != maxHp)
+            {
+                IncreaseHp(healthPotion.restoreAmount);
+                Inventory.RemoveItem(item);
+            }
+        }
+
+        if (item is ManaPotion manaPotion)
+        {
+            if (CurrentMana != maxMana)
+            {
+                IncreaseMana(manaPotion.restoreAmount);
+                Inventory.RemoveItem(item);
+            }
         }
     }
     
@@ -226,7 +229,8 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Attack ()
     {
-        // Attack function
+        // Check to see if the player has a weapon Equipped
+        if (!_playerEquipmentManager.hasWeaponEquipped) return;
         if (!Input.GetMouseButtonDown(0)) return;
         if (!(Time.time - _lastAttackTime >= attackRate)) return;
         
@@ -236,12 +240,12 @@ public class Player : MonoBehaviour
         _state = State.Attacking;
 
         // shoot a raycast in the direction of where we're facing.
-        var hit = Physics2D.Raycast(gameObject.transform.position, attackDirection, attackRange, 1 << 9);
+        var hit = Physics2D.Raycast(gameObject.transform.position, attackDirection, _playerEquipmentManager.weaponItem.weaponRange, 1 << 9);
 
         if (hit.collider == null || hit.collider.GetComponentInParent<Enemy>() is null ||
             hit.collider.GetComponentInParent<Enemy>().isDead) return;
         
-        hit.collider.GetComponentInParent<Enemy>().TakeDamage(damage);
+        hit.collider.GetComponentInParent<Enemy>().TakeDamage(_playerEquipmentManager.weaponItem.damage);
         // play hit effect
         _hitEffect.transform.position = hit.collider.transform.position;
         _hitEffect.Play();

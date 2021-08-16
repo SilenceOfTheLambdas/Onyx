@@ -13,7 +13,7 @@ namespace Inventory_System
 
         public Transform pfItemWorld;
         
-        public Sprite swordSprite;
+        public Sprite woodenSwordSprite;
         public Sprite spellBookSprite;
         public Sprite healthPotionSprite;
         public Sprite manaPotionSprite;
