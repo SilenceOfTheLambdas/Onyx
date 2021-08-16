@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac4c27831c74428783ec65fb811e7140, type: 3}
   m_Name: Broadsword
   m_EditorClassIdentifier: 
+  itemName: Metal Broadsword
+  itemDescription: A metal sword made from steel, it's basic but very much use-able.
   sprite: {fileID: -2994907677494446187, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
   isStackable: 0
   amount: 1

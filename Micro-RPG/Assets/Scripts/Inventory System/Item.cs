@@ -6,9 +6,11 @@ namespace Inventory_System
     [Serializable]
     public class Item : ScriptableObject
     {
-        public Sprite sprite;
-        public bool   isStackable;
-        public int    amount;
+        public            string itemName;
+        [TextArea] public string itemDescription;
+        public            Sprite sprite;
+        public            bool   isStackable;
+        public            int    amount;
 
         public Sprite GetSprite() => sprite;
 

@@ -177,6 +177,7 @@ public class Player : MonoBehaviour
                 Inventory.RemoveItem(item);
             }
         }
+        uiInventory.hoverInterface.SetActive(false);
     }
     
     /// <summary>

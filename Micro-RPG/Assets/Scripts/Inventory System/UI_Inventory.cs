@@ -6,10 +6,11 @@ namespace Inventory_System
 {
     public class UI_Inventory : MonoBehaviour
     {
-        private Inventory _inventory;
-        private Transform _itemSlotContainer;
-        private Transform _itemSlotTemplate;
-        private Player    _player;
+        private Inventory  _inventory;
+        private Transform  _itemSlotContainer;
+        private Transform  _itemSlotTemplate;
+        private Player     _player;
+        public  GameObject hoverInterface;
 
         private void Awake()
         {
@@ -69,6 +70,27 @@ namespace Inventory_System
                     ItemWorld.DropItem(_player.transform.position, duplicateItem);
                 };
                 
+                // Display item stats when hovering over
+                itemSlotRectTransform.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
+                {
+                    hoverInterface.SetActive(true);
+                    var itemName = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
+                    var itemDescription =
+                        hoverInterface.transform.Find("itemDescription").GetComponent<TextMeshProUGUI>();
+
+                    // Set item name
+                    itemName.SetText($"{item.itemName}");
+                    // Check for certain keywords and add colour to them
+                    itemDescription.SetText($"{GetItemDescription(item)}");
+                    // Set the stats for the item
+                    SetItemStats(item);
+                };
+
+                itemSlotRectTransform.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                {
+                    hoverInterface.SetActive(false);
+                };
+                
                 itemSlotRectTransform.anchoredPosition = new Vector2(x * itemSlotCellSize, y * itemSlotCellSize);
                 
                 var image = itemSlotRectTransform.Find("image").GetComponent<Image>();
@@ -83,6 +105,69 @@ namespace Inventory_System
                     y--;
                 }
             }
+        }
+
+        private void SetItemStats(Item item)
+        {
+            var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+            
+            switch (item)
+            {
+                case WeaponItem weaponItem:
+                    var damageString    = $"Damage: {weaponItem.damage}";
+                    var rangeString     = $"Range: {weaponItem.weaponRange}";
+                    var playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
+                    if (playerEquipment.hasWeaponEquipped)
+                    {
+                        var equippedItem = playerEquipment.weaponItem;
+                        
+                        // Weapon Damage
+                        if (equippedItem.damage > weaponItem.damage)
+                        {
+                            damageString = damageString.Replace($"{weaponItem.damage}",
+                                $"<color=red>{weaponItem.damage}</color> <size=75%>-{equippedItem.damage - weaponItem.damage}</size>");
+                        }
+                        if (equippedItem.damage < weaponItem.damage)
+                        {
+                            damageString = damageString.Replace($"{weaponItem.damage}",
+                                $"<color=green>{weaponItem.damage}</color> <size=75%>+{weaponItem.damage - equippedItem.damage}</size>");
+                        }
+                        
+                        // Weapon Range
+                        if (equippedItem.weaponRange > weaponItem.weaponRange)
+                        {
+                            rangeString = rangeString.Replace($"{weaponItem.weaponRange}",
+                                $"<color=red>{weaponItem.weaponRange}</color> <size=75%>-{equippedItem.weaponRange - weaponItem.weaponRange}</size>");
+                        }
+                        if (equippedItem.weaponRange < weaponItem.weaponRange)
+                        {
+                            rangeString = rangeString.Replace($"{weaponItem.weaponRange}",
+                                $"<color=green>{weaponItem.weaponRange}</color> <size=75%>+{weaponItem.weaponRange - equippedItem.weaponRange}</size>");
+                        }
+                    }
+                    itemStats.SetText($"{damageString}\n"+
+                                      $"{rangeString}");
+                    break;
+                case HealthPotion healthPotion:
+                    itemStats.SetText($"Restore Amount: {healthPotion.restoreAmount}");
+                    break;
+                case ManaPotion manaPotion:
+                    itemStats.SetText($"Restore Amount: {manaPotion.restoreAmount}");
+                    break;
+                case Coin _:
+                    itemStats.SetText("");
+                    break;
+            }
+        }
+
+        private static string GetItemDescription(Item item)
+        {
+            return item switch
+            {
+                HealthPotion healthPotion => healthPotion.itemDescription.Replace("HP", "<color=red>HP</color>"),
+                ManaPotion manaPotion => manaPotion.itemDescription.Replace("Mana", "<color=blue>Mana</color>"),
+                _ => item.itemDescription
+            };
         }
     }
 }

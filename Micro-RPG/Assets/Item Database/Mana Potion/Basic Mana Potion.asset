@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9eba1f73d3843c59a8836ec2180fc8f, type: 3}
   m_Name: Basic Mana Potion
   m_EditorClassIdentifier: 
+  itemName: Basic Mana Potion
+  itemDescription: A basic mana potion, used to restore a small amount of Mana.
   sprite: {fileID: -7915836423221864997, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
   isStackable: 1
   amount: 1

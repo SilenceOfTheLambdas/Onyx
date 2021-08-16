@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ namespace Inventory_System
         private EquipmentInventory _inventory;
         private Transform          _itemSlotContainer;
         private Player             _player;
+        public  GameObject         hoverInterface;
 
         private void Awake()
         {
@@ -53,45 +55,30 @@ namespace Inventory_System
                         weaponSlot.GetComponent<Button_UI>().enabled = false;
                         weaponSlotImage.gameObject.SetActive(false);
                     };
-                    break;
+
+                    // Display item stats when hovering over
+                    weaponSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(true);
+                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
+                        var itemDescription = hoverInterface.transform.Find("itemDescription")
+                            .GetComponent<TextMeshProUGUI>();
+                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+                    
+                        // Set item name
+                        itemName.SetText($"{item.itemName}");
+                        itemDescription.SetText($"{item.itemDescription}");
+                        
+                        if (item is WeaponItem weaponItem)
+                            itemStats.SetText($"Damage: {weaponItem.damage}\n" +
+                                              $"Range: {weaponItem.weaponRange}");
+                    };
+
+                    weaponSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(false);
+                    };
                 }
-                // switch (item.itemType)
-                // {
-                //     case Item.ItemType.WoodenSword:
-                //         var weaponSlot = _itemSlotContainer.Find("weaponSlot");
-                //         var weaponSlotImage = weaponSlot.Find("image").GetComponent<Image>();
-                //         weaponSlot.GetComponent<Button_UI>().enabled = true;
-                //         weaponSlotImage.sprite = item.GetSprite();
-                //         weaponSlotImage.gameObject.SetActive(true);
-                //
-                //         weaponSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
-                //         {
-                //             // Un-equip the item
-                //             //_inventory.UnEquipItem(item);
-                //             _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
-                //             weaponSlot.GetComponent<Button_UI>().enabled = false;
-                //             weaponSlotImage.gameObject.SetActive(false);
-                //         };
-                //         break;
-                //     case Item.ItemType.SpellBook:
-                //         break;
-                //     case Item.ItemType.HealthPotion:
-                //         break;
-                //     case Item.ItemType.ManaPotion:
-                //         break;
-                //     case Item.ItemType.Coin:
-                //         break;
-                //     default:
-                //         throw new ArgumentOutOfRangeException();
-                // }
-                // var itemSlotRectTransform =
-                //     Instantiate(_itemSlotTemplate, _itemSlotContainer).GetComponent<RectTransform>();
-                // itemSlotRectTransform.gameObject.SetActive(true);
-                //
-                // // Action when left-clicking on an item
-                
-                //
-                // Action when right-clicking
             }
         }
     }

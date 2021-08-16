@@ -35,6 +35,7 @@ public class PlayerEquipmentManager : MonoBehaviour {
     {
         if (item is WeaponItem)
         {
+            equipmentInventoryUI.hoverInterface.SetActive(false);
             _equipmentInventory.RemoveItem(item);
             hasWeaponEquipped = false;
             weaponItem = null;
