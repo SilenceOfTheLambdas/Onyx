@@ -12,5 +12,8 @@ namespace Inventory_System
         
         [Tooltip("The maximum range this weapon can be used")]
         public int weaponRange;
+
+        [Tooltip("Attack speed of the weapon (Attack every n seconds)")][Range(0.1f, 2f)]
+        public float attackRate = 1f;
     }
 }

@@ -19,3 +19,4 @@ MonoBehaviour:
   amount: 1
   damage: 13
   weaponRange: 1
+  attackRate: 0.5

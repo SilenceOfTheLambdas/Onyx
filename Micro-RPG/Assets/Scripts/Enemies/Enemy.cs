@@ -3,6 +3,7 @@ using AI;
 using AI.States;
 using Pathfinding;
 using Skills;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Patrol = AI.States.Patrol;
@@ -38,7 +39,10 @@ namespace Enemies
 
         [SerializeField] private float fov = 90f;
 
-        [Header("Enemy HUD")] [SerializeField] private Image hpFillImage;
+        [Header("Enemy HUD")] 
+        [SerializeField] private Image hpFillImage;
+
+        [SerializeField] private GameObject damageNumberDisplayPrefab;
 
         /// <summary>
         /// This will specify the maximum amount of HP the enemy has,
@@ -146,6 +150,11 @@ namespace Enemies
 
         public void TakeDamage(int damageTaken)
         {
+            var randomXPosition = Random.Range(transform.position.x - 0.2f, transform.position.x + 0.2f);
+            var damageNumberDisplay = Instantiate(damageNumberDisplayPrefab,
+                new Vector3(randomXPosition, transform.position.y + 0.7f), Quaternion.identity,
+                transform.Find("Canvas"));
+            damageNumberDisplay.GetComponent<TextMeshProUGUI>().SetText($"-{damageTaken}");
             _curHp -= damageTaken;
             UpdateEnemyHpBarFill();
             if (_curHp <= 0) Die();

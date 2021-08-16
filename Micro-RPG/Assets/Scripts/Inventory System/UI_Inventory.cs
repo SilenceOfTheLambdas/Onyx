@@ -22,7 +22,7 @@ namespace Inventory_System
         {
             _player = player;
         }
-        
+
         public void SetInventory(Inventory inventory)
         {
             _inventory = inventory;
@@ -42,25 +42,26 @@ namespace Inventory_System
                 if (child == _itemSlotTemplate) continue;
                 Destroy(child.gameObject);
             }
+
             var x                = 0;
             var y                = 0;
             var itemSlotCellSize = 80f;
-            
+
             foreach (var item in _inventory.GetItemList())
             {
                 var itemSlotRectTransform =
                     Instantiate(_itemSlotTemplate, _itemSlotContainer).GetComponent<RectTransform>();
                 itemSlotRectTransform.gameObject.SetActive(true);
-                
+
                 // TODO: Might want to use a grid component instead
-                
+
                 // Action when left-clicking on an item
                 itemSlotRectTransform.GetComponent<Button_UI>().ClickFunc = () =>
                 {
                     // Use item
                     _inventory.UseItem(item);
                 };
-                
+
                 // Action when right-clicking
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseRightClickFunc = () =>
                 {
@@ -69,7 +70,7 @@ namespace Inventory_System
                     _inventory.RemoveItem(item);
                     ItemWorld.DropItem(_player.transform.position, duplicateItem);
                 };
-                
+
                 // Display item stats when hovering over
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
                 {
@@ -90,9 +91,9 @@ namespace Inventory_System
                 {
                     hoverInterface.SetActive(false);
                 };
-                
+
                 itemSlotRectTransform.anchoredPosition = new Vector2(x * itemSlotCellSize, y * itemSlotCellSize);
-                
+
                 var image = itemSlotRectTransform.Find("image").GetComponent<Image>();
                 image.sprite = item.GetSprite();
 
@@ -110,43 +111,61 @@ namespace Inventory_System
         private void SetItemStats(Item item)
         {
             var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
-            
+
             switch (item)
             {
                 case WeaponItem weaponItem:
-                    var damageString    = $"Damage: {weaponItem.damage}";
-                    var rangeString     = $"Range: {weaponItem.weaponRange}";
-                    var playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
+                    var damageString      = $"Damage: {weaponItem.damage}";
+                    var rangeString       = $"Range: {weaponItem.weaponRange}";
+                    var attackSpeedString = $"Attack Rate: {weaponItem.attackRate}";
+                    var playerEquipment   = _player.GetComponent<PlayerEquipmentManager>();
                     if (playerEquipment.hasWeaponEquipped)
                     {
                         var equippedItem = playerEquipment.weaponItem;
-                        
+
                         // Weapon Damage
                         if (equippedItem.damage > weaponItem.damage)
                         {
                             damageString = damageString.Replace($"{weaponItem.damage}",
                                 $"<color=red>{weaponItem.damage}</color> <size=75%>-{equippedItem.damage - weaponItem.damage}</size>");
                         }
+
                         if (equippedItem.damage < weaponItem.damage)
                         {
                             damageString = damageString.Replace($"{weaponItem.damage}",
                                 $"<color=green>{weaponItem.damage}</color> <size=75%>+{weaponItem.damage - equippedItem.damage}</size>");
                         }
-                        
+
                         // Weapon Range
                         if (equippedItem.weaponRange > weaponItem.weaponRange)
                         {
                             rangeString = rangeString.Replace($"{weaponItem.weaponRange}",
                                 $"<color=red>{weaponItem.weaponRange}</color> <size=75%>-{equippedItem.weaponRange - weaponItem.weaponRange}</size>");
                         }
+
                         if (equippedItem.weaponRange < weaponItem.weaponRange)
                         {
                             rangeString = rangeString.Replace($"{weaponItem.weaponRange}",
                                 $"<color=green>{weaponItem.weaponRange}</color> <size=75%>+{weaponItem.weaponRange - equippedItem.weaponRange}</size>");
                         }
+                        
+                        // Weapon attack speed
+                        if (equippedItem.attackRate < weaponItem.attackRate)
+                        {
+                            attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate}",
+                                $"<color=red>{weaponItem.attackRate}</color> <size=75%>+{weaponItem.attackRate - equippedItem.attackRate}</size>");
+                        }
+
+                        if (equippedItem.attackRate > weaponItem.attackRate)
+                        {
+                            attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate}",
+                                $"<color=green>{weaponItem.attackRate}</color> <size=75%>-{equippedItem.attackRate - weaponItem.attackRate}</size>");
+                        }
                     }
-                    itemStats.SetText($"{damageString}\n"+
-                                      $"{rangeString}");
+
+                    itemStats.SetText($"{damageString}\n" +
+                                      $"{rangeString}\n" +
+                                      $"{attackSpeedString}");
                     break;
                 case HealthPotion healthPotion:
                     itemStats.SetText($"Restore Amount: {healthPotion.restoreAmount}");

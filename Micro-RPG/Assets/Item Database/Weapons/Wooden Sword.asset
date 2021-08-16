@@ -19,3 +19,4 @@ MonoBehaviour:
   amount: 1
   damage: 12
   weaponRange: 2
+  attackSpeed: 1

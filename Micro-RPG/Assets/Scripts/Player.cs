@@ -233,7 +233,7 @@ public class Player : MonoBehaviour
         // Check to see if the player has a weapon Equipped
         if (!_playerEquipmentManager.hasWeaponEquipped) return;
         if (!Input.GetMouseButtonDown(0)) return;
-        if (!(Time.time - _lastAttackTime >= attackRate)) return;
+        if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
         
         _lastAttackTime = Time.time;
         var mousePosition = CameraController.GetMouseWorldPosition();
