@@ -105,18 +105,23 @@ namespace Inventory_System
                         var itemDescription = hoverInterface.transform.Find("itemDescription")
                             .GetComponent<TextMeshProUGUI>();
                         var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+                        var itemRequirements = hoverInterface.transform.Find("itemRequirements")
+                            .GetComponent<TextMeshProUGUI>();
                     
                         // Set item name
                         itemName.SetText($"{item.itemName}");
                         itemDescription.SetText($"{item.itemDescription}");
                         
                         if (item is HelmetItem helmetItem)
+                        {
                             itemStats.SetText($"Physical Armour: {helmetItem.physicalArmour}\n" +
-                                              $"Elemental Armour: {helmetItem.elementalArmour}\n" +
-                                              $"Health: {helmetItem.healthAmount}\n" +
-                                              $"Mana: {helmetItem.manaAmount}\n" +
-                                              $"Strength: {helmetItem.strengthAmount}\n" +
-                                              $"Intelligence: {helmetItem.intelligenceAmount}");
+                                           $"Elemental Armour: {helmetItem.elementalArmour}\n" +
+                                           $"Health: {helmetItem.healthAmount}\n" +
+                                           $"Mana: {helmetItem.manaAmount}\n" +
+                                           $"Strength: {helmetItem.strengthAmount}\n" +
+                                           $"Intelligence: {helmetItem.intelligenceAmount}");
+                            itemRequirements.SetText($"Intelligence: {helmetItem.intelligenceRequirement}   Strength: {helmetItem.strengthRequirement}");
+                        }
                     };
 
                     headSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>

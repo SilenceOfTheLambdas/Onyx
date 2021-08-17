@@ -2,6 +2,7 @@
 using Enemies;
 using Inventory_System;
 using UnityEngine;
+using UnityEngine.Internal;
 using Item = Inventory_System.Item;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -31,23 +32,49 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    [Header("Stats")] public int   maxHp;                   // our maximum health
-    public                   float moveSpeed;             // how fast we move
-    public                   int   damage;                  // damage we deal
-    public                   int   maxMana;
-    private                  int   _curHp;                   // our current health
+    [Header("Player Statistics")] 
+    
+    [Tooltip("The maximum amount of health the player has, this is affected by Strength")]
+    public int maxHp;                   // our maximum health
+    
+    [Tooltip("The maximum amount of mana the player has, this is affected by Intelligence")]
+    public int maxMana;
+    
+    [Header("Movement")]
+    [Tooltip("The speed at which the player moves around the world")]
+    public                   float moveSpeed;
+    
+    private                  int   _curHp;
     private                  int   _currentMana;
+    
+    [Header("Player Attributes")]
+    [Tooltip("Strength: for each level of strength: +strengthHpIncreaseAmount and +strengthPhysicalDamageIncreaseAmount to physical damage")]
+    public int strength;
 
+    [SerializeField] [Tooltip("The amount of HP to give the player per Strength level")]
+    public int strengthHpIncreaseAmount = 3;
+
+    [SerializeField] [Tooltip("The amount of Physical Damage to add towards attacks per Strength level")]
+    public int strengthPhysicalDamageIncreaseAmount = 5;
+
+    [Space]
+    [Tooltip("Intelligence: for each level: +intelligenceManaIncreaseAmount Mana and +intelligenceElementalDamageIncreaseAmount to elemental damage")]
+    public int intelligence;
+    
+    [SerializeField] [Tooltip("The amount of Mana to give the player per Intelligence level")]
+    public int intelligenceManaIncreaseAmount = 10;
+
+    [SerializeField] [Tooltip("The amount of Elemental Damage to add towards Skill attacks per Intelligence level")]
+    public int intelligenceElementalDamageIncreaseAmount = 8;
+    
     [Header("Experience")]
     public int curLevel;                // our current level
-    public int curXp;                   // our current experience points
-    public int xpToNextLevel;           // xp needed to level up
+    public int   curXp;                   // our current experience points
+    public int   xpToNextLevel;           // xp needed to level up
     public float levelXpModifier;       // modifier applied to 'xpToNextLevel' when we level up
 
-    [Header("Combat")]
+    [Space]
     [SerializeField] private Transform projectileSpawnPoint;    // Transform component that projectiles will spawn from
-    public float attackRange;           // range we can deal damage to an enemy
-    public                   float     attackRate;            // minimum time between attacks
     private                  float     _lastAttackTime;       // last time we attacked
 
     public Vector2 facingDirection;    // direction we're facing
@@ -58,7 +85,7 @@ public class Player : MonoBehaviour
 
     private                  ParticleSystem _hitEffect;
     public                   Controls       Controls;
-    private                  PlayerUi       _ui;
+    public                   PlayerUi       ui;
     public                   Inventory      Inventory;
     [SerializeField] private UI_Inventory   uiInventory;
 
@@ -78,7 +105,7 @@ public class Player : MonoBehaviour
     private void Awake ()
     {
         // get components
-        _ui = FindObjectOfType<PlayerUi>();
+        ui = FindObjectOfType<PlayerUi>();
         Controls = new Controls();
         _hitEffect = gameObject.GetComponentInChildren<ParticleSystem>();
         _state = State.Normal;
@@ -113,10 +140,10 @@ public class Player : MonoBehaviour
 
     private void Start ()
     {
-        _ui.UpdateHealthBar();
-        _ui.UpdateLevelText();
-        _ui.UpdateXpBar();
-        _ui.UpdateManaBar();
+        ui.UpdateHealthBar();
+        ui.UpdateLevelText();
+        ui.UpdateXpBar();
+        ui.UpdateManaBar();
         inventoryScreen.gameObject.SetActive(false);
     }
 
@@ -138,7 +165,7 @@ public class Player : MonoBehaviour
             Time.timeScale = 1f;
             Move();
         }
-        
+
         // Open and close the inventory screen
         if (Controls.Player.Inventory.triggered)
         {
@@ -165,8 +192,12 @@ public class Player : MonoBehaviour
         {
             if (_playerEquipmentManager.head == null)
             {
-                _playerEquipmentManager.EquipHelmet(helmetItem);
-                Inventory.RemoveItem(item);
+                // Check to see if we have the correct requirements
+                if (strength >= helmetItem.strengthRequirement && intelligence >= helmetItem.intelligenceRequirement)
+                {
+                    _playerEquipmentManager.EquipHelmet(helmetItem);
+                    Inventory.RemoveItem(item);
+                }
             }
         }
 
@@ -256,10 +287,18 @@ public class Player : MonoBehaviour
         if (hit.collider == null || hit.collider.GetComponentInParent<Enemy>() is null ||
             hit.collider.GetComponentInParent<Enemy>().isDead) return;
         
-        hit.collider.GetComponentInParent<Enemy>().TakeDamage(_playerEquipmentManager.weaponItem.damage);
+        hit.collider.GetComponentInParent<Enemy>().TakeDamage(CalculatePhysicalDamage());
         // play hit effect
         _hitEffect.transform.position = hit.collider.transform.position;
         _hitEffect.Play();
+    }
+
+    private int CalculatePhysicalDamage()
+    {
+        var helmetItem = _playerEquipmentManager.head;
+        var dmg        = _playerEquipmentManager.weaponItem.damage; // the weapons damage is used as a base
+        dmg += (strengthPhysicalDamageIncreaseAmount * strength);
+        return dmg;
     }
 
     // called when we gain xp
@@ -272,7 +311,7 @@ public class Player : MonoBehaviour
             LevelUp(xp);
         }
         
-        _ui.UpdateXpBar();
+        ui.UpdateXpBar();
     }
 
     // called when our xp reaches the max for this level
@@ -284,8 +323,8 @@ public class Player : MonoBehaviour
         curXp += xpToNextLevel - xp;
         xpToNextLevel = (int)(xpToNextLevel * levelXpModifier);
         
-        _ui.UpdateLevelText();
-        _ui.UpdateXpBar();
+        ui.UpdateLevelText();
+        ui.UpdateXpBar();
     }
 
     // called when an enemy attacks us
@@ -295,13 +334,13 @@ public class Player : MonoBehaviour
 
         if(CurrentHp <= 0)
             Die();
-        _ui.UpdateHealthBar();
+        ui.UpdateHealthBar();
     }
 
     public void RemoveMana(int amountOfManaToTake)
     {
         CurrentMana -= amountOfManaToTake;
-        _ui.UpdateManaBar();
+        ui.UpdateManaBar();
     }
 
     private void IncreaseHp(int amount)
@@ -311,7 +350,7 @@ public class Player : MonoBehaviour
             CurrentHp = maxHp;
         else
             CurrentHp += amount;
-        _ui.UpdateHealthBar();
+        ui.UpdateHealthBar();
     }
 
     private void IncreaseMana(int amount)
@@ -320,7 +359,7 @@ public class Player : MonoBehaviour
             CurrentMana = maxMana;
         else
             CurrentMana += amount;
-        _ui.UpdateManaBar();
+        ui.UpdateManaBar();
     }
 
     /// <summary>

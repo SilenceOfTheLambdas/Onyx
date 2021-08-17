@@ -85,6 +85,7 @@ namespace Inventory_System
                     itemDescription.SetText($"{GetItemDescription(item)}");
                     // Set the stats for the item
                     SetItemStats(item);
+                    SetItemRequirements(item);
                 };
 
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
@@ -105,6 +106,27 @@ namespace Inventory_System
                     x = 0;
                     y--;
                 }
+            }
+        }
+
+        private void SetItemRequirements(Item item)
+        {
+            var itemRequirementsText =
+                hoverInterface.transform.Find("itemRequirements").GetComponent<TextMeshProUGUI>();
+            var playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
+            switch (item)
+            {
+                case HelmetItem helmetItem:
+                    var requirementString = $"Intelligence: {helmetItem.intelligenceRequirement}    Strength: {helmetItem.strengthRequirement}";
+                    if (_player.intelligence < helmetItem.intelligenceRequirement)
+                        requirementString = requirementString.Replace($"{helmetItem.intelligenceRequirement}",
+                            $"<color=red>{helmetItem.intelligenceRequirement}</color>");
+                    if (_player.strength < helmetItem.strengthRequirement)
+                        requirementString = requirementString.Replace($"{helmetItem.strengthRequirement}",
+                            $"<color=red>{helmetItem.strengthRequirement}</color>");
+                    
+                    itemRequirementsText.SetText($"{requirementString}");
+                    break;
             }
         }
 

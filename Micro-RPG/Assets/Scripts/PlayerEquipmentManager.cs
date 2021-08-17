@@ -33,12 +33,30 @@ public class PlayerEquipmentManager : MonoBehaviour {
 
     public void EquipHelmet(HelmetItem helmetItem)
     {
+        var player = GetComponent<Player>();
         head = helmetItem;
+        GetComponent<Player>().strength += helmetItem.strengthAmount;
+        GetComponent<Player>().intelligence += helmetItem.intelligenceAmount;
+        
+        // Update Player Stats
+        if (helmetItem.strengthAmount < 0)
+            player.maxHp -= (player.strengthHpIncreaseAmount * player.strength);
+        else if (helmetItem.strengthAmount > 0)
+            player.maxHp += (player.strengthHpIncreaseAmount * player.strength);
+        
+        if (helmetItem.intelligenceAmount < 0)
+            player.maxMana -= (player.intelligenceManaIncreaseAmount * player.intelligence);
+        else if (helmetItem.intelligenceAmount > 0)
+            player.maxMana += (player.intelligenceManaIncreaseAmount * player.intelligence);
+        
+        player.ui.UpdateHealthBar();
+        player.ui.UpdateManaBar();
         _equipmentInventory.AddItem(helmetItem);
     }
 
     public void UnEquip(Item item)
     {
+        var player = GetComponent<Player>();
         equipmentInventoryUI.hoverInterface.SetActive(false);
         _equipmentInventory.RemoveItem(item);
         if (item is WeaponItem)
@@ -48,9 +66,25 @@ public class PlayerEquipmentManager : MonoBehaviour {
             _playerInventory.AddItem(item);
         }
 
-        if (item is HelmetItem)
+        if (item is HelmetItem helmetItem)
         {
             head = null;
+            player.strength -= helmetItem.strengthAmount;
+            player.intelligence -= helmetItem.intelligenceAmount;
+            
+            // Update Player Stats
+            if (helmetItem.strengthAmount < 0)
+                player.maxHp += (player.strengthHpIncreaseAmount * helmetItem.strengthAmount);
+            else if (helmetItem.strengthAmount > 0)
+                player.maxHp -= (player.strengthHpIncreaseAmount * helmetItem.strengthAmount);
+        
+            if (helmetItem.intelligenceAmount < 0)
+                player.maxMana += (player.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
+            else if (helmetItem.intelligenceAmount > 0)
+                player.maxMana -= (player.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
+
+            player.ui.UpdateHealthBar();
+            player.ui.UpdateManaBar();
             _playerInventory.AddItem(item);
         }
     }

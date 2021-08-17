@@ -5,6 +5,14 @@ namespace Inventory_System
     [CreateAssetMenu(fileName = "New Helmet", menuName = "Items/Create Helmet", order = 100)]
     public class HelmetItem : Item
     {
+        [Header("Requirements")]
+        
+        [Tooltip("How much strength is required to use this item")]
+        public int strengthRequirement;
+        
+        [Tooltip("How much intelligence is required to use this item")]
+        public int intelligenceRequirement;
+        
         [Header("Helmet Statistics")] 
         
         [Range(-30, 30)] [Tooltip("The amount of physical damage; any positive value will mitigate damage by that amount, and any negative value will add damage of that amount when attacked")] 
