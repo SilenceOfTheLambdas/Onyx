@@ -12,7 +12,7 @@ public class PlayerEquipmentManager : MonoBehaviour {
     [SerializeField] private UIEquipmentInventory equipmentInventoryUI;
     public                   bool                 hasWeaponEquipped;
     public                   WeaponItem           weaponItem; // Store the item in-case we need it back
-    public                   GameObject           head;
+    public                   HelmetItem           head;
     public                   GameObject           chest;
     public                   GameObject           boots;
 
@@ -31,14 +31,26 @@ public class PlayerEquipmentManager : MonoBehaviour {
         _equipmentInventory.AddItem(item);
     }
 
+    public void EquipHelmet(HelmetItem helmetItem)
+    {
+        head = helmetItem;
+        _equipmentInventory.AddItem(helmetItem);
+    }
+
     public void UnEquip(Item item)
     {
+        equipmentInventoryUI.hoverInterface.SetActive(false);
+        _equipmentInventory.RemoveItem(item);
         if (item is WeaponItem)
         {
-            equipmentInventoryUI.hoverInterface.SetActive(false);
-            _equipmentInventory.RemoveItem(item);
             hasWeaponEquipped = false;
             weaponItem = null;
+            _playerInventory.AddItem(item);
+        }
+
+        if (item is HelmetItem)
+        {
+            head = null;
             _playerInventory.AddItem(item);
         }
     }

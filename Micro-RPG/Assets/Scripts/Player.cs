@@ -161,6 +161,15 @@ public class Player : MonoBehaviour
             }
         }
 
+        if (item is HelmetItem helmetItem)
+        {
+            if (_playerEquipmentManager.head == null)
+            {
+                _playerEquipmentManager.EquipHelmet(helmetItem);
+                Inventory.RemoveItem(item);
+            }
+        }
+
         if (item is HealthPotion healthPotion)
         {
             if (CurrentHp != maxHp)

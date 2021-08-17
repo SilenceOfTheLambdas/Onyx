@@ -110,15 +110,14 @@ namespace Inventory_System
 
         private void SetItemStats(Item item)
         {
-            var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
-
+            var itemStats       = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+            var playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
             switch (item)
             {
                 case WeaponItem weaponItem:
                     var damageString      = $"Damage: {weaponItem.damage}";
                     var rangeString       = $"Range: {weaponItem.weaponRange}";
                     var attackSpeedString = $"Attack Rate: {weaponItem.attackRate}";
-                    var playerEquipment   = _player.GetComponent<PlayerEquipmentManager>();
                     if (playerEquipment.hasWeaponEquipped)
                     {
                         var equippedItem = playerEquipment.weaponItem;
@@ -167,6 +166,104 @@ namespace Inventory_System
                                       $"{rangeString}\n" +
                                       $"{attackSpeedString}");
                     break;
+                case HelmetItem helmetItem:
+                    var physicalArmourString  = $"Physical Armour: {helmetItem.physicalArmour}";
+                    var elementalArmourString = $"Elemental Armour: {helmetItem.elementalArmour}";
+                    var healthString          = $"Health: {helmetItem.healthAmount}";
+                    var manaString            = $"Mana: {helmetItem.manaAmount}";
+                    var strengthString        = $"Strength: {helmetItem.strengthAmount}";
+                    var intelligenceString    = $"Intelligence: {helmetItem.intelligenceAmount}";
+
+                    if (playerEquipment.head != null)
+                    {
+                        var equippedItem = playerEquipment.head;
+
+                        // Helmet physical armour
+                        if (equippedItem.physicalArmour > helmetItem.physicalArmour)
+                        {
+                            physicalArmourString = physicalArmourString.Replace($"{helmetItem.physicalArmour}",
+                                $"<color=red>{helmetItem.physicalArmour}</color> <size=75%>-{equippedItem.physicalArmour - helmetItem.physicalArmour}</size>");
+                        }
+
+                        if (equippedItem.physicalArmour < helmetItem.physicalArmour)
+                        {
+                            physicalArmourString = physicalArmourString.Replace($"{helmetItem.physicalArmour}",
+                                $"<color=green>{helmetItem.physicalArmour}</color> <size=75%>+{helmetItem.physicalArmour - equippedItem.physicalArmour}</size>");
+                        }
+
+                        // Helmet elemental armour
+                        if (equippedItem.elementalArmour > helmetItem.elementalArmour)
+                        {
+                            elementalArmourString = elementalArmourString.Replace($"{helmetItem.elementalArmour}",
+                                $"<color=red>{helmetItem.elementalArmour}</color> <size=75%>-{equippedItem.elementalArmour - helmetItem.elementalArmour}</size>");
+                        }
+
+                        if (equippedItem.elementalArmour < helmetItem.elementalArmour)
+                        {
+                            elementalArmourString = elementalArmourString.Replace($"{helmetItem.elementalArmour}",
+                                $"<color=green>{helmetItem.elementalArmour}</color> <size=75%>+{helmetItem.elementalArmour - equippedItem.elementalArmour}</size>");
+                        }
+                        
+                        // Helmet health
+                        if (equippedItem.healthAmount > helmetItem.healthAmount)
+                        {
+                            healthString = healthString.Replace($"{helmetItem.healthAmount}",
+                                $"<color=red>{helmetItem.healthAmount}</color> <size=75%>{helmetItem.healthAmount - equippedItem.healthAmount}</size>");
+                        }
+
+                        if (equippedItem.healthAmount < helmetItem.healthAmount)
+                        {
+                            healthString = healthString.Replace($"{helmetItem.healthAmount}",
+                                $"<color=green>{helmetItem.healthAmount}</color> <size=75%>+{helmetItem.healthAmount - equippedItem.healthAmount}</size>");
+                        }
+                        
+                        // Helmet mana
+                        if (equippedItem.manaAmount > helmetItem.manaAmount)
+                        {
+                            manaString = manaString.Replace($"{helmetItem.manaAmount}",
+                                $"<color=red>{helmetItem.manaAmount}</color> <size=75%>{helmetItem.manaAmount - equippedItem.manaAmount}</size>");
+                        }
+
+                        if (equippedItem.manaAmount < helmetItem.manaAmount)
+                        {
+                            manaString = manaString.Replace($"{helmetItem.manaAmount}",
+                                $"<color=green>{helmetItem.manaAmount}</color> <size=75%>+{helmetItem.manaAmount - equippedItem.manaAmount}</size>");
+                        }
+                        
+                        // Helmet strength
+                        if (equippedItem.strengthAmount > helmetItem.strengthAmount)
+                        {
+                            strengthString = strengthString.Replace($"{helmetItem.strengthAmount}",
+                                $"<color=red>{helmetItem.strengthAmount}</color> <size=75%>{helmetItem.strengthAmount - equippedItem.strengthAmount}</size>");
+                        }
+
+                        if (equippedItem.strengthAmount < helmetItem.strengthAmount)
+                        {
+                            strengthString = strengthString.Replace($"{helmetItem.strengthAmount}",
+                                $"<color=green>{helmetItem.strengthAmount}</color> <size=75%>+{helmetItem.strengthAmount - equippedItem.strengthAmount}</size>");
+                        }
+                        
+                        // Helmet intelligence
+                        if (equippedItem.intelligenceAmount > helmetItem.intelligenceAmount)
+                        {
+                            intelligenceString = intelligenceString.Replace($"{helmetItem.intelligenceAmount}",
+                                $"<color=red>{helmetItem.intelligenceAmount}</color> <size=75%>{helmetItem.intelligenceAmount - equippedItem.intelligenceAmount}</size>");
+                        }
+
+                        if (equippedItem.intelligenceAmount < helmetItem.intelligenceAmount)
+                        {
+                            intelligenceString = intelligenceString.Replace($"{helmetItem.intelligenceAmount}",
+                                $"<color=green>{helmetItem.intelligenceAmount}</color> <size=75%>+{helmetItem.intelligenceAmount - equippedItem.intelligenceAmount}</size>");
+                        }
+                    }
+                    
+                    itemStats.SetText($"{physicalArmourString}\n" +
+                                      $"{elementalArmourString}\n" +
+                                      $"{healthString}\n" +
+                                      $"{manaString}\n" +
+                                      $"{strengthString}\n" +
+                                      $"{intelligenceString}");
+                    break;
                 case HealthPotion healthPotion:
                     itemStats.SetText($"Restore Amount: {healthPotion.restoreAmount}");
                     break;
@@ -181,12 +278,10 @@ namespace Inventory_System
 
         private static string GetItemDescription(Item item)
         {
-            return item switch
-            {
-                HealthPotion healthPotion => healthPotion.itemDescription.Replace("HP", "<color=red>HP</color>"),
-                ManaPotion manaPotion => manaPotion.itemDescription.Replace("Mana", "<color=blue>Mana</color>"),
-                _ => item.itemDescription
-            };
+            var description = item.itemDescription.Replace("HP", "<color=red>HP</color>");
+            description = description.Replace("Mana", "<color=blue>Mana</color>");
+            
+            return description;
         }
     }
 }

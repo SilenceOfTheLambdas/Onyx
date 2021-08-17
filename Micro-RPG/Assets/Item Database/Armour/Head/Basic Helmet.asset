@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc72b9ad2fe54d259066207d9a3e97c6, type: 3}
+  m_Name: Basic Helmet
+  m_EditorClassIdentifier: 
+  itemName: Leather Helmet
+  itemDescription: A worn leather helmet, only provides a small HP and Mana buff,
+    with some physical armour.
+  sprite: {fileID: 7747050020675083350, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
+  isStackable: 0
+  amount: 1
+  physicalArmour: 5
+  elementalArmour: 0
+  healthAmount: 5
+  manaAmount: 10
+  strengthAmount: 1
+  intelligenceAmount: 3

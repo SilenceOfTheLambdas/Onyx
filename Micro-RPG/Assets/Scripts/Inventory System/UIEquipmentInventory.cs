@@ -80,6 +80,50 @@ namespace Inventory_System
                         hoverInterface.SetActive(false);
                     };
                 }
+
+                if (item is HelmetItem)
+                {
+                    var headSlot      = _itemSlotContainer.Find("headSlot");
+                    var headSlotImage = headSlot.Find("image").GetComponent<Image>();
+                    headSlot.GetComponent<Button_UI>().enabled = true;
+                    headSlotImage.sprite = item.GetSprite();
+                    headSlotImage.gameObject.SetActive(true);
+
+                    headSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+                    {
+                        // Un-equip the item
+                        _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
+                        headSlot.GetComponent<Button_UI>().enabled = false;
+                        headSlotImage.gameObject.SetActive(false);
+                    };
+
+                    // Display item stats when hovering over
+                    headSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(true);
+                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
+                        var itemDescription = hoverInterface.transform.Find("itemDescription")
+                            .GetComponent<TextMeshProUGUI>();
+                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+                    
+                        // Set item name
+                        itemName.SetText($"{item.itemName}");
+                        itemDescription.SetText($"{item.itemDescription}");
+                        
+                        if (item is HelmetItem helmetItem)
+                            itemStats.SetText($"Physical Armour: {helmetItem.physicalArmour}\n" +
+                                              $"Elemental Armour: {helmetItem.elementalArmour}\n" +
+                                              $"Health: {helmetItem.healthAmount}\n" +
+                                              $"Mana: {helmetItem.manaAmount}\n" +
+                                              $"Strength: {helmetItem.strengthAmount}\n" +
+                                              $"Intelligence: {helmetItem.intelligenceAmount}");
+                    };
+
+                    headSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(false);
+                    };
+                }
             }
         }
     }
