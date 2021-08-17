@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
         private set => _curHp = Mathf.Clamp(value, 0, maxHp);
     }
 
-    private int CurrentMana
+    public int CurrentMana
     {
         get => _currentMana;
         set => _currentMana = Mathf.Clamp(value, 0, maxMana);
@@ -116,6 +116,7 @@ public class Player : MonoBehaviour
         _ui.UpdateHealthBar();
         _ui.UpdateLevelText();
         _ui.UpdateXpBar();
+        _ui.UpdateManaBar();
         inventoryScreen.gameObject.SetActive(false);
     }
 
@@ -171,7 +172,7 @@ public class Player : MonoBehaviour
 
         if (item is ManaPotion manaPotion)
         {
-            if (CurrentMana != maxMana)
+            if (CurrentMana < maxMana)
             {
                 IncreaseMana(manaPotion.restoreAmount);
                 Inventory.RemoveItem(item);
@@ -257,19 +258,21 @@ public class Player : MonoBehaviour
     {
         curXp += xp;
 
-        if(curXp >= xpToNextLevel)
-            LevelUp();
+        if (curXp >= xpToNextLevel)
+        {
+            LevelUp(xp);
+        }
         
         _ui.UpdateXpBar();
-        
     }
 
     // called when our xp reaches the max for this level
-    private void LevelUp ()
+    private void LevelUp (int xp)
     {
-        curXp = 0;
         curLevel++;
-
+        // curXp = xp - xpToNextLevel;
+        curXp = 0;
+        curXp += xpToNextLevel - xp;
         xpToNextLevel = (int)(xpToNextLevel * levelXpModifier);
         
         _ui.UpdateLevelText();
@@ -284,6 +287,12 @@ public class Player : MonoBehaviour
         if(CurrentHp <= 0)
             Die();
         _ui.UpdateHealthBar();
+    }
+
+    public void RemoveMana(int amountOfManaToTake)
+    {
+        CurrentMana -= amountOfManaToTake;
+        _ui.UpdateManaBar();
     }
 
     private void IncreaseHp(int amount)
@@ -302,6 +311,7 @@ public class Player : MonoBehaviour
             CurrentMana = maxMana;
         else
             CurrentMana += amount;
+        _ui.UpdateManaBar();
     }
 
     /// <summary>

@@ -150,11 +150,11 @@ namespace Enemies
 
         public void TakeDamage(int damageTaken)
         {
+            // Display the amount of damage the player has dealt
             var randomXPosition = Random.Range(transform.position.x - 0.2f, transform.position.x + 0.2f);
             var damageNumberDisplay = Instantiate(damageNumberDisplayPrefab,
-                new Vector3(randomXPosition, transform.position.y + 0.7f), Quaternion.identity,
-                transform.Find("Canvas"));
-            damageNumberDisplay.GetComponent<TextMeshProUGUI>().SetText($"-{damageTaken}");
+                new Vector3(randomXPosition, transform.position.y + 0.7f), Quaternion.identity, transform.Find("Canvas"));
+            damageNumberDisplay.GetComponent<TextMeshProUGUI>().SetText($"-{damageTaken}"); // Update the damage text
             _curHp -= damageTaken;
             UpdateEnemyHpBarFill();
             if (_curHp <= 0) Die();

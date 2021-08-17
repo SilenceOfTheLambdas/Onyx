@@ -35,6 +35,10 @@ namespace Skills
         /// The text that displays the timer;
         /// </summary>
         public TextMeshProUGUI coolDownText;
+        /// <summary>
+        /// The amount of mana this skill costs to use
+        /// </summary>
+        public int manaCost;
 
         [NonSerialized] public bool  HasBeenUsed;
         [NonSerialized] public bool  InCoolDown;

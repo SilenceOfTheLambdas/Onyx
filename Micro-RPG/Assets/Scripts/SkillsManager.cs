@@ -11,6 +11,7 @@ public class SkillsManager : MonoBehaviour
 {
     public                   List<Skill> activeSkills = new List<Skill>();
     [SerializeField] private Transform   projectileSpawnPoint;
+    private                  Player      _player;
     private                  Controls    _playerControls;
     private                  Camera      _camera;
 
@@ -18,6 +19,7 @@ public class SkillsManager : MonoBehaviour
     {
         _playerControls = GetComponent<Player>().Controls;
         _camera = Camera.main;
+        _player = GetComponent<Player>();
     }
 
     private void Update()
@@ -39,10 +41,11 @@ public class SkillsManager : MonoBehaviour
         }
     }
 
+    private bool CheckIfPlayerHasEnoughMana(Skill skill) => GetComponent<Player>().CurrentMana - skill.manaCost >= 0;
 
     private void ShootProjectile(Skill skill)
     {
-        if (_playerControls.Player.Skill1.triggered && !skill.InCoolDown)
+        if (_playerControls.Player.Skill1.triggered && !skill.InCoolDown && CheckIfPlayerHasEnoughMana(skill))
         {
             // Computer where the mouse is
             var mousePos = new Vector2
@@ -56,6 +59,7 @@ public class SkillsManager : MonoBehaviour
             skill.InCoolDown = true;
             skill.HasBeenUsed = true;
             var projectile = Instantiate(skill.skillEffect, projectileSpawnPoint.position, Quaternion.Euler(new Vector2(0, 0)));
+            _player.RemoveMana(skill.manaCost);
             projectile.GetComponent<Rigidbody2D>().AddForce(direction * projectile.GetComponent<SkillProjectile>().projectileSpeed, ForceMode2D.Impulse);
             projectile.GetComponent<SkillProjectile>().Skill = skill;
         }
