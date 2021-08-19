@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34145d0396084308980fe32bf4e1f1bc, type: 3}
+  m_Name: TestSkill
+  m_EditorClassIdentifier: 
+  skillName: Test Skill
+  description: A test skill
+  skillSprite: {fileID: -2597783212178864322, guid: b86866802ad7e0d44b1ebad3edc8eef6, type: 3}
+  skillEffect: {fileID: 8913540475111126553, guid: de5a88474b09e344abdf48fa814ec8ed, type: 3}
+  skillType: 1
+  amountOfDamage: 14
+  coolDownTime: 2
+  stackSize: 1
+  requiredActiveSkills: []
+  manaCost: 6
+  requiredIntelligenceLevel: 0
+  requiredNumberOfSkillPointsToUnlockOrUpgrade: 1
+  maximumSkillLevel: 10
+  skillLevel: 1

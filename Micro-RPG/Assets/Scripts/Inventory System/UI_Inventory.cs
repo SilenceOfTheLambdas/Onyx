@@ -132,8 +132,14 @@ namespace Inventory_System
 
         private void SetItemStats(Item item)
         {
-            var itemStats       = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
-            var playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
+            var    itemStats       = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+            var    playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
+            string physicalArmourString;
+            string elementalArmourString;
+            string healthString;
+            string manaString;
+            string strengthString;
+            string intelligenceString;
             switch (item)
             {
                 case WeaponItem weaponItem:
@@ -189,12 +195,13 @@ namespace Inventory_System
                                       $"{attackSpeedString}");
                     break;
                 case HelmetItem helmetItem:
-                    var physicalArmourString  = $"Physical Armour: {helmetItem.physicalArmour}";
-                    var elementalArmourString = $"Elemental Armour: {helmetItem.elementalArmour}";
-                    var healthString          = $"Health: {helmetItem.healthAmount}";
-                    var manaString            = $"Mana: {helmetItem.manaAmount}";
-                    var strengthString        = $"Strength: {helmetItem.strengthAmount}";
-                    var intelligenceString    = $"Intelligence: {helmetItem.intelligenceAmount}";
+                    physicalArmourString = $"Physical Armour: {helmetItem.physicalArmour}";
+                    elementalArmourString = $"Elemental Armour: {helmetItem.elementalArmour}";
+                    healthString = $"Health: {helmetItem.healthAmount}";
+                    manaString = $"Mana: {helmetItem.manaAmount}";
+                    strengthString = $"Strength: {helmetItem.strengthAmount}";
+                    intelligenceString = $"Intelligence: {helmetItem.intelligenceAmount}";
+                    var manaRegenerationAmount = $"Mana Regen: {helmetItem.manaRegenerationPercentage}%";
 
                     if (playerEquipment.head != null)
                     {
@@ -277,6 +284,21 @@ namespace Inventory_System
                             intelligenceString = intelligenceString.Replace($"{helmetItem.intelligenceAmount}",
                                 $"<color=green>{helmetItem.intelligenceAmount}</color> <size=75%>+{helmetItem.intelligenceAmount - equippedItem.intelligenceAmount}</size>");
                         }
+
+                        // Mana
+                        if (equippedItem.manaRegenerationPercentage > helmetItem.manaRegenerationPercentage)
+                        {
+                            manaRegenerationAmount = manaRegenerationAmount.Replace(
+                                $"{helmetItem.manaRegenerationPercentage}",
+                                $"<color=red>{helmetItem.manaRegenerationPercentage}%</color> <size=75%>-{equippedItem.manaRegenerationPercentage - helmetItem.manaRegenerationPercentage}%</size>");
+                        }
+
+                        if (equippedItem.manaRegenerationPercentage < helmetItem.manaRegenerationPercentage)
+                        {
+                            manaRegenerationAmount = manaRegenerationAmount.Replace(
+                                $"{helmetItem.manaRegenerationPercentage}",
+                                $"<color=green>{helmetItem.manaRegenerationPercentage}%</color> <size=75%>+{helmetItem.manaRegenerationPercentage - equippedItem.manaRegenerationPercentage}%</size>");
+                        }
                     }
                     
                     itemStats.SetText($"{physicalArmourString}\n" +
@@ -284,7 +306,157 @@ namespace Inventory_System
                                       $"{healthString}\n" +
                                       $"{manaString}\n" +
                                       $"{strengthString}\n" +
-                                      $"{intelligenceString}");
+                                      $"{intelligenceString}\n" +
+                                      $"{manaRegenerationAmount}");
+                    break;
+                case ChestItem chestItem:
+                    physicalArmourString = $"Physical Armour: {chestItem.physicalArmour}";
+                    elementalArmourString = $"Elemental Armour: {chestItem.elementalArmour}";
+                    healthString = $"Health: {chestItem.healthAmount}";
+                    manaString = $"Mana: {chestItem.manaAmount}";
+                    strengthString = $"Strength: {chestItem.strengthAmount}";
+                    intelligenceString = $"Intelligence: {chestItem.intelligenceAmount}";
+                    var healthOnHitAmountString = $"Health On Hit: {chestItem.healthOnHitAmount}";
+                    var weaponRangeString       = $"Weapon Range: {chestItem.additionalWeaponRangeAmount}";
+                    var reducedManaCostString   = $"Skills Mana Cost: {chestItem.reducedManaCostOfSkillsAmount}";
+                    
+                    if (playerEquipment.chest != null)
+                    {
+                        var equippedItem = playerEquipment.chest;
+
+                        // Helmet physical armour
+                        if (equippedItem.physicalArmour > chestItem.physicalArmour)
+                        {
+                            physicalArmourString = physicalArmourString.Replace($"{chestItem.physicalArmour}",
+                                $"<color=red>{chestItem.physicalArmour}</color> <size=75%>-{equippedItem.physicalArmour - chestItem.physicalArmour}</size>");
+                        }
+
+                        if (equippedItem.physicalArmour < chestItem.physicalArmour)
+                        {
+                            physicalArmourString = physicalArmourString.Replace($"{chestItem.physicalArmour}",
+                                $"<color=green>{chestItem.physicalArmour}</color> <size=75%>+{chestItem.physicalArmour - equippedItem.physicalArmour}</size>");
+                        }
+
+                        // Helmet elemental armour
+                        if (equippedItem.elementalArmour > chestItem.elementalArmour)
+                        {
+                            elementalArmourString = elementalArmourString.Replace($"{chestItem.elementalArmour}",
+                                $"<color=red>{chestItem.elementalArmour}</color> <size=75%>-{equippedItem.elementalArmour - chestItem.elementalArmour}</size>");
+                        }
+
+                        if (equippedItem.elementalArmour < chestItem.elementalArmour)
+                        {
+                            elementalArmourString = elementalArmourString.Replace($"{chestItem.elementalArmour}",
+                                $"<color=green>{chestItem.elementalArmour}</color> <size=75%>+{chestItem.elementalArmour - equippedItem.elementalArmour}</size>");
+                        }
+                        
+                        // Helmet health
+                        if (equippedItem.healthAmount > chestItem.healthAmount)
+                        {
+                            healthString = healthString.Replace($"{chestItem.healthAmount}",
+                                $"<color=red>{chestItem.healthAmount}</color> <size=75%>{chestItem.healthAmount - equippedItem.healthAmount}</size>");
+                        }
+
+                        if (equippedItem.healthAmount < chestItem.healthAmount)
+                        {
+                            healthString = healthString.Replace($"{chestItem.healthAmount}",
+                                $"<color=green>{chestItem.healthAmount}</color> <size=75%>+{chestItem.healthAmount - equippedItem.healthAmount}</size>");
+                        }
+                        
+                        // Helmet mana
+                        if (equippedItem.manaAmount > chestItem.manaAmount)
+                        {
+                            manaString = manaString.Replace($"{chestItem.manaAmount}",
+                                $"<color=red>{chestItem.manaAmount}</color> <size=75%>{chestItem.manaAmount - equippedItem.manaAmount}</size>");
+                        }
+
+                        if (equippedItem.manaAmount < chestItem.manaAmount)
+                        {
+                            manaString = manaString.Replace($"{chestItem.manaAmount}",
+                                $"<color=green>{chestItem.manaAmount}</color> <size=75%>+{chestItem.manaAmount - equippedItem.manaAmount}</size>");
+                        }
+                        
+                        // Helmet strength
+                        if (equippedItem.strengthAmount > chestItem.strengthAmount)
+                        {
+                            strengthString = strengthString.Replace($"{chestItem.strengthAmount}",
+                                $"<color=red>{chestItem.strengthAmount}</color> <size=75%>{chestItem.strengthAmount - equippedItem.strengthAmount}</size>");
+                        }
+
+                        if (equippedItem.strengthAmount < chestItem.strengthAmount)
+                        {
+                            strengthString = strengthString.Replace($"{chestItem.strengthAmount}",
+                                $"<color=green>{chestItem.strengthAmount}</color> <size=75%>+{chestItem.strengthAmount - equippedItem.strengthAmount}</size>");
+                        }
+                        
+                        // Helmet intelligence
+                        if (equippedItem.intelligenceAmount > chestItem.intelligenceAmount)
+                        {
+                            intelligenceString = intelligenceString.Replace($"{chestItem.intelligenceAmount}",
+                                $"<color=red>{chestItem.intelligenceAmount}</color> <size=75%>{chestItem.intelligenceAmount - equippedItem.intelligenceAmount}</size>");
+                        }
+
+                        if (equippedItem.intelligenceAmount < chestItem.intelligenceAmount)
+                        {
+                            intelligenceString = intelligenceString.Replace($"{chestItem.intelligenceAmount}",
+                                $"<color=green>{chestItem.intelligenceAmount}</color> <size=75%>+{chestItem.intelligenceAmount - equippedItem.intelligenceAmount}</size>");
+                        }
+
+                        // Health on Hit Amount
+                        if (equippedItem.healthOnHitAmount > chestItem.healthOnHitAmount)
+                        {
+                            healthOnHitAmountString = healthOnHitAmountString.Replace(
+                                $"{chestItem.healthOnHitAmount}",
+                                $"<color=red>{chestItem.healthOnHitAmount}</color> <size=75%>-{equippedItem.healthOnHitAmount - chestItem.healthOnHitAmount}</size");
+                        }
+
+                        if (equippedItem.healthOnHitAmount < chestItem.healthOnHitAmount)
+                        {
+                            healthOnHitAmountString = healthOnHitAmountString.Replace(
+                                $"{chestItem.healthOnHitAmount}",
+                                $"<color=green>{chestItem.healthOnHitAmount}</color> <size=75%>+{chestItem.healthOnHitAmount - equippedItem.healthOnHitAmount}</size>");
+                        }
+                        
+                        // Additional Weapon Range
+                        if (equippedItem.additionalWeaponRangeAmount > chestItem.additionalWeaponRangeAmount)
+                        {
+                            weaponRangeString = weaponRangeString.Replace(
+                                $"{chestItem.additionalWeaponRangeAmount}",
+                                $"<color=red>{chestItem.additionalWeaponRangeAmount}</color> <size=75%>-{equippedItem.additionalWeaponRangeAmount - chestItem.additionalWeaponRangeAmount}</size");
+                        }
+
+                        if (equippedItem.additionalWeaponRangeAmount < chestItem.additionalWeaponRangeAmount)
+                        {
+                            weaponRangeString = weaponRangeString.Replace(
+                                $"{chestItem.additionalWeaponRangeAmount}",
+                                $"<color=green>{chestItem.additionalWeaponRangeAmount}</color> <size=75%>+{chestItem.additionalWeaponRangeAmount - equippedItem.additionalWeaponRangeAmount}</size>");
+                        }
+                        
+                        // Reduced Mana Cost of skills
+                        if (equippedItem.reducedManaCostOfSkillsAmount > chestItem.reducedManaCostOfSkillsAmount)
+                        {
+                            reducedManaCostString = reducedManaCostString.Replace(
+                                $"{chestItem.reducedManaCostOfSkillsAmount}",
+                                $"<color=red>{chestItem.reducedManaCostOfSkillsAmount}%</color> <size=75%>-{equippedItem.reducedManaCostOfSkillsAmount - chestItem.reducedManaCostOfSkillsAmount}</size");
+                        }
+
+                        if (equippedItem.reducedManaCostOfSkillsAmount < chestItem.reducedManaCostOfSkillsAmount)
+                        {
+                            reducedManaCostString = reducedManaCostString.Replace(
+                                $"{chestItem.reducedManaCostOfSkillsAmount}",
+                                $"<color=green>{chestItem.reducedManaCostOfSkillsAmount}%</color> <size=75%>+{chestItem.reducedManaCostOfSkillsAmount - equippedItem.reducedManaCostOfSkillsAmount}</size>");
+                        }
+                    }
+                    
+                    itemStats.SetText($"{physicalArmourString}\n" +
+                                      $"{elementalArmourString}\n" +
+                                      $"{healthString}\n" +
+                                      $"{manaString}\n" +
+                                      $"{strengthString}\n" +
+                                      $"{intelligenceString}\n" +
+                                      $"{healthOnHitAmountString}\n" +
+                                      $"{weaponRangeString}\n" +
+                                      $"{reducedManaCostString}");
                     break;
                 case HealthPotion healthPotion:
                     itemStats.SetText($"Restore Amount: {healthPotion.restoreAmount}");

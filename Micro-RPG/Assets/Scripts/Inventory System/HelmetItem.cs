@@ -2,7 +2,7 @@
 
 namespace Inventory_System
 {
-    [CreateAssetMenu(fileName = "New Helmet", menuName = "Items/Create Helmet", order = 100)]
+    [CreateAssetMenu(fileName = "New Helmet Armour", menuName = "Items/Armour/Create Helmet", order = 100)]
     public class HelmetItem : Item
     {
         [Header("Requirements")]
@@ -32,6 +32,9 @@ namespace Inventory_System
         
         [Range(-20, 20)] [Tooltip("The amount of Intelligence this item gives of takes away from the player")]
         public int intelligenceAmount = 0;
+        
+        [Range(0, 20)] [Tooltip("(Percentage) The amount of mana regenerated every second whilst wearing this item")]
+        public int manaRegenerationPercentage = 0;
 
     }
 }

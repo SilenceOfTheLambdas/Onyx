@@ -18,7 +18,8 @@ public class PlayerHitDetection : MonoBehaviour
         // If we are hit by an enemy projectile skill
         if (other.CompareTag("Enemy") && other.GetComponent<SkillProjectile>())
         {
-            _player.TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage);
+            var damageModifier = (_player.intelligenceElementalDamageIncreaseAmount * _player.intelligence);
+            _player.TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage - damageModifier);
         }
     }
 }

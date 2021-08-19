@@ -17,6 +17,8 @@ public class PlayerUi : MonoBehaviour
     
     [Header("Level Information")]
     public TextMeshProUGUI levelText;
+
+    public TextMeshProUGUI skillPointsText;
     public TextMeshProUGUI xpFillText; // The text showing that shows: currentXP/XP to next level
     public Image           xpBarFill;
     
@@ -35,6 +37,11 @@ public class PlayerUi : MonoBehaviour
         levelText.text = _player.curLevel.ToString();
     }
 
+    public void UpdateSkillPointsText()
+    {
+        skillPointsText.SetText($"Skill Points: {_player.skillPoints}");
+    }
+
     public void UpdateHealthBar()
     {
         healthBarFill.fillAmount = (float)_player.CurrentHp / _player.maxHp;
@@ -50,7 +57,7 @@ public class PlayerUi : MonoBehaviour
     public void UpdateManaBar()
     {
         manaBarFill.fillAmount = (float)_player.CurrentMana / _player.maxMana;
-        manaBarFillText.SetText($"{_player.CurrentMana}/{_player.maxMana}");
+        manaBarFillText.SetText($"{(int)_player.CurrentMana}/{_player.maxMana}");
     }
 
     public void SetInteractText(Vector3 pos, string text)

@@ -26,3 +26,4 @@ MonoBehaviour:
   manaAmount: 12
   strengthAmount: 0
   intelligenceAmount: 7
+  manaRegenerationPercentage: 5

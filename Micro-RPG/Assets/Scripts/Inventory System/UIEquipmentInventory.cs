@@ -119,12 +119,65 @@ namespace Inventory_System
                                            $"Health: {helmetItem.healthAmount}\n" +
                                            $"Mana: {helmetItem.manaAmount}\n" +
                                            $"Strength: {helmetItem.strengthAmount}\n" +
-                                           $"Intelligence: {helmetItem.intelligenceAmount}");
+                                           $"Intelligence: {helmetItem.intelligenceAmount}\n" +
+                                           $"Mana Regen: {helmetItem.manaRegenerationPercentage}%");
                             itemRequirements.SetText($"Intelligence: {helmetItem.intelligenceRequirement}   Strength: {helmetItem.strengthRequirement}");
                         }
                     };
 
                     headSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(false);
+                    };
+                }
+
+                if (item is ChestItem)
+                {
+                    var chestSlot      = _itemSlotContainer.Find("chestSlot");
+                    var chestSlotImage = chestSlot.Find("image").GetComponent<Image>();
+                    chestSlot.GetComponent<Button_UI>().enabled = true;
+                    chestSlotImage.sprite = item.GetSprite();
+                    chestSlotImage.gameObject.SetActive(true);
+
+                    chestSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+                    {
+                        // Un-equip the item
+                        _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
+                        chestSlot.GetComponent<Button_UI>().enabled = false;
+                        chestSlotImage.gameObject.SetActive(false);
+                    };
+
+                    // Display item stats when hovering over
+                    chestSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(true);
+                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
+                        var itemDescription = hoverInterface.transform.Find("itemDescription")
+                            .GetComponent<TextMeshProUGUI>();
+                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+                        var itemRequirements = hoverInterface.transform.Find("itemRequirements")
+                            .GetComponent<TextMeshProUGUI>();
+                    
+                        // Set item name
+                        itemName.SetText($"{item.itemName}");
+                        itemDescription.SetText($"{item.itemDescription}");
+                        
+                        if (item is ChestItem chestItem)
+                        {
+                            itemStats.SetText($"Physical Armour: {chestItem.physicalArmour}\n" +
+                                           $"Elemental Armour: {chestItem.elementalArmour}\n" +
+                                           $"Health: {chestItem.healthAmount}\n" +
+                                           $"Mana: {chestItem.manaAmount}\n" +
+                                           $"Strength: {chestItem.strengthAmount}\n" +
+                                           $"Intelligence: {chestItem.intelligenceAmount}\n" +
+                                           $"Health On Hit: {chestItem.healthOnHitAmount}\n" +
+                                           $"Weapon Range: {chestItem.additionalWeaponRangeAmount}\n" +
+                                           $"Skills Mana Cost: {chestItem.reducedManaCostOfSkillsAmount}%");
+                            itemRequirements.SetText($"Intelligence: {chestItem.intelligenceRequirement}   Strength: {chestItem.strengthRequirement}");
+                        }
+                    };
+
+                    chestSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
                     {
                         hoverInterface.SetActive(false);
                     };

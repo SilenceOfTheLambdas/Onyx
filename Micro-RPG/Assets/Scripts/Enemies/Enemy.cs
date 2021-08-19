@@ -170,7 +170,8 @@ namespace Enemies
         public void Attack()
         {
             _lastAttackTime = Time.time;
-            player.TakeDamage(damage);
+            var damageModifier = (player.strengthPhysicalDamageIncreaseAmount * player.strength);
+            player.TakeDamage(damage - damageModifier);
         }
 
         #region Helper

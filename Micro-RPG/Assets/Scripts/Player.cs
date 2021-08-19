@@ -24,10 +24,10 @@ public class Player : MonoBehaviour
         private set => _curHp = Mathf.Clamp(value, 0, maxHp);
     }
 
-    public int CurrentMana
+    public float CurrentMana
     {
         get => _currentMana;
-        set => _currentMana = Mathf.Clamp(value, 0, maxMana);
+        set => _currentMana = Mathf.Clamp(value, 0f, maxMana);
     }
 
     #endregion
@@ -39,13 +39,18 @@ public class Player : MonoBehaviour
     
     [Tooltip("The maximum amount of mana the player has, this is affected by Intelligence")]
     public int maxMana;
+
+    [Range(0, 20)] [Tooltip("The percentage of mana restored every second")]
+    public int manaRegenerationPercentage = 1;
+
+    private float _manaRegenTimer;
     
     [Header("Movement")]
     [Tooltip("The speed at which the player moves around the world")]
     public                   float moveSpeed;
     
     private                  int   _curHp;
-    private                  int   _currentMana;
+    private                  float   _currentMana;
     
     [Header("Player Attributes")]
     [Tooltip("Strength: for each level of strength: +strengthHpIncreaseAmount and +strengthPhysicalDamageIncreaseAmount to physical damage")]
@@ -66,12 +71,12 @@ public class Player : MonoBehaviour
 
     [SerializeField] [Tooltip("The amount of Elemental Damage to add towards Skill attacks per Intelligence level")]
     public int intelligenceElementalDamageIncreaseAmount = 8;
-    
-    [Header("Experience")]
-    public int curLevel;                // our current level
-    public int   curXp;                   // our current experience points
-    public int   xpToNextLevel;           // xp needed to level up
-    public float levelXpModifier;       // modifier applied to 'xpToNextLevel' when we level up
+
+    [Header("Experience")] public int   skillPoints;
+    public                        int   curLevel;                // our current level
+    public                        int   curXp;                   // our current experience points
+    public                        int   xpToNextLevel;           // xp needed to level up
+    public                        float levelXpModifier;       // modifier applied to 'xpToNextLevel' when we level up
 
     [Space]
     [SerializeField] private Transform projectileSpawnPoint;    // Transform component that projectiles will spawn from
@@ -91,16 +96,20 @@ public class Player : MonoBehaviour
 
     public Animator animator; // The animation controller for the player movement etc.
 
-    private                  bool       _inventoryOpen; // is the player's inventory open?
+    [Header("User Interface")]
     [SerializeField] private GameObject inventoryScreen; // Reference to the inventory UI
-
+    private                  bool       _inventoryOpen; // is the player's inventory open?
+    [SerializeField] private GameObject skillTreeScreen;
+    private                  bool       _skillTreeOpen;
+    
     private PlayerEquipmentManager _playerEquipmentManager;
 
-    private static readonly int Horizontal     = Animator.StringToHash("Horizontal");
-    private static readonly int Vertical       = Animator.StringToHash("Vertical");
-    private static readonly int Speed          = Animator.StringToHash("Speed");
-    private static readonly int LastDirectionX = Animator.StringToHash("LastDirectionX");
-    private static readonly int LastDirectionY = Animator.StringToHash("LastDirectionY");
+    private static readonly  int    Horizontal     = Animator.StringToHash("Horizontal");
+    private static readonly  int    Vertical       = Animator.StringToHash("Vertical");
+    private static readonly  int    Speed          = Animator.StringToHash("Speed");
+    private static readonly  int    LastDirectionX = Animator.StringToHash("LastDirectionX");
+    private static readonly  int    LastDirectionY = Animator.StringToHash("LastDirectionY");
+    [SerializeField] private float manaRegenerationTime;
 
     private void Awake ()
     {
@@ -121,6 +130,7 @@ public class Player : MonoBehaviour
         CurrentHp = maxHp / 2;
         CurrentMana = maxMana / 2;
         _playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+        
     }
 
     public void OnTriggerEnter2D(Collider2D other)
@@ -142,6 +152,7 @@ public class Player : MonoBehaviour
     {
         ui.UpdateHealthBar();
         ui.UpdateLevelText();
+        ui.UpdateSkillPointsText();
         ui.UpdateXpBar();
         ui.UpdateManaBar();
         inventoryScreen.gameObject.SetActive(false);
@@ -155,7 +166,7 @@ public class Player : MonoBehaviour
         animator.SetFloat(Speed, _movement.sqrMagnitude);
         
         // If the inventory is open, pause the game
-        if (_inventoryOpen)
+        if (_inventoryOpen || _skillTreeOpen)
         {
             // Pause the game
             Time.timeScale = 0f;
@@ -167,12 +178,25 @@ public class Player : MonoBehaviour
         }
 
         // Open and close the inventory screen
-        if (Controls.Player.Inventory.triggered)
+        if (Controls.Player.Inventory.triggered && !_skillTreeOpen)
         {
             _inventoryOpen = !_inventoryOpen;
             inventoryScreen.SetActive(_inventoryOpen);
         }
+
+        if (Controls.Player.SkillTree.triggered && !_inventoryOpen)
+        {
+            _skillTreeOpen = !_skillTreeOpen;
+            skillTreeScreen.SetActive(_skillTreeOpen);
+        }
         
+        // Mana Regen
+        _manaRegenTimer += Time.deltaTime;
+        if (_manaRegenTimer >= manaRegenerationTime)
+        {
+            _manaRegenTimer = 0;
+            ManaRegeneration();
+        }
         // Attacking
         Attack();
     }
@@ -196,6 +220,18 @@ public class Player : MonoBehaviour
                 if (strength >= helmetItem.strengthRequirement && intelligence >= helmetItem.intelligenceRequirement)
                 {
                     _playerEquipmentManager.EquipHelmet(helmetItem);
+                    Inventory.RemoveItem(item);
+                }
+            }
+        }
+
+        if (item is ChestItem chestItem)
+        {
+            if (_playerEquipmentManager.chest == null)
+            {
+                if (strength >= chestItem.strengthRequirement && intelligence >= chestItem.intelligenceRequirement)
+                {
+                    _playerEquipmentManager.EquipChest(chestItem);
                     Inventory.RemoveItem(item);
                 }
             }
@@ -318,12 +354,13 @@ public class Player : MonoBehaviour
     private void LevelUp (int xp)
     {
         curLevel++;
-        // curXp = xp - xpToNextLevel;
+        skillPoints += 1;
         curXp = 0;
         curXp += xpToNextLevel - xp;
         xpToNextLevel = (int)(xpToNextLevel * levelXpModifier);
         
         ui.UpdateLevelText();
+        ui.UpdateSkillPointsText();
         ui.UpdateXpBar();
     }
 
@@ -353,13 +390,18 @@ public class Player : MonoBehaviour
         ui.UpdateHealthBar();
     }
 
-    private void IncreaseMana(int amount)
+    private void IncreaseMana(float amount)
     {
         if (CurrentMana + amount >= maxMana)
             CurrentMana = maxMana;
         else
             CurrentMana += amount;
         ui.UpdateManaBar();
+    }
+
+    private void ManaRegeneration()
+    {
+        IncreaseMana(((float)manaRegenerationPercentage / 100f) * (float)maxMana);
     }
 
     /// <summary>

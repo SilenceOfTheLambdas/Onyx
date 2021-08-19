@@ -35,9 +35,49 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""SkillTree"",
+                    ""type"": ""Button"",
+                    ""id"": ""1011b6d9-1d1d-43fd-b494-631ed89fce51"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Skill1"",
                     ""type"": ""Button"",
                     ""id"": ""0e4e3995-a2f9-4162-b82b-b4b2e33a40d5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Skill2"",
+                    ""type"": ""Button"",
+                    ""id"": ""90960b8b-fa10-4fc9-adb9-d8b49144d322"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Skill3"",
+                    ""type"": ""Button"",
+                    ""id"": ""4b85878e-8dcd-47c3-b4fe-0c7afa2a93e1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Skill4"",
+                    ""type"": ""Button"",
+                    ""id"": ""77983b55-4297-4eec-af04-89f80f5dee67"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Skill5"",
+                    ""type"": ""Button"",
+                    ""id"": ""c7003ae4-773f-4747-9f6c-3bcd1052980e"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -230,6 +270,61 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Skill1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40f220b7-2543-48d5-b21c-44df8f2fb1c9"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkillTree"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""388c8e81-213f-4e6f-8646-f3cab595e9b3"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""caefdfd0-8225-49f9-b563-53f912fcd642"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""38670513-e4ea-4f2d-b0c7-39eafa6405d4"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""449490ef-c41e-4a6d-b433-ce9bf2ca206b"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -240,7 +335,12 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
+        m_Player_SkillTree = m_Player.FindAction("SkillTree", throwIfNotFound: true);
         m_Player_Skill1 = m_Player.FindAction("Skill1", throwIfNotFound: true);
+        m_Player_Skill2 = m_Player.FindAction("Skill2", throwIfNotFound: true);
+        m_Player_Skill3 = m_Player.FindAction("Skill3", throwIfNotFound: true);
+        m_Player_Skill4 = m_Player.FindAction("Skill4", throwIfNotFound: true);
+        m_Player_Skill5 = m_Player.FindAction("Skill5", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -292,14 +392,24 @@ public class @Controls : IInputActionCollection, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Inventory;
+    private readonly InputAction m_Player_SkillTree;
     private readonly InputAction m_Player_Skill1;
+    private readonly InputAction m_Player_Skill2;
+    private readonly InputAction m_Player_Skill3;
+    private readonly InputAction m_Player_Skill4;
+    private readonly InputAction m_Player_Skill5;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
         public PlayerActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Inventory => m_Wrapper.m_Player_Inventory;
+        public InputAction @SkillTree => m_Wrapper.m_Player_SkillTree;
         public InputAction @Skill1 => m_Wrapper.m_Player_Skill1;
+        public InputAction @Skill2 => m_Wrapper.m_Player_Skill2;
+        public InputAction @Skill3 => m_Wrapper.m_Player_Skill3;
+        public InputAction @Skill4 => m_Wrapper.m_Player_Skill4;
+        public InputAction @Skill5 => m_Wrapper.m_Player_Skill5;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -315,9 +425,24 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Inventory.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory;
                 @Inventory.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory;
                 @Inventory.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory;
+                @SkillTree.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkillTree;
+                @SkillTree.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkillTree;
+                @SkillTree.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkillTree;
                 @Skill1.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill1;
                 @Skill1.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill1;
                 @Skill1.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill1;
+                @Skill2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill2;
+                @Skill2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill2;
+                @Skill2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill2;
+                @Skill3.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill3;
+                @Skill3.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill3;
+                @Skill3.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill3;
+                @Skill4.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill4;
+                @Skill4.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill4;
+                @Skill4.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill4;
+                @Skill5.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill5;
+                @Skill5.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill5;
+                @Skill5.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSkill5;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -328,9 +453,24 @@ public class @Controls : IInputActionCollection, IDisposable
                 @Inventory.started += instance.OnInventory;
                 @Inventory.performed += instance.OnInventory;
                 @Inventory.canceled += instance.OnInventory;
+                @SkillTree.started += instance.OnSkillTree;
+                @SkillTree.performed += instance.OnSkillTree;
+                @SkillTree.canceled += instance.OnSkillTree;
                 @Skill1.started += instance.OnSkill1;
                 @Skill1.performed += instance.OnSkill1;
                 @Skill1.canceled += instance.OnSkill1;
+                @Skill2.started += instance.OnSkill2;
+                @Skill2.performed += instance.OnSkill2;
+                @Skill2.canceled += instance.OnSkill2;
+                @Skill3.started += instance.OnSkill3;
+                @Skill3.performed += instance.OnSkill3;
+                @Skill3.canceled += instance.OnSkill3;
+                @Skill4.started += instance.OnSkill4;
+                @Skill4.performed += instance.OnSkill4;
+                @Skill4.canceled += instance.OnSkill4;
+                @Skill5.started += instance.OnSkill5;
+                @Skill5.performed += instance.OnSkill5;
+                @Skill5.canceled += instance.OnSkill5;
             }
         }
     }
@@ -339,6 +479,11 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
+        void OnSkillTree(InputAction.CallbackContext context);
         void OnSkill1(InputAction.CallbackContext context);
+        void OnSkill2(InputAction.CallbackContext context);
+        void OnSkill3(InputAction.CallbackContext context);
+        void OnSkill4(InputAction.CallbackContext context);
+        void OnSkill5(InputAction.CallbackContext context);
     }
 }

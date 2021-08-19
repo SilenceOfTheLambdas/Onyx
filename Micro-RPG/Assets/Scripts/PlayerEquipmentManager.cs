@@ -13,7 +13,7 @@ public class PlayerEquipmentManager : MonoBehaviour {
     public                   bool                 hasWeaponEquipped;
     public                   WeaponItem           weaponItem; // Store the item in-case we need it back
     public                   HelmetItem           head;
-    public                   GameObject           chest;
+    public                   ChestItem            chest;
     public                   GameObject           boots;
 
     private void Awake()
@@ -48,10 +48,38 @@ public class PlayerEquipmentManager : MonoBehaviour {
             player.maxMana -= (player.intelligenceManaIncreaseAmount * player.intelligence);
         else if (helmetItem.intelligenceAmount > 0)
             player.maxMana += (player.intelligenceManaIncreaseAmount * player.intelligence);
+
+        player.manaRegenerationPercentage += helmetItem.manaRegenerationPercentage;
         
         player.ui.UpdateHealthBar();
         player.ui.UpdateManaBar();
         _equipmentInventory.AddItem(helmetItem);
+    }
+
+    public void EquipChest(ChestItem chestItem)
+    {
+        var player = GetComponent<Player>();
+        chest = chestItem;
+        GetComponent<Player>().strength += chestItem.strengthAmount;
+        GetComponent<Player>().intelligence += chestItem.intelligenceAmount;
+
+        // Update Player Stats
+        if (chestItem.strengthAmount < 0)
+            player.maxHp -= (player.strengthHpIncreaseAmount * player.strength);
+        else if (chestItem.strengthAmount > 0)
+            player.maxHp += (player.strengthHpIncreaseAmount * player.strength);
+        
+        if (chestItem.intelligenceAmount < 0)
+            player.maxMana -= (player.intelligenceManaIncreaseAmount * player.intelligence);
+        else if (chestItem.intelligenceAmount > 0)
+            player.maxMana += (player.intelligenceManaIncreaseAmount * player.intelligence);
+
+        if (player.GetComponent<PlayerEquipmentManager>().weaponItem != null)
+            player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange += chestItem.additionalWeaponRangeAmount;
+
+        player.ui.UpdateHealthBar();
+        player.ui.UpdateManaBar();
+        _equipmentInventory.AddItem(chestItem);
     }
 
     public void UnEquip(Item item)
@@ -83,6 +111,31 @@ public class PlayerEquipmentManager : MonoBehaviour {
             else if (helmetItem.intelligenceAmount > 0)
                 player.maxMana -= (player.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
 
+            player.ui.UpdateHealthBar();
+            player.ui.UpdateManaBar();
+            _playerInventory.AddItem(item);
+        }
+
+        if (item is ChestItem chestItem)
+        {
+            this.chest = null;
+            player.strength -= chestItem.strengthAmount;
+            player.intelligence -= chestItem.intelligenceAmount;
+            
+            // Update Player Stats
+            if (chestItem.strengthAmount < 0)
+                player.maxHp += (player.strengthHpIncreaseAmount * chestItem.strengthAmount);
+            else if (chestItem.strengthAmount > 0)
+                player.maxHp -= (player.strengthHpIncreaseAmount * chestItem.strengthAmount);
+        
+            if (chestItem.intelligenceAmount < 0)
+                player.maxMana += (player.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
+            else if (chestItem.intelligenceAmount > 0)
+                player.maxMana -= (player.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
+            
+            if (player.GetComponent<PlayerEquipmentManager>().weaponItem != null)
+                player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange -= chestItem.additionalWeaponRangeAmount;    
+            
             player.ui.UpdateHealthBar();
             player.ui.UpdateManaBar();
             _playerInventory.AddItem(item);
