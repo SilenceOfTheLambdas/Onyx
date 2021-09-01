@@ -1,6 +1,6 @@
-# "Micro RPG"
-A small RPG game created using the powa of Unity.
+# Onyx
 
+A 3D top-down action role-playing game; made with Unity.
 
 ## Links
 
