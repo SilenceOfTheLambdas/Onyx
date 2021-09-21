@@ -14,8 +14,9 @@ public class SkillTreeSkillManager : MonoBehaviour
     [SerializeField] private SkillsManager   skillsManager;
     [SerializeField] private PlayerUi        playerUi;
     [SerializeField] private GameObject      skillInfoHover;
-    
-    [Header("User Interface")]
+
+    [Header("User Interface")] [SerializeField]
+    private Vector2 hoverOverlayPositionOffset;
     private                  Image           _overlay;
     private Image           _border;
     private Image           _skillSpriteHolder;
@@ -106,7 +107,7 @@ public class SkillTreeSkillManager : MonoBehaviour
         {
             var currentSkill = _activatedSkill != null ? _activatedSkill : skill;
             skillInfoHover.SetActive(true);
-            skillInfoHover.transform.position = Mouse.current.position.ReadValue();
+            skillInfoHover.transform.position = Mouse.current.position.ReadValue() + hoverOverlayPositionOffset;
             CursorController.Instance.SetCursor(CursorController.CursorTypes.Default);
             _skillName.SetText($"{currentSkill.skillName}");
             _skillDescription.SetText($"{currentSkill.description}");

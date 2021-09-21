@@ -10,7 +10,7 @@
     --------------------------------------------------
  */
  
-//#define SOUND_MANAGER // Has Sound_Manager in project
+#define SOUND_MANAGER // Has Sound_Manager in project
 //#define CURSOR_MANAGER // Has Cursor_Manager in project
 
 using System;
@@ -59,7 +59,7 @@ public class Button_UI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     private Action internalOnPointerEnterFunc, internalOnPointerExitFunc, internalOnPointerClickFunc;
 
 #if SOUND_MANAGER
-        public Sound_Manager.Sound mouseOverSound, mouseClickSound;
+        public SoundManager.Sound mouseOverSound, mouseClickSound;
 #endif
 #if CURSOR_MANAGER
         public CursorManager.CursorType cursorMouseOver, cursorMouseOut;
@@ -129,8 +129,8 @@ public class Button_UI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
 #if SOUND_MANAGER
             // Sound Manager
-            internalOnPointerEnterFunc += () => { if (mouseOverSound != Sound_Manager.Sound.None) Sound_Manager.PlaySound(mouseOverSound); };
-            internalOnPointerClickFunc += () => { if (mouseClickSound != Sound_Manager.Sound.None) Sound_Manager.PlaySound(mouseClickSound); };
+            internalOnPointerEnterFunc += () => { if (mouseOverSound != SoundManager.Sound.None) SoundManager.Instance.PlaySound(SoundManager.Sound.MouseOverSound); };
+            // internalOnPointerClickFunc += () => { if (mouseClickSound != SoundManager.Sound.None) SoundManager.Instance.PlaySound(mouseClickSound); };
 #endif
 
 #if CURSOR_MANAGER

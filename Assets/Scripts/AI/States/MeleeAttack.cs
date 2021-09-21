@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 namespace AI.States
 {
-    public class MeleeAttack : IState
+    public class MeleeAttack
     {
         private                 float      _timer;
         private readonly        Enemy      _enemy;

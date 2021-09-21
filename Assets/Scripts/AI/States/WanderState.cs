@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 namespace AI.States
 {
-    public class WanderState : IState
+    public class WanderState
     {
         private readonly        Enemy           _enemy;
         private                 Animator        _animator;

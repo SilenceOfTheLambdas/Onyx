@@ -10,7 +10,7 @@ namespace AI.States
     /// <summary>
     /// Patrol a random area.
     /// </summary>
-    public class Patrol : IState
+    public class Patrol
     {
         private readonly Enemy           _enemy;
         private          Rigidbody       _rigidbody;

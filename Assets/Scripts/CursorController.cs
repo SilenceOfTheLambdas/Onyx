@@ -18,6 +18,11 @@ public class CursorController : GenericSingletonClass<CursorController>
         Dequip
     }
 
+    private void Start()
+    {
+        
+    }
+
     public void SetCursor(CursorTypes cursorType)
     {
         Vector2 cursorOffset;

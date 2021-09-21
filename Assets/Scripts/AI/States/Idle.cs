@@ -1,6 +1,6 @@
 ﻿namespace AI.States
 {
-    public class Idle : IState
+    public class Idle
     {
         public void OnEnter()
         {

@@ -8,7 +8,7 @@ namespace AI.States
     /// <summary>
     /// Attack a target using the FlameShot ability
     /// </summary>
-    public class FlameShotAttack : IState
+    public class FlameShotAttack
     {
         private readonly        Transform    _projectileSpawnPosition;
         private readonly        Skill        _skill;
