@@ -9,6 +9,8 @@ namespace Player
     public class PlayerMovement : MonoBehaviour
     {
         [SerializeField] private LayerMask    cameraLayerMask;
+        [SerializeField] private GameObject   pfMoveToEffect;
+        private                  GameObject   _moveToEffectWorld;
         private                  bool         _rewindTime;
         private                  Animator     _animator;
         public                   NavMeshAgent navMeshAgent;
@@ -17,6 +19,7 @@ namespace Player
         private static readonly int         VelocityX = Animator.StringToHash("VelocityX");
         private                 InputAction _click;
         [NonSerialized] public  bool        UsingBeamSkill;
+        private static readonly int         Speed = Animator.StringToHash("Speed");
 
         private void Start()
         {
@@ -29,7 +32,17 @@ namespace Player
                 if (Physics.Raycast(mRay, out var mRaycastHit, Mathf.Infinity, cameraLayerMask))
                 {
                     if (!navMeshAgent.Raycast(mRaycastHit.point, out var hit))
+                    {
+                        // If there is already a move to effect, destroy it
+                        var moveToEffectSpawnPoint = new Vector3(mRaycastHit.point.x, mRaycastHit.point.y + 0.01f, mRaycastHit.point.z);
+                        if (_moveToEffectWorld)
+                        {
+                            Destroy(_moveToEffectWorld);
+                        } else
+                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
+                        
                         navMeshAgent.SetDestination(mRaycastHit.point);
+                    }
                 }
             };
             _click.Enable();
@@ -43,8 +56,21 @@ namespace Player
                 var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
                 if (Physics.Raycast(mRay, out var hit, Mathf.Infinity, cameraLayerMask))
                 {
-                    if (!navMeshAgent.Raycast(hit.point, out var hitOutside) && GetComponent<Player>().state == Player.State.Normal)
+                    // if (!navMeshAgent.Raycast(hit.point, out var hitOutside) &&
+                    //     GetComponent<Player>().state == Player.State.Normal)
+                    // {
+                        Debug.Log("Hey");
+                        // If there is already a move to effect, destroy it
+                        var moveToEffectSpawnPoint = new Vector3(hit.point.x, hit.point.y + 0.01f, hit.point.z);
+                        if (_moveToEffectWorld)
+                        {
+                            Destroy(_moveToEffectWorld);
+                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
+                        } else
+                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
+                        
                         navMeshAgent.SetDestination(hit.point);
+                    // }
                 }
                 
                 // If we click on an enemy
@@ -61,13 +87,19 @@ namespace Player
                     if (GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem == null)
                     {
                         positionToMoveTo -= new Vector3(0.5f, 0, 0.5f);
-                        // positionToMoveTo.Scale(new Vector3(0.9f, 0, 0.9f));
                     }
                     
                     // Only move when the player is NOT attacking
                     if (GetComponent<Player>().state == Player.State.Normal)
                         navMeshAgent.SetDestination(positionToMoveTo);
-                    
+
+                    // Destroy Move To Effect when we have reached it
+                    if (_moveToEffectWorld)
+                    {
+                        if (Vector3.Distance(transform.position, _moveToEffectWorld.transform.position) <= 1f)
+                            Destroy(_moveToEffectWorld);
+                    }
+
                 }
             }
 
@@ -77,6 +109,8 @@ namespace Player
             
             _animator.SetFloat(VelocityZ, velocityZ, 0.1f, Time.deltaTime);
             _animator.SetFloat(VelocityX, velocityX, 0.1f, Time.deltaTime);
+            
+            _animator.SetFloat(Speed, navMeshAgent.velocity.magnitude);
         }
     }
 }

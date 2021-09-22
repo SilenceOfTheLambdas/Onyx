@@ -11,6 +11,7 @@ public class ChasePlayer : ActionNode
     private                  NavMeshAgent _navMeshAgent;
     [SerializeField] private float        maxDistance;
     [SerializeField] private float        maxTime;
+    [SerializeField] private float        stopDistance;
     protected override void OnStart()
     {
         _targetObjectToChase = FindObjectOfType<Player.Player>().gameObject;
@@ -33,11 +34,15 @@ public class ChasePlayer : ActionNode
             _timer = maxTime;
         }
         
-        if (_navMeshAgent.remainingDistance <= 1f)
-            return State.Success;
-        if (_navMeshAgent.remainingDistance > 1f)
+        if (_navMeshAgent.pathPending)
             return State.Running;
         
-        return State.Failure;
+        if (_navMeshAgent.remainingDistance <= stopDistance)
+            return State.Success;
+
+        if (_navMeshAgent.pathStatus == NavMeshPathStatus.PathInvalid)
+            return State.Failure;
+        
+        return State.Running;
     }
 }

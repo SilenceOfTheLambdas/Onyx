@@ -15,32 +15,11 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 1440f50f63a8cc9438e147fe61a3912c
-  position: {x: -568, y: 617.3395}
+  position: {x: -524, y: 617}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: 
   drawGizmos: 0
---- !u!114 &-3979760491985753288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a5134d9de14153468b48928d3e7359a, type: 3}
-  m_Name: Wait
-  m_EditorClassIdentifier: 
-  state: 0
-  started: 0
-  guid: 465d5497dd8da75478ab0d8361bf49ca
-  position: {x: -118.26706, y: 481.05692}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-  description: 
-  drawGizmos: 0
-  duration: 0.2
 --- !u!114 &-2296140794544555661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,13 +61,13 @@ MonoBehaviour:
   - {fileID: 7184432414277962516}
   - {fileID: 5444332883722125026}
   - {fileID: 4786867360556315872}
-  - {fileID: -3979760491985753288}
   - {fileID: 7219569995677463753}
   - {fileID: 5597016012972267114}
   - {fileID: 5175903088944578628}
   - {fileID: 512761326665976034}
   - {fileID: -8156094924524958394}
   - {fileID: 1375762006400714018}
+  - {fileID: 7691740004851253844}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &512761326665976034
@@ -106,7 +85,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: e83f834ec794de94ab2667bd838fc4ad
-  position: {x: 180.73297, y: 481.05692}
+  position: {x: 147, y: 481}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: 
@@ -126,7 +105,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 08c14160b020cb644a5d864b61db9fc7
-  position: {x: -568, y: 480.99994}
+  position: {x: -524, y: 481}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: Player is NOT in sight
@@ -147,7 +126,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 099e62403185f634ebcfb0ffce199406
-  position: {x: -268.26703, y: 481.05692}
+  position: {x: -224, y: 481}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: 
@@ -195,13 +174,14 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 3bd6c616d586a7c47b3042052f786ac5
-  position: {x: 330.73294, y: 481.05692}
+  position: {x: 297, y: 481}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: 
   drawGizmos: 0
   maxDistance: 1
   maxTime: 1
+  stopDistance: 1.3
 --- !u!114 &5444332883722125026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +197,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 1d1b5503bd54cbc41978e192e7f7ac03
-  position: {x: -418.26706, y: 481.05692}
+  position: {x: -374, y: 481}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: 
@@ -239,7 +219,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: c38750b9f11061f46baadebea85c287d
-  position: {x: 255.73291, y: 352.0569}
+  position: {x: 222, y: 352}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: Chase Sequence
@@ -262,7 +242,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 51f5c54a7623715409793046b0c93114
-  position: {x: -268.26703, y: 352.0569}
+  position: {x: -224, y: 352}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
   description: Wonder Sequence
@@ -271,7 +251,7 @@ MonoBehaviour:
   - {fileID: 1375762006400714018}
   - {fileID: 5444332883722125026}
   - {fileID: 4786867360556315872}
-  - {fileID: -3979760491985753288}
+  - {fileID: 7691740004851253844}
 --- !u!114 &7219569995677463753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,3 +275,27 @@ MonoBehaviour:
   children:
   - {fileID: 7184432414277962516}
   - {fileID: 5597016012972267114}
+--- !u!114 &7691740004851253844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd667f3fbd6be58439bce1863e1fa3a2, type: 3}
+  m_Name: WaitRandomSet
+  m_EditorClassIdentifier: 
+  state: 0
+  started: 0
+  guid: 0c2015275692402429dd5cf9fa02ebe2
+  position: {x: -73.999825, y: 481}
+  blackboard:
+    moveToPosition: {x: 0, y: 0, z: 0}
+  description: Slect a random wait duration from a list.
+  drawGizmos: 0
+  randomDurations:
+  - 0
+  - 0.5
+  - 1
