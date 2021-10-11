@@ -8,17 +8,19 @@ namespace Inventory_System
 {
     public class ItemWorld : MonoBehaviour
     {
+        private float _timer;
         public static ItemWorld SpawnItemWorld(Vector3 position, Item item)
         {
-            var transform = Instantiate(item.itemWorldPrefab, position, Quaternion.identity);
-
-            var  itemWorld     = transform.GetComponent<ItemWorld>();
-            var newUniqueItem = Object.Instantiate(item);
+            var worldObject = Instantiate(item.itemWorldPrefab, position, Quaternion.identity);
+            worldObject.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            var  itemWorld     = worldObject.GetComponent<ItemWorld>();
+            var newUniqueItem = Instantiate(item);
+            newUniqueItem.name = item.name;
             itemWorld.SetItem(newUniqueItem);
             return itemWorld;
         }
-        
-        private Item           _item;
+
+        private Item _item;
 
         private void Awake()
         {
@@ -31,6 +33,18 @@ namespace Inventory_System
             if (_item != null)
             {
                 GetComponentInChildren<TextMeshProUGUI>().SetText($"{_item.itemName}");
+            }
+
+            // When an item is spawned, it is given the layer Ignore Raycast, while it has this layermask
+            // a timer will increment, and add the pickup layermask to this object after 1.2 seconds has passed
+            if (gameObject.layer.Equals(LayerMask.NameToLayer("Ignore Raycast")))
+            {
+                _timer += Time.deltaTime;
+                if (_timer >= 1.5f)
+                {
+                    gameObject.layer = LayerMask.NameToLayer("Pickup");
+                    _timer = 0;
+                }
             }
         }
 
@@ -47,14 +61,6 @@ namespace Inventory_System
         public void DestroySelf()
         {
             Destroy(gameObject);
-        }
-
-        public static ItemWorld DropItem(Vector3 dropPosition, Item item)
-        {
-            Vector3 randomDirection = Random.insideUnitCircle.normalized;
-            item.amount = 1; // Reset the amount back to 1, as we only drop 1 item at a time
-            var itemWorld = SpawnItemWorld(dropPosition + randomDirection * 1f, item);
-            return itemWorld;
         }
     }
 }

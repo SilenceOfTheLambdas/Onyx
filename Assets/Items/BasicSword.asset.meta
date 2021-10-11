@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 6875d37269d2637459ecaf9fca58f087
+labels:
+- Weapon
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

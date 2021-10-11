@@ -48,8 +48,6 @@ namespace Inventory_System
                     Instantiate(itemSlotTemplate, itemSlotContainer).GetComponent<RectTransform>();
                 itemSlotRectTransform.gameObject.SetActive(true);
 
-                // TODO: Might want to use a grid component instead
-
                 // Action when left-clicking on an item
                 itemSlotRectTransform.GetComponent<Button_UI>().ClickFunc = () =>
                 {
@@ -60,10 +58,18 @@ namespace Inventory_System
                 // Action when right-clicking
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseRightClickFunc = () =>
                 {
+                    // Ask for confirmation to destroy item
+                    QuestionDialog.Instance.ShowQuestion("Are you sure you want to delete this item?", () =>
+                    {
+                        // Delete the item
+                        _inventory.RemoveItem(item);
+                    }, () => {});
+
                     // Drop Item
-                    var duplicateItem = item;
+                    /*var duplicateItem = item;
                     _inventory.RemoveItem(item);
                     ItemWorld.DropItem(new Vector3(_player.transform.position.x, _player.transform.position.y + 1f, _player.transform.position.z), duplicateItem);
+                    DestroyImmediate(duplicateItem);*/
                 };
 
                 // Display item stats when hovering over
