@@ -1,3 +1,5 @@
+using SuperuserUtils;
+
 namespace Inventory_System
 {
     public class ItemDatabase : GenericSingletonClass<ItemDatabase>

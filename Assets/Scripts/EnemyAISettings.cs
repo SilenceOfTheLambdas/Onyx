@@ -1,3 +1,4 @@
+using SuperuserUtils;
 using UnityEngine;
 
 public class EnemyAISettings : GenericSingletonClass<EnemyAISettings>

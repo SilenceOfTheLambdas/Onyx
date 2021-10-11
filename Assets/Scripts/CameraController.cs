@@ -1,20 +1,23 @@
 ﻿using System;
+using System.Diagnostics;
 using Enemies;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    
+
+    [SerializeField] private LayerMask terrainLayerMask, enemyHitableLayerMask, defaultOrCannotMoveLayerMask;
+
     private void Update()
     {
         if (GameManager.Instance.player.inventoryOpen == false)
         {
-            if (GetLayerFromMouseHover() == LayerMask.GetMask("Terrain"))
+            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(terrainLayerMask, out var _))
                 CursorController.Instance.SetCursor(CursorController.CursorTypes.Move);
-            if (GetLayerFromMouseHover() == LayerMask.GetMask("Enemy"))
+            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var _))
                 CursorController.Instance.SetCursor(CursorController.CursorTypes.Attack);
-            if (GetLayerFromMouseHover() == LayerMask.GetMask("Default"))
+            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(defaultOrCannotMoveLayerMask, out var _))
                 CursorController.Instance.SetCursor(CursorController.CursorTypes.CannotMove);
         }
     }
@@ -64,34 +67,5 @@ public class CameraController : MonoBehaviour
         }
 
         return default;
-    }
-
-    /// <summary>
-    /// Returns an Enemy that is underneath the cursor.
-    /// </summary>
-    /// <returns>The Enemy that is under the mouse pointer.</returns>
-    private static LayerMask GetLayerFromMouseHover()
-    {
-        var        mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        RaycastHit hit;
-        if (Physics.Raycast(mRay, out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-        {
-            return LayerMask.GetMask("Enemy");
-        }
-        if (Physics.Raycast(mRay, out hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
-        {
-            return LayerMask.GetMask("Terrain");
-        }
-        if (Physics.Raycast(mRay, out hit, Mathf.Infinity, LayerMask.GetMask("Default")))
-        {
-            return LayerMask.GetMask("Default");
-        }
-
-        if (Physics.Raycast(mRay, out hit, Mathf.Infinity, LayerMask.GetMask("UI")))
-        {
-            return LayerMask.GetMask("UI");
-        }
-
-        return LayerMask.GetMask("Default");
     }
 }

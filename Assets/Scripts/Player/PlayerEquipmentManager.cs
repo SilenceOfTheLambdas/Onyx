@@ -17,7 +17,7 @@ namespace Player
         public                   ChestItem            chest;
         public                   GameObject           boots;
 
-        private void Awake()
+        private void Start()
         {
             _equipmentInventory = new EquipmentInventory();
             _playerInventory = GetComponent<Player>().Inventory;
@@ -86,6 +86,7 @@ namespace Player
             var player = GetComponent<Player>();
             equipmentInventoryUI.hoverInterface.SetActive(false);
             _equipmentInventory.RemoveItem(item);
+
             if (item is WeaponItem)
             {
                 hasWeaponEquipped = false;

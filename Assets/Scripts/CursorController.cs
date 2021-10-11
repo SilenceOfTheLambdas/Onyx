@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperuserUtils;
+using System;
 using UnityEngine;
 
 public class CursorController : GenericSingletonClass<CursorController>
@@ -16,11 +17,6 @@ public class CursorController : GenericSingletonClass<CursorController>
         CannotMove,
         Equip,
         Dequip
-    }
-
-    private void Start()
-    {
-        
     }
 
     public void SetCursor(CursorTypes cursorType)

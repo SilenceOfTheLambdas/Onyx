@@ -53,7 +53,7 @@ namespace Inventory_System
         {
             Vector3 randomDirection = Random.insideUnitCircle.normalized;
             item.amount = 1; // Reset the amount back to 1, as we only drop 1 item at a time
-            var     itemWorld       = SpawnItemWorld(dropPosition + randomDirection * 1f, item);
+            var itemWorld = SpawnItemWorld(dropPosition + randomDirection * 1f, item);
             return itemWorld;
         }
     }

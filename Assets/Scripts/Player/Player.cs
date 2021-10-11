@@ -1,8 +1,11 @@
+using System;
 using Enemies;
 using UnityEngine;
 using Inventory_System;
 using UI;
 using UnityEngine.InputSystem;
+using SuperuserUtils;
+using UnityEngine.EventSystems;
 using Item = Inventory_System.Item;
 
 namespace Player
@@ -30,6 +33,8 @@ namespace Player
         }
 
         #endregion
+
+        #region Fields
 
         [Header("Player Statistics")]
         [Tooltip("The maximum amount of health the player has, this is affected by Strength")]
@@ -77,16 +82,12 @@ namespace Player
         private float _lastAttackTime; // last time we attacked
 
         public State state = State.Normal;
-
-        // Movement vector
-        private Vector2 _movement;
-
-        private                  ParticleSystem _hitEffect;
+        private ParticleSystem _hitEffect;
         public                   Controls       Controls;
         public                   PlayerUi       ui;
         public                   Inventory      Inventory;
         [SerializeField] private UI_Inventory   uiInventory;
-        [SerializeField] private LayerMask      enemyLayerMask;
+        [SerializeField] private LayerMask      enemyHitableLayerMask;
 
         [Header("User Interface")] [SerializeField]
         private GameObject inventoryScreen; // Reference to the inventory UI
@@ -98,6 +99,11 @@ namespace Player
         private PlayerEquipmentManager _playerEquipmentManager;
 
         [SerializeField] private float manaRegenerationTime;
+        private static readonly  int   SwordSlash = Animator.StringToHash("SwordSlash");
+
+        private bool _didThePlayerClickOnItemBeforeMoving;
+
+        #endregion
 
         private void Awake()
         {
@@ -124,22 +130,51 @@ namespace Player
 
         private void OnDisable() => Controls.Player.Disable();
 
-        public void OnCollisionEnter(Collision other)
+        #region Object Pickup
+        private void OnTriggerStay(Collider other)
         {
-            var itemWorld = other.gameObject.GetComponent<ItemWorld>();
-            if (itemWorld != null)
+            PlayerItemPickup(other);
+        }
+
+        /// <summary>
+        /// Detect if the player is within an ItemWorld's sphere collider, and if so; 
+        /// perform a raycast and pickup the object if and when the player presses the left mouse button over the object.
+        /// </summary>
+        /// <param name="other">The collider that is touching the player</param>
+        private void PlayerItemPickup(Collider other)
+        {
+            // If we click
+            if (Mouse.current.leftButton.IsPressed())
             {
-                // If we are touching an item
+                // Perform a raycast to detect if we are hovering over an item
+                if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out var _))
+                    return;
+                else
+                {
+                    var itemWorld = other.gameObject.GetComponent<ItemWorld>();
+                    if (!itemWorld) return;
+
+                    Inventory.AddItem(itemWorld.GetItem());
+                    itemWorld.DestroySelf();
+                }
+            }
+
+            if (_didThePlayerClickOnItemBeforeMoving)
+            {
+                var itemWorld = other.gameObject.GetComponent<ItemWorld>();
+                if (!itemWorld) return;
+
                 Inventory.AddItem(itemWorld.GetItem());
                 itemWorld.DestroySelf();
             }
         }
+        #endregion
 
         private void Start()
         {
             ui.UpdateLevelText();
             ui.UpdateSkillPointsText();
-            inventoryScreen.gameObject.SetActive(false);
+            inventoryScreen.SetActive(false);
         }
 
         private void Update()
@@ -182,6 +217,21 @@ namespace Player
                 _manaRegenTimer = 0;
                 ManaRegeneration();
             }
+
+            // Detect if player clicked on an item in the world
+            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out var _)
+                && Mouse.current.leftButton.isPressed)
+            {
+                Debug.Log("Mouse is hovering over item");
+                _didThePlayerClickOnItemBeforeMoving = true;
+            }
+            if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out var _)
+                && Mouse.current.leftButton.isPressed)
+            {
+                Debug.Log("Mouse is NOT hovering over item");
+                _didThePlayerClickOnItemBeforeMoving = false;
+            }
+            //////////////////////////////////////////////////
 
             // Attacking
             Attack();
@@ -245,45 +295,63 @@ namespace Player
             uiInventory.hoverInterface.SetActive(false);
         }
         
-        /// <summary>
-        /// Shoots a 2D raycast object, if this object hits an enemy it will take damage.
-        /// </summary>
         private void Attack()
         {
             // Check to see if the player has a weapon Equipped
             if (!_playerEquipmentManager.hasWeaponEquipped) return;
-            if (!Mouse.current.leftButton.isPressed) return;
-            if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
 
+            // Check if the player is hovering over an enemy
+            if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var _)) return;
+
+            // Check for attack rate timer
+            if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
             _lastAttackTime = Time.time;
 
             // Melee
-            if (Mouse.current.leftButton.isPressed && !(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen))
+            if (Mouse.current.rightButton.IsPressed() && !(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen))
             {
-                var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-                if (Physics.Raycast(mRay, out var mRaycastHit, Mathf.Infinity, enemyLayerMask))
+                // First we play the sword slash animation
+                GetComponent<Animator>().SetBool("isAttack", true);
+                /*GetComponent<Animator>().SetTrigger(SwordSlash);*/
+            }
+        }
+
+        /// <summary>
+        /// Called by the PlayerSwordSlash animation event. Does a raycast to check if we have hit an enemy, and if so, deal damage to that enemy.
+        /// </summary>
+        public void CheckAndDealDamageToEnemy()
+        {
+            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var o))
+            {
+                if (o != null)
                 {
-                    // If we have hit an enemy
-                    var enemy = mRaycastHit.collider.GetComponent<Enemy>();
-                    if (Vector3.Distance(transform.position, enemy.transform.position) >
-                        _playerEquipmentManager.weaponItem.weaponRange) return;
+                    var enemy = o.GetComponent<Enemy>();
+
+                    // Check if enemy is dead
                     if (enemy.IsDead) return;
-                    
-                    // Stop moving
-                    GetComponent<PlayerMovement>().navMeshAgent.ResetPath();
-                    state = State.Attacking;
-                    enemy.TakeDamage(CalculatePhysicalDamage());
-                    
-                    // play hit effect TODO: Fix hit effect
-                    // _hitEffect.transform.position = mRaycastHit.collider.transform.position;
-                    // _hitEffect.Play();
-                    
-                }
-                else
-                {
-                    state = State.Normal;
+
+                    // Check weapon range
+                    if (Vector3.Distance(transform.position, enemy.transform.position) <=
+                        _playerEquipmentManager.weaponItem.weaponRange)
+                    {
+
+                        // Stop moving
+                        GetComponent<PlayerMovement>().navMeshAgent.ResetPath();
+
+                        state = State.Attacking;
+                        enemy.TakeDamage(CalculatePhysicalDamage());
+                    }
                 }
             }
+            else
+            {
+                state = State.Normal;
+            }
+        }
+
+        public void StopAttackAnimation()
+        {
+            GetComponent<Animator>().SetBool("isAttack", false);
         }
 
         private int CalculatePhysicalDamage()
@@ -355,7 +423,7 @@ namespace Player
 
         private void ManaRegeneration()
         {
-            IncreaseMana(((float)manaRegenerationPercentage / 100f) * (float)maxMana);
+            IncreaseMana((manaRegenerationPercentage / 100f) * maxMana);
         }
 
         /// <summary>

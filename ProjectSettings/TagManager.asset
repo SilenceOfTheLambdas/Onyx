@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Pickup
+  - Hitable
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - Pickup
   - Player
   - Obstruction
-  - 
+  - Hitable
   - 
   - 
   - 

@@ -51,7 +51,6 @@ namespace Inventory_System
                     weaponSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
                     {
                         // Un-equip the item
-                        //_inventory.UnEquipItem(item);
                         CursorController.Instance.SetCursor(CursorController.CursorTypes.Dequip);
                         _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
                         weaponSlot.GetComponent<Button_UI>().enabled = false;

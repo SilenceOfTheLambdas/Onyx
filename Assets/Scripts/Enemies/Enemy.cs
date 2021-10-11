@@ -74,9 +74,6 @@ namespace Enemies
 
         [NonSerialized] private Player.Player _player;
 
-        // Components
-        private Rigidbody       _rig;
-        private TextMeshProUGUI _currentStateText;
         private Animator        _animator;
         
         // Private
@@ -89,76 +86,9 @@ namespace Enemies
         {
             // Get the player target
             _player = FindObjectOfType<Player.Player>();
-            // Get the rigid body comp
-            _rig = GetComponent<Rigidbody>();
             CurHp = maxHp;
             _xpToGive = (5 + damage) * enemyLevel;
-            _currentStateText = GetComponentInChildren<TextMeshProUGUI>();
             _animator = GetComponentInChildren<Animator>();
-        }
-
-        private void Start()
-        {
-            // var wanderState  = new WanderState(this);
-            // var chasePlayer  = new Chase(_player.gameObject, this);
-            // var attackPlayer = new MeleeAttack(this, _player.gameObject);
-            //
-            // // Go from patrolling to chasing the player, is the player is in the enemies' sight
-            // // _stateMachine.AddTransition(patrol, chasePlayer, () => IsPlayerInSight() && !IsPlayerWithinAttackRange());
-            //
-            // At(wanderState, chasePlayer, CanChasePlayer());
-            //
-            // if (enemyType == EnemyType.Mage)
-            // {
-            //     var attackPlayerWithFlameShot = new FlameShotAttack(this, _player.gameObject, transform.Find("SkillSpawn"), attackSkill);
-            //     
-            //     _stateMachine.AddAnyTransition(attackPlayerWithFlameShot, () =>
-            //     {
-            //         if (IsPlayerInSight().Invoke() && IsPlayerWithinSkillAttackRange().Invoke())
-            //         {
-            //             return true;
-            //         }
-            //
-            //         return false;
-            //     });
-            //     
-            //     At(attackPlayerWithFlameShot, chasePlayer, () =>
-            //     {
-            //         if (!IsPlayerWithinSkillAttackRange().Invoke() && CanChasePlayer().Invoke()) return true;
-            //         return false;
-            //     });
-            //
-            //     At(attackPlayerWithFlameShot, attackPlayer, CanMeleeAttack());
-            // } 
-            // else if (enemyType != EnemyType.Mage)
-            //     At(chasePlayer, attackPlayer, CanMeleeAttack());
-            //
-            // At(attackPlayer, chasePlayer, () => !CanMeleeAttack().Invoke() && CanChasePlayer().Invoke());
-            //
-            // At(chasePlayer, wanderState, () => !IsPlayerInSight().Invoke()); // if player is not insight
-            //
-            // _stateMachine.AddAnyTransition(wanderState, () => !IsPlayerInSight().Invoke());
-            //
-            // // Set the default state to patrolling
-            // _stateMachine.SetState(wanderState);
-            //
-            // void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
-            //
-            // Func<bool> IsPlayerInSight() => () => GetComponent<FieldOfView>().canSeePlayer;
-            //
-            // Func<bool> IsPlayerWithinChaseRange() => () =>
-            //     Vector3.Distance(transform.position, _player.transform.position) <= chaseRange &&
-            //     Vector3.Distance(transform.position, _player.transform.position) > attackRange;
-            //
-            // Func<bool> IsPlayerWithinSkillAttackRange() => () =>
-            //     Vector3.Distance(transform.position, _player.transform.position) <= attackRange &&
-            //     Vector3.Distance(transform.position, _player.transform.position) > meleeAttackRange;
-            //
-            // Func<bool> IsPlayerWithinMeleeAttackRange() => () =>
-            //     Vector3.Distance(transform.position, _player.transform.position) <= meleeAttackRange;
-            //
-            // Func<bool> CanChasePlayer() => () => IsPlayerInSight().Invoke() && IsPlayerWithinChaseRange().Invoke();
-            // Func<bool> CanMeleeAttack() => () => IsPlayerInSight().Invoke() && IsPlayerWithinMeleeAttackRange().Invoke();
         }
 
         private void Update()
@@ -197,10 +127,6 @@ namespace Enemies
             }
         }
 
-        private void FixedUpdate()
-        {
-        }
-
         public void TakeDamage(int damageTaken)
         {
             GetComponent<DamageEffect>()?.Activate();
@@ -228,7 +154,9 @@ namespace Enemies
             Destroy(gameObject);
         }
 
-        // Called by Animation event
+        /// <summary>
+        /// Called by an AnimationEvent in the enemy Animator
+        /// </summary>
         public void Attack()
         {
             var damageModifier = (_player.strengthPhysicalDamageIncreaseAmount * _player.strength);
