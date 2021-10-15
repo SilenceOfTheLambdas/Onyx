@@ -13,12 +13,16 @@ public class CameraController : MonoBehaviour
     {
         if (GameManager.Instance.player.inventoryOpen == false)
         {
-            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(terrainLayerMask, out var _))
-                CursorController.Instance.SetCursor(CursorController.CursorTypes.Move);
-            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var _))
-                CursorController.Instance.SetCursor(CursorController.CursorTypes.Attack);
-            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(defaultOrCannotMoveLayerMask, out var _))
-                CursorController.Instance.SetCursor(CursorController.CursorTypes.CannotMove);
+            var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            if (Physics.Raycast(mRay, out var mRaycastHit))
+            {
+                if (mRaycastHit.collider.CompareTag("Enemy"))
+                    CursorController.Instance.SetCursor(CursorController.CursorTypes.Attack);
+                if (mRaycastHit.collider.CompareTag("Walkable"))
+                    CursorController.Instance.SetCursor(CursorController.CursorTypes.Move);
+                if (mRaycastHit.collider.CompareTag("Untagged"))
+                    CursorController.Instance.SetCursor(CursorController.CursorTypes.CannotMove);
+            }
         }
     }
 
@@ -44,8 +48,8 @@ public class CameraController : MonoBehaviour
         var mousePosition = GetMouseWorldPosition();
         // shoot a raycast
         var hit = Physics2D.Raycast(mousePosition, mousePosition, 1, 1 << 9);
-        
-        if(hit.collider != null && !(hit.collider.GetComponent<GameObject>() is null))
+
+        if (hit.collider != null && !(hit.collider.GetComponent<GameObject>() is null))
             // If the ray cast hits a GameObject
         {
             return hit.collider.GetComponent<GameObject>();

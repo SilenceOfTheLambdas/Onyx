@@ -8,17 +8,22 @@ namespace Player
     
         [Header("User Interface")]
         [SerializeField] private Image weaponSlotImage;
+        [SerializeField] private UIEquipmentInventory equipmentInventoryUI;
         private                  Inventory            _playerInventory;
         private                  EquipmentInventory   _equipmentInventory;
-        [SerializeField] private UIEquipmentInventory equipmentInventoryUI;
         public                   bool                 hasWeaponEquipped;
         public                   WeaponItem           weaponItem; // Store the item in-case we need it back
         public                   HelmetItem           head;
         public                   ChestItem            chest;
         public                   GameObject           boots;
 
+        private Player _player;
+        private AbilitiesSystem _playerAbilitySystem;
+
         private void Start()
         {
+            _player = GetComponent<Player>();
+            _playerAbilitySystem = GetComponent<AbilitiesSystem>();
             _equipmentInventory = new EquipmentInventory();
             _playerInventory = GetComponent<Player>().Inventory;
             equipmentInventoryUI.SetPlayer(GetComponent<Player>());
@@ -34,56 +39,53 @@ namespace Player
 
         public void EquipHelmet(HelmetItem helmetItem)
         {
-            var player = GetComponent<Player>();
             head = helmetItem;
-            GetComponent<Player>().strength += helmetItem.strengthAmount;
-            GetComponent<Player>().intelligence += helmetItem.intelligenceAmount;
+            _playerAbilitySystem.strength += helmetItem.strengthAmount;
+            _playerAbilitySystem.intelligence += helmetItem.intelligenceAmount;
         
             // Update Player Stats
-            var startMana = player.CurrentMana;
+            var startMana = _playerAbilitySystem.CurrentMana;
             if (helmetItem.strengthAmount < 0)
-                player.maxHp -= (player.strengthHpIncreaseAmount * player.strength);
+                _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
             else if (helmetItem.strengthAmount > 0)
-                player.maxHp += (player.strengthHpIncreaseAmount * player.strength);
+                _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
         
             if (helmetItem.intelligenceAmount < 0)
-                player.maxMana -= (player.intelligenceManaIncreaseAmount * player.intelligence);
+                _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
             else if (helmetItem.intelligenceAmount > 0)
-                player.maxMana += (player.intelligenceManaIncreaseAmount * player.intelligence);
+                _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
 
-            player.manaRegenerationPercentage += helmetItem.manaRegenerationPercentage;
+            _playerAbilitySystem.manaRegenerationPercentage += helmetItem.manaRegenerationPercentage;
         
             _equipmentInventory.AddItem(helmetItem);
         }
 
         public void EquipChest(ChestItem chestItem)
         {
-            var player = GetComponent<Player>();
             chest = chestItem;
-            GetComponent<Player>().strength += chestItem.strengthAmount;
-            GetComponent<Player>().intelligence += chestItem.intelligenceAmount;
+            _playerAbilitySystem.strength += chestItem.strengthAmount;
+            _playerAbilitySystem.intelligence += chestItem.intelligenceAmount;
 
             // Update Player Stats
-            var startMana = player.CurrentMana;
+            var startMana = _playerAbilitySystem.CurrentMana;
             if (chestItem.strengthAmount < 0)
-                player.maxHp -= (player.strengthHpIncreaseAmount * player.strength);
+                _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
             else if (chestItem.strengthAmount > 0)
-                player.maxHp += (player.strengthHpIncreaseAmount * player.strength);
+                _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
         
             if (chestItem.intelligenceAmount < 0)
-                player.maxMana -= (player.intelligenceManaIncreaseAmount * player.intelligence);
+                _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
             else if (chestItem.intelligenceAmount > 0)
-                player.maxMana += (player.intelligenceManaIncreaseAmount * player.intelligence);
+                _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
 
-            if (player.GetComponent<PlayerEquipmentManager>().weaponItem != null)
-                player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange += chestItem.additionalWeaponRangeAmount;
+            if (_playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem != null)
+                _playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange += chestItem.additionalWeaponRangeAmount;
         
             _equipmentInventory.AddItem(chestItem);
         }
 
         public void UnEquip(Item item)
         {
-            var player = GetComponent<Player>();
             equipmentInventoryUI.hoverInterface.SetActive(false);
             _equipmentInventory.RemoveItem(item);
 
@@ -97,20 +99,20 @@ namespace Player
             if (item is HelmetItem helmetItem)
             {
                 head = null;
-                player.strength -= helmetItem.strengthAmount;
-                player.intelligence -= helmetItem.intelligenceAmount;
+                _playerAbilitySystem.strength -= helmetItem.strengthAmount;
+                _playerAbilitySystem.intelligence -= helmetItem.intelligenceAmount;
             
                 // Update Player Stats
-                var startMana = player.CurrentMana;
+                var startMana = _playerAbilitySystem.CurrentMana;
                 if (helmetItem.strengthAmount < 0)
-                    player.maxHp += (player.strengthHpIncreaseAmount * helmetItem.strengthAmount);
+                    _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * helmetItem.strengthAmount);
                 else if (helmetItem.strengthAmount > 0)
-                    player.maxHp -= (player.strengthHpIncreaseAmount * helmetItem.strengthAmount);
+                    _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * helmetItem.strengthAmount);
         
                 if (helmetItem.intelligenceAmount < 0)
-                    player.maxMana += (player.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
+                    _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
                 else if (helmetItem.intelligenceAmount > 0)
-                    player.maxMana -= (player.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
+                    _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
             
                 _playerInventory.AddItem(item);
             }
@@ -118,23 +120,23 @@ namespace Player
             if (item is ChestItem chestItem)
             {
                 this.chest = null;
-                player.strength -= chestItem.strengthAmount;
-                player.intelligence -= chestItem.intelligenceAmount;
+                _playerAbilitySystem.strength -= chestItem.strengthAmount;
+                _playerAbilitySystem.intelligence -= chestItem.intelligenceAmount;
             
                 // Update Player Stats
-                var startMana = player.CurrentMana;
+                var startMana = _playerAbilitySystem.CurrentMana;
                 if (chestItem.strengthAmount < 0)
-                    player.maxHp += (player.strengthHpIncreaseAmount * chestItem.strengthAmount);
+                    _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * chestItem.strengthAmount);
                 else if (chestItem.strengthAmount > 0)
-                    player.maxHp -= (player.strengthHpIncreaseAmount * chestItem.strengthAmount);
+                    _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * chestItem.strengthAmount);
         
                 if (chestItem.intelligenceAmount < 0)
-                    player.maxMana += (player.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
+                    _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
                 else if (chestItem.intelligenceAmount > 0)
-                    player.maxMana -= (player.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
+                    _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
             
-                if (player.GetComponent<PlayerEquipmentManager>().weaponItem != null)
-                    player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange -= chestItem.additionalWeaponRangeAmount;    
+                if (_playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem != null)
+                    _playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange -= chestItem.additionalWeaponRangeAmount;    
                 _playerInventory.AddItem(item);
             }
         }

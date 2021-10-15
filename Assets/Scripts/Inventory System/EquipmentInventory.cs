@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Inventory_System
 {
     public class EquipmentInventory
     {
         public event EventHandler OnItemListChanged;
-        private List<Item> itemList;
-        private Inventory  _playerInventory;
+        private readonly List<Item> itemList;
 
         public EquipmentInventory()
         {

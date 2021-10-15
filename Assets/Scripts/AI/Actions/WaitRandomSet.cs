@@ -7,15 +7,16 @@ namespace AI.Actions
     public class WaitRandomSet : ActionNode
     {
         [SerializeField] private List<float> randomDurations;
-        private                  float       _duration;
-        private                  float       _startTime;
+        private float _duration;
+        private float _startTime;
         protected override void OnStart()
         {
             _startTime = Time.time;
             _duration = randomDurations[Random.Range(0, randomDurations.Count)];
         }
 
-        protected override void OnStop() {
+        protected override void OnStop()
+        {
         }
 
         protected override State OnUpdate()

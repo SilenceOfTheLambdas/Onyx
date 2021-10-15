@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Skills;
+using Player;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,19 +12,21 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class SkillsManager : MonoBehaviour
 {
-    public                   List<Skill>       activeSkills = new List<Skill>();
-    public                   List<SkillHotbar> skillsHotbar;
-    [SerializeField] private Transform         skillSpawnPoint;
-    [SerializeField] private PlayerUi          playerUi;
-    private                  Player.Player     _player;
-    private                  Controls          _playerControls;
-    private                  Camera            _camera;
+    public List<Skill> activeSkills = new List<Skill>();
+    public List<SkillHotbar> skillsHotbar;
+    [SerializeField] private Transform skillSpawnPoint;
+    [SerializeField] private PlayerUi playerUi;
+    private Player.Player _player;
+    private AbilitiesSystem _playerAbilitiesSystem;
+    private Controls _playerControls;
+    private Camera _camera;
 
     private void Start()
     {
         _playerControls = GetComponent<Player.Player>().Controls;
         _camera = Camera.main;
         _player = GetComponent<Player.Player>();
+        _playerAbilitiesSystem = _player.GetComponent<AbilitiesSystem>();
     }
 
     private void Update()
@@ -35,7 +38,7 @@ public class SkillsManager : MonoBehaviour
                 case SkillType.Projectile:
                     if (CheckForCorrectSkillInput(skill) && !skill.InCoolDown && CheckIfPlayerHasEnoughMana(skill))
                         ShootProjectile(skill);
-                    
+
                     if (skill.InCoolDown)
                     {
                         skill.SkillTimer += Time.deltaTime;
@@ -54,7 +57,7 @@ public class SkillsManager : MonoBehaviour
                 case SkillType.Beam:
                     if (CheckForCorrectSkillInput(skill) && !skill.InCoolDown && CheckIfPlayerHasEnoughMana(skill))
                         CastBeam(skill);
-                    
+
                     if (skill.InCoolDown)
                     {
                         skill.SkillTimer += Time.deltaTime;
@@ -77,7 +80,7 @@ public class SkillsManager : MonoBehaviour
             }
         }
     }
-    
+
     public void UpgradeSkill(Skill skill, int amount = 1)
     {
         // First check to see if the player has the skill equipped
@@ -94,7 +97,7 @@ public class SkillsManager : MonoBehaviour
     private bool CheckForCorrectSkillInput(Skill skill)
     {
         var input = _playerControls.Player.Skill1;
-        
+
         if (activeSkills.FindIndex(s => s.skillName.Equals(skill.skillName)) == 0)
             input = _playerControls.Player.Skill1;
         if (activeSkills.FindIndex(s => s.skillName.Equals(skill.skillName)) == 1)
@@ -111,7 +114,7 @@ public class SkillsManager : MonoBehaviour
 
     private bool CheckIfPlayerHasEnoughMana(Skill skill)
     {
-        if (GetComponent<Player.Player>().CurrentMana - skill.manaCost >= 0)
+        if (GetComponent<AbilitiesSystem>().CurrentMana - skill.manaCost >= 0)
         {
             return true;
         }
@@ -120,52 +123,37 @@ public class SkillsManager : MonoBehaviour
             playerUi.manaBarAnimator.Play("ManaWiggleAnimation");
             return false;
         }
-    } 
+    }
 
     private void ShootProjectile(Skill skill)
     {
-        // Computer where the mouse is
-        var mousePos = new Vector2
-        {
-            x = Mouse.current.position.ReadValue().x,
-            y = Mouse.current.position.ReadValue().y
-        };
-        var position = transform.position;
-
         skill.InCoolDown = true;
         skill.HasBeenUsed = true;
         var projectile = Instantiate(skill.skillEffect, skillSpawnPoint.position, Quaternion.Euler(new Vector2(0, 0)));
-        _player.RemoveMana(skill.manaCost);
-        
+        _playerAbilitiesSystem.RemoveMana(skill.manaCost);
+
         var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(mRay, out var mRaycastHit, Mathf.Infinity))
         {
             var direction = -(skillSpawnPoint.transform.position - mRaycastHit.point).normalized;
             projectile.GetComponent<Rigidbody>().AddForce(direction * projectile.GetComponent<SkillProjectile>().projectileSpeed, ForceMode.Impulse);
         }
-        
+
         projectile.GetComponent<SkillProjectile>().Skill = skill;
-        
+
     }
 
     private void CastBeam(Skill skill)
     {
-        // Computer where the mouse is
-        var mousePos = new Vector2
-        {
-            x = Mouse.current.position.ReadValue().x,
-            y = Mouse.current.position.ReadValue().y
-        };
-        var position    = transform.position; // Get the player's position
-        var beam        = Instantiate(original: skill.skillEffect, parent: skillSpawnPoint);
+        var beam = Instantiate(original: skill.skillEffect, parent: skillSpawnPoint);
         var beamManager = beam.GetComponent<BeamManager>();
-        
+
         beamManager.SetOriginalRotation(skillSpawnPoint.rotation);
         beamManager.Skill = skill;
         beamManager.BeamSpawnPoint = skillSpawnPoint;
-        
+
         skill.InCoolDown = true;
         skill.HasBeenUsed = true;
-        _player.RemoveMana(skill.manaCost);
+        _playerAbilitiesSystem.RemoveMana(skill.manaCost);
     }
 }

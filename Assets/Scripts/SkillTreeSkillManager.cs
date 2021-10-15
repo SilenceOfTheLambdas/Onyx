@@ -6,27 +6,28 @@ using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Player;
 using Object = UnityEngine.Object;
 
 public class SkillTreeSkillManager : MonoBehaviour
 {
-    public                   Skill           skill;
-    [SerializeField] private SkillsManager   skillsManager;
-    [SerializeField] private PlayerUi        playerUi;
-    [SerializeField] private GameObject      skillInfoHover;
+    public Skill skill;
+    [SerializeField] private SkillsManager skillsManager;
+    [SerializeField] private PlayerUi playerUi;
+    [SerializeField] private GameObject skillInfoHover;
 
-    [Header("User Interface")] [SerializeField]
+    [Header("User Interface")]
+    [SerializeField]
     private Vector2 hoverOverlayPositionOffset;
-    private                  Image           _overlay;
-    private Image           _border;
-    private Image           _skillSpriteHolder;
+    private Image _overlay;
+    private Image _border;
+    private Image _skillSpriteHolder;
     private TextMeshProUGUI _levelText;
-    private TextMeshProUGUI _skillName, _skillDescription, _skillLevel, _skillType, _skillStats, _skillRequirements; 
-    
-    private Button_UI     _buttonUI;
-    private Player.Player _player;
-    private Skill         _activatedSkill;
-    private bool          _skillIsActive;
+    private TextMeshProUGUI _skillName, _skillDescription, _skillLevel, _skillType, _skillStats, _skillRequirements;
+
+    private Button_UI _buttonUI;
+    private AbilitiesSystem _playerAbilitySystem;
+    private Skill _activatedSkill;
 
     private void Awake()
     {
@@ -35,8 +36,8 @@ public class SkillTreeSkillManager : MonoBehaviour
         _skillSpriteHolder = transform.Find("skillSprite").GetComponent<Image>();
         _levelText = transform.Find("levelText").GetComponent<TextMeshProUGUI>();
         _buttonUI = GetComponent<Button_UI>();
-        _player = skillsManager.GetComponent<Player.Player>();
-        
+        _playerAbilitySystem = skillsManager.GetComponent<AbilitiesSystem>();
+
         // Setting Hover UI Stuff
         _skillName = skillInfoHover.transform.Find("skillName").GetComponent<TextMeshProUGUI>();
         _skillDescription = skillInfoHover.transform.Find("skillDescription").GetComponent<TextMeshProUGUI>();
@@ -65,13 +66,13 @@ public class SkillTreeSkillManager : MonoBehaviour
             _overlay.color = new Color(1f, 1f, 1f, 0f);
             _border.color = new Color(0.31f, 1f, 0.35f);
         }
-        
+
         if (!CheckSkillRequirements())
         {
             _overlay.color = new Color(0.17f, 0.17f, 0.17f, 0.55f);
             _border.color = new Color(0.17f, 0.17f, 0.17f, 0.55f);
         }
-        
+
         _buttonUI.ClickFunc = () =>
         {
             // If the skill is not unlocked, and we have the correct requirements
@@ -82,11 +83,11 @@ public class SkillTreeSkillManager : MonoBehaviour
                 skillsManager.activeSkills.Add(newSkill);
                 skillsManager.skillsHotbar.First(slot => slot.Skill == null).AssignSkillToHotbar(newSkill);
                 _activatedSkill = skillsManager.activeSkills.Find(s => s.skillName.Equals(skill.skillName));
-                _player.skillPoints -= _activatedSkill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
+                _playerAbilitySystem.skillPoints -= _activatedSkill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
                 playerUi.UpdateSkillPointsText();
             }
-            
-            
+
+
         };
 
         // If we already have the skill unlocked, and we have the required skills to upgrade
@@ -98,7 +99,7 @@ public class SkillTreeSkillManager : MonoBehaviour
                 skillsManager.UpgradeSkill(_activatedSkill);
                 // Update the tree UI
                 _levelText.SetText($"{_activatedSkill.skillLevel}");
-                _player.skillPoints -= _activatedSkill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
+                _playerAbilitySystem.skillPoints -= _activatedSkill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
                 playerUi.UpdateSkillPointsText();
             };
         }
@@ -122,7 +123,7 @@ public class SkillTreeSkillManager : MonoBehaviour
                 _skillLevel.SetText($"Skill Level: {currentSkill.skillLevel}");
             }
             _skillType.SetText($"Skill Type: {currentSkill.skillType}");
-            
+
             // Skill Stats
             _skillStats.SetText($"Skill Damage: {currentSkill.amountOfDamage}\n" +
                                 $"Cool Down: {currentSkill.coolDownTime}");
@@ -140,29 +141,29 @@ public class SkillTreeSkillManager : MonoBehaviour
     private bool CheckSkillRequirements()
     {
         return CheckIfPlayerHasRequiredNumberOfSkillPoints() &&
-               _player.intelligence >= skill.requiredIntelligenceLevel &&
+               _playerAbilitySystem.intelligence >= skill.requiredIntelligenceLevel &&
                (RequiredSkillsAreActive(skillsManager.activeSkills, skill.requiredActiveSkills)
                 || skill.requiredActiveSkills.Count == 0);
     }
 
     private bool CheckIfPlayerHasRequiredNumberOfSkillPoints()
     {
-        return _player.skillPoints >= skill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
+        return _playerAbilitySystem.skillPoints >= skill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
     }
 
     private bool CheckSkillUpgradeRequirements()
     {
         return CheckIfPlayerHasRequiredNumberOfSkillPoints() &&
-               _player.intelligence >= skill.requiredIntelligenceLevel &&
-               _player.curLevel >= skill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
+               _playerAbilitySystem.intelligence >= skill.requiredIntelligenceLevel &&
+               _playerAbilitySystem.curLevel >= skill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
     }
 
     private static bool RequiredSkillsAreActive(List<Skill> l1, List<Skill> l2)
     {
         var query = from firstItem in l1
-            join secondItem in l2
-                on firstItem.skillName equals secondItem.skillName
-            select firstItem;
+                    join secondItem in l2
+                        on firstItem.skillName equals secondItem.skillName
+                    select firstItem;
         return query.Count() != 0;
     }
 }

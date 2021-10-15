@@ -6,21 +6,19 @@ namespace AI.States
 {
     public class MeleeAttack
     {
-        private                 float      _timer;
-        private readonly        Enemy      _enemy;
-        private readonly        GameObject _target;
-        private                 Animator   _animator;
-        private static readonly int        Attack = Animator.StringToHash("MeleeAttack");
-        
-        private Transform chest;
-        
+        private float _timer;
+        private readonly Enemy _enemy;
+        private readonly GameObject _target;
+        private readonly Animator _animator;
+        private static readonly int Attack = Animator.StringToHash("MeleeAttack");
+
         public MeleeAttack(Enemy enemy, GameObject target)
         {
             _enemy = enemy;
             _target = target;
             _animator = _enemy.GetComponentInChildren<Animator>();
         }
-        
+
         public void OnEnter()
         {
             _animator.SetBool(Attack, true);

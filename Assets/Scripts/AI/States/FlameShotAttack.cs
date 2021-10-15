@@ -10,15 +10,13 @@ namespace AI.States
     /// </summary>
     public class FlameShotAttack
     {
-        private readonly        Transform    _projectileSpawnPosition;
-        private readonly        Skill        _skill;
-        private                 GameObject   _projectile;
-        private readonly        GameObject   _target;
-        private                 Vector3      _direction;
-        private                 Enemy        _enemy;
-        private                 Animator     _animator;
-        private readonly        NavMeshAgent _navMeshAgent;
-        private static readonly int          Speed = Animator.StringToHash("Speed");
+        private readonly Transform _projectileSpawnPosition;
+        private readonly Skill _skill;
+        private GameObject _projectile;
+        private readonly GameObject _target;
+        private Vector3 _direction;
+        private readonly Enemy _enemy;
+        private static readonly int Speed = Animator.StringToHash("Speed");
 
         public FlameShotAttack(Enemy enemy, GameObject target, Transform projectileSpawnPosition, Skill skill)
         {
@@ -26,9 +24,8 @@ namespace AI.States
             _enemy = enemy;
             _target = target;
             _projectileSpawnPosition = projectileSpawnPosition;
-            _navMeshAgent = enemy.GetComponent<NavMeshAgent>();
         }
-        
+
         public void OnEnter()
         {
         }
@@ -39,7 +36,7 @@ namespace AI.States
             {
                 SpawnProjectile();
             }
-            
+
             if (_projectile != null)
             {
                 var projectileSpeed = _projectile.GetComponent<SkillProjectile>().projectileSpeed;
@@ -49,7 +46,7 @@ namespace AI.States
                     _skill.InCoolDown = false;
                     _skill.SkillTimer = 0;
                 }
-                _projectile.GetComponent<Rigidbody>().AddForce(_direction * Time.deltaTime * projectileSpeed, ForceMode.Impulse);
+                _projectile.GetComponent<Rigidbody>().AddForce(projectileSpeed * Time.deltaTime * _direction, ForceMode.Impulse);
             }
 
             var targetRotation = Quaternion.LookRotation(_target.transform.position - _enemy.transform.position);
@@ -71,7 +68,7 @@ namespace AI.States
             _projectile = Object.Instantiate(_skill.skillEffect, _projectileSpawnPosition);
             _projectile.GetComponent<SkillProjectile>().Skill = _skill;
             _direction = (_projectile.transform.position - new Vector3(_target.transform.position.x, 0, _target.transform.position.z)).normalized;
-            
+
             _projectile.GetComponent<Rigidbody>().AddForce(_enemy.transform.forward * Speed, ForceMode.Impulse);
         }
     }

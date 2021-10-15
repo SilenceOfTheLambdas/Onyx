@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Enemies;
 using UnityEngine;
 
@@ -13,6 +10,7 @@ public class AttackPlayerEvent : MonoBehaviour
         _enemy = GetComponentInParent<Enemy>();
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
     private void AttackPlayer()
     {
         _enemy.Attack();

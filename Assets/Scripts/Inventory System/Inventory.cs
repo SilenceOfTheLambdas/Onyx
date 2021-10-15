@@ -7,8 +7,8 @@ namespace Inventory_System
     public class Inventory : MonoBehaviour
     {
         public event EventHandler OnItemListChanged;
-        private List<Item>   itemList;
-        private Action<Item> useItemAction;
+        private readonly List<Item>   itemList;
+        private readonly Action<Item> useItemAction;
 
         public Inventory(Action<Item> useItemAction)
         {

@@ -54,11 +54,14 @@ namespace SuperuserUtils
         /// Returns an Enemy that is underneath the cursor.
         /// </summary>
         /// <returns>The Enemy that is under the mouse pointer.</returns>
-        private static LayerMask GetLayerFromMouseHover()
+        public LayerMask GetLayerFromMouseHover()
         {
             var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             Physics.Raycast(mRay, out RaycastHit hit, Mathf.Infinity);
-            return hit.transform.gameObject.layer;
+            if (hit.transform != null)
+                return hit.transform.gameObject.layer;
+
+            return LayerMask.GetMask("Default");
         }
 
         #region MouseRaycast

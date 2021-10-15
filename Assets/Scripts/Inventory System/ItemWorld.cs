@@ -1,8 +1,5 @@
-using System;
 using TMPro;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 namespace Inventory_System
 {
@@ -12,7 +9,7 @@ namespace Inventory_System
         public static ItemWorld SpawnItemWorld(Vector3 position, Item item)
         {
             var worldObject = Instantiate(item.itemWorldPrefab, position, Quaternion.identity);
-            worldObject.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            worldObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             var  itemWorld     = worldObject.GetComponent<ItemWorld>();
             var newUniqueItem = Instantiate(item);
             newUniqueItem.name = item.name;

@@ -6,7 +6,6 @@ namespace Inventory_System
     public class ManaPotion : Item
     {
         [Header("Mana Potion Properties")]
-        
         [Tooltip("The amount of mana restored when used")]
         public int restoreAmount;
     }

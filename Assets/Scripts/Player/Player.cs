@@ -1,15 +1,16 @@
+#region Imports
 using System;
 using Enemies;
 using UnityEngine;
 using Inventory_System;
 using UI;
 using UnityEngine.InputSystem;
-using SuperuserUtils;
-using UnityEngine.EventSystems;
 using Item = Inventory_System.Item;
+#endregion
 
 namespace Player
 {
+    [RequireComponent(typeof(AbilitiesSystem))]
     public class Player : MonoBehaviour
     {
         public enum State
@@ -26,12 +27,6 @@ namespace Player
             private set => _curHp = Mathf.Clamp(value, 0, maxHp);
         }
 
-        public float CurrentMana
-        {
-            get => _currentMana;
-            set => _currentMana = Mathf.Clamp(value, 0f, maxMana);
-        }
-
         #endregion
 
         #region Fields
@@ -39,68 +34,28 @@ namespace Player
         [Header("Player Statistics")]
         [Tooltip("The maximum amount of health the player has, this is affected by Strength")]
         public int maxHp; // our maximum health
-
-        [Tooltip("The maximum amount of mana the player has, this is affected by Intelligence")]
-        public int maxMana;
-
-        [Range(0, 20)] [Tooltip("The percentage of mana restored every second")]
-        public int manaRegenerationPercentage = 1;
-
-        private float _manaRegenTimer;
-
-        private int   _curHp;
-        private float _currentMana;
-
-        [Header("Player Attributes")]
-        [Tooltip(
-            "Strength: for each level of strength: +strengthHpIncreaseAmount and +strengthPhysicalDamageIncreaseAmount to physical damage")]
-        public int strength;
-
-        [SerializeField] [Tooltip("The amount of HP to give the player per Strength level")]
-        public int strengthHpIncreaseAmount = 3;
-
-        [SerializeField] [Tooltip("The amount of Physical Damage to add towards attacks per Strength level")]
-        public int strengthPhysicalDamageIncreaseAmount = 5;
-
-        [Space]
-        [Tooltip(
-            "Intelligence: for each level: +intelligenceManaIncreaseAmount Mana and +intelligenceElementalDamageIncreaseAmount to elemental damage")]
-        public int intelligence;
-
-        [SerializeField] [Tooltip("The amount of Mana to give the player per Intelligence level")]
-        public int intelligenceManaIncreaseAmount = 10;
-
-        [SerializeField] [Tooltip("The amount of Elemental Damage to add towards Skill attacks per Intelligence level")]
-        public int intelligenceElementalDamageIncreaseAmount = 8;
-
-        [Header("Experience")] public int   skillPoints;
-        public                        int   curLevel; // our current level
-        public                        int   curXp; // our current experience points
-        public                        int   xpToNextLevel; // xp needed to level up
-        public                        float levelXpModifier; // modifier applied to 'xpToNextLevel' when we level up
-
-        private float _lastAttackTime; // last time we attacked
+        private int _curHp;
 
         public State state = State.Normal;
-        private ParticleSystem _hitEffect;
-        public                   Controls       Controls;
-        public                   PlayerUi       ui;
-        public                   Inventory      Inventory;
-        [SerializeField] private UI_Inventory   uiInventory;
-        [SerializeField] private LayerMask      enemyHitableLayerMask;
+        [NonSerialized] public Controls Controls;
+        [NonSerialized] public PlayerUi ui;
+        [NonSerialized] public Inventory Inventory;
+        [SerializeField] private UI_Inventory uiInventory;
+        [SerializeField] private LayerMask enemyHitableLayerMask;
 
-        [Header("User Interface")] [SerializeField]
+        [Header("User Interface")]
+        [SerializeField]
         private GameObject inventoryScreen; // Reference to the inventory UI
 
-        public                   bool       inventoryOpen; // is the player's inventory open?
         [SerializeField] private GameObject skillTreeScreen;
-        public                   bool       skillTreeOpen;
+        public bool inventoryOpen; // is the player's inventory open?
+        public bool skillTreeOpen;
 
+        // Private variables
+        private ParticleSystem _hitEffect;
+        private AbilitiesSystem _playerAbilitySystem;
         private PlayerEquipmentManager _playerEquipmentManager;
-
-        [SerializeField] private float manaRegenerationTime;
-        private static readonly  int   SwordSlash = Animator.StringToHash("SwordSlash");
-
+        private float _lastAttackTime; // last time we attacked
         private bool _didThePlayerClickOnItemBeforeMoving;
 
         #endregion
@@ -110,6 +65,8 @@ namespace Player
             // get components
             ui = FindObjectOfType<PlayerUi>();
             _hitEffect = gameObject.GetComponentInChildren<ParticleSystem>();
+            _playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+            _playerAbilitySystem = GetComponent<AbilitiesSystem>();
             state = State.Normal;
             Controls = new Controls();
 
@@ -118,20 +75,18 @@ namespace Player
             uiInventory.SetPlayer(this);
             uiInventory.SetInventory(Inventory);
 
-            // Set current HP and mana values
+            // Set current HP values
             _curHp = maxHp;
-            _currentMana = maxMana;
             CurrentHp = maxHp;
-            CurrentMana = maxMana;
-            _playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         }
-        
+
         private void OnEnable() => Controls.Player.Enable();
 
         private void OnDisable() => Controls.Player.Disable();
 
         #region Object Pickup
-        private void OnTriggerStay(Collider other)
+
+        private void OnTriggerEnter(Collider other)
         {
             PlayerItemPickup(other);
         }
@@ -179,11 +134,10 @@ namespace Player
 
         private void Update()
         {
-
             // If the inventory is open, pause the game
             if (inventoryOpen || skillTreeOpen)
             {
-                // Pause the game
+                // 'Pause' the game
                 Time.timeScale = 0f;
             }
             else // The player can only move if the inventory is NOT open
@@ -196,7 +150,7 @@ namespace Player
             {
                 inventoryOpen = !inventoryOpen;
                 inventoryScreen.SetActive(inventoryOpen);
-                
+
                 if (inventoryOpen)
                     CursorController.Instance.SetCursor(CursorController.CursorTypes.Default);
             }
@@ -205,36 +159,26 @@ namespace Player
             {
                 skillTreeOpen = !skillTreeOpen;
                 skillTreeScreen.SetActive(skillTreeOpen);
-                
+
                 if (skillTreeOpen)
                     CursorController.Instance.SetCursor(CursorController.CursorTypes.Default);
-            }
-
-            // Mana Regen
-            _manaRegenTimer += Time.deltaTime;
-            if (_manaRegenTimer >= manaRegenerationTime)
-            {
-                _manaRegenTimer = 0;
-                ManaRegeneration();
             }
 
             // Detect if player clicked on an item in the world
             if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out var _)
                 && Mouse.current.leftButton.isPressed)
             {
-                Debug.Log("Mouse is hovering over item");
                 _didThePlayerClickOnItemBeforeMoving = true;
             }
             if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out var _)
                 && Mouse.current.leftButton.isPressed)
             {
-                Debug.Log("Mouse is NOT hovering over item");
                 _didThePlayerClickOnItemBeforeMoving = false;
             }
             //////////////////////////////////////////////////
 
             // Attacking
-            Attack();
+            PlayerMeleeAttack();
         }
 
         private void UseItem(Item item)
@@ -253,8 +197,8 @@ namespace Player
                 if (_playerEquipmentManager.head == null)
                 {
                     // Check to see if we have the correct requirements
-                    if (strength >= helmetItem.strengthRequirement &&
-                        intelligence >= helmetItem.intelligenceRequirement)
+                    if (_playerAbilitySystem.strength >= helmetItem.strengthRequirement &&
+                        _playerAbilitySystem.intelligence >= helmetItem.intelligenceRequirement)
                     {
                         _playerEquipmentManager.EquipHelmet(helmetItem);
                         Inventory.RemoveItem(item);
@@ -266,7 +210,7 @@ namespace Player
             {
                 if (_playerEquipmentManager.chest == null)
                 {
-                    if (strength >= chestItem.strengthRequirement && intelligence >= chestItem.intelligenceRequirement)
+                    if (_playerAbilitySystem.strength >= chestItem.strengthRequirement && _playerAbilitySystem.intelligence >= chestItem.intelligenceRequirement)
                     {
                         _playerEquipmentManager.EquipChest(chestItem);
                         Inventory.RemoveItem(item);
@@ -285,17 +229,14 @@ namespace Player
 
             if (item is ManaPotion manaPotion)
             {
-                if (CurrentMana < maxMana)
-                {
-                    IncreaseMana(manaPotion.restoreAmount);
-                    Inventory.RemoveItem(item);
-                }
+
+                _playerAbilitySystem.AttempToUseManaPotion(Inventory, manaPotion);
             }
 
             uiInventory.hoverInterface.SetActive(false);
         }
-        
-        private void Attack()
+
+        private void PlayerMeleeAttack()
         {
             // Check to see if the player has a weapon Equipped
             if (!_playerEquipmentManager.hasWeaponEquipped) return;
@@ -312,7 +253,6 @@ namespace Player
             {
                 // First we play the sword slash animation
                 GetComponent<Animator>().SetBool("isAttack", true);
-                /*GetComponent<Animator>().SetTrigger(SwordSlash);*/
             }
         }
 
@@ -339,7 +279,7 @@ namespace Player
                         GetComponent<PlayerMovement>().navMeshAgent.ResetPath();
 
                         state = State.Attacking;
-                        enemy.TakeDamage(CalculatePhysicalDamage());
+                        enemy.TakeDamage(_playerAbilitySystem.CalculatePhysicalDamage());
                     }
                 }
             }
@@ -354,54 +294,18 @@ namespace Player
             GetComponent<Animator>().SetBool("isAttack", false);
         }
 
-        private int CalculatePhysicalDamage()
-        {
-            var helmetItem = _playerEquipmentManager.head;
-            var dmg        = _playerEquipmentManager.weaponItem.damage; // the weapons damage is used as a base
-            dmg += (strengthPhysicalDamageIncreaseAmount * strength);
-            return dmg;
-        }
-
-        // called when we gain xp
-        public void AddXp(int xp)
-        {
-            curXp += xp;
-
-            if (curXp >= xpToNextLevel)
-            {
-                LevelUp(xp);
-            }
-        }
-
-        // called when our xp reaches the max for this level
-        private void LevelUp(int xp)
-        {
-            curLevel++;
-            skillPoints += 1;
-            curXp = 0;
-            if (xp > xpToNextLevel)
-                curXp += xp - xpToNextLevel;
-            if (xp < xpToNextLevel)
-                curXp += xpToNextLevel - xp;
-            xpToNextLevel = (int)(xpToNextLevel * levelXpModifier);
-
-            ui.UpdateLevelText();
-            ui.UpdateSkillPointsText();
-        }
-
-        // called when an enemy attacks us
+        /// <summary>
+        /// Inflict damage upon the <see cref="Player"/>, specifying the BASE amount of damage to do.
+        /// It will then use this value and factor in the player's stats to get the final damage value.
+        /// </summary>
+        /// <param name="damageTaken">The base amount of damage to inflict (i.e the enemy damage)</param>
         public void TakeDamage(int damageTaken)
         {
-            CurrentHp -= damageTaken;
+            var damageModifier = (_playerAbilitySystem.strengthPhysicalDamageIncreaseAmount * _playerAbilitySystem.strength);
+            CurrentHp -= damageTaken - damageModifier;
 
             if (CurrentHp <= 0)
                 Die();
-        }
-
-        public void RemoveMana(int amountOfManaToTake)
-        {
-            var startMana = _currentMana;
-            CurrentMana -= amountOfManaToTake;
         }
 
         private void IncreaseHp(int amount)
@@ -411,19 +315,6 @@ namespace Player
                 CurrentHp = maxHp;
             else
                 CurrentHp += amount;
-        }
-
-        private void IncreaseMana(float amount)
-        {
-            if (CurrentMana + amount >= maxMana)
-                CurrentMana = maxMana;
-            else
-                CurrentMana += amount;
-        }
-
-        private void ManaRegeneration()
-        {
-            IncreaseMana((manaRegenerationPercentage / 100f) * maxMana);
         }
 
         /// <summary>

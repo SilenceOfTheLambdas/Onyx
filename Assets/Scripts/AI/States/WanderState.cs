@@ -12,7 +12,6 @@ namespace AI.States
         private                 NavMeshAgent    _navMeshAgent;
         private                 List<Transform> _patrolPoints;
         private                 int             _index;
-        private                 float           _timer;
         private static readonly int             Speed = Animator.StringToHash("Speed");
 
         public WanderState(Enemy enemy)

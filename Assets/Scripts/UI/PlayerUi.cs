@@ -2,6 +2,7 @@
 using Enemies;
 using TMPro;
 using UnityEngine;
+using Player;
 using UnityEngine.UI;
 
 namespace UI
@@ -40,11 +41,29 @@ namespace UI
         public TextMeshProUGUI interactText;
 
         private Player.Player _player;
+        private AbilitiesSystem _playerAbilitySystem;
+
+        private void OnEnable()
+        {
+            AbilitiesSystem.OnLevelUp += UpdatePlayerLevelStats;
+        }
+
+        private void OnDisable()
+        {
+            AbilitiesSystem.OnLevelUp -= UpdatePlayerLevelStats;
+        }
+
+        private void UpdatePlayerLevelStats()
+        {
+            UpdateLevelText();
+            UpdateSkillPointsText();
+        }
 
         private void Awake()
         {
             // Get the player
             _player = FindObjectOfType<Player.Player>();
+            _playerAbilitySystem = _player.GetComponent<AbilitiesSystem>();
         }
 
         private void Update()
@@ -56,12 +75,12 @@ namespace UI
 
         public void UpdateLevelText()
         {
-            levelText.text = _player.curLevel.ToString();
+            levelText.text = _playerAbilitySystem.curLevel.ToString();
         }
 
         public void UpdateSkillPointsText()
         {
-            skillPointsText.SetText($"Skill Points: {_player.skillPoints}");
+            skillPointsText.SetText($"Skill Points: {_playerAbilitySystem.skillPoints}");
         }
 
         private void UpdateHealthBar()
@@ -80,25 +99,25 @@ namespace UI
         private void UpdateXpBar()
         {
             float prevXpFill    = xpBarFill.fillAmount;
-            float currentXpFill = (float)_player.curXp / _player.xpToNextLevel;
+            float currentXpFill = (float)_playerAbilitySystem.curXp / _playerAbilitySystem.xpToNextLevel;
 
             if (currentXpFill > prevXpFill) prevXpFill = Mathf.Min(prevXpFill + fillSmoothness, currentXpFill);
             else if (currentXpFill < prevXpFill)
                 prevXpFill = Mathf.Max(prevXpFill - fillSmoothness, currentXpFill);
 
             xpBarFill.fillAmount = prevXpFill;
-            xpFillText.SetText($"{_player.curXp}/{_player.xpToNextLevel}");
+            xpFillText.SetText($"{_playerAbilitySystem.curXp}/{_playerAbilitySystem.xpToNextLevel}");
         }
 
         private void UpdateManaBar()
         {
             float prevManaFill    = manaBarFill.fillAmount;
-            float currentManaFill = (float)_player.CurrentMana / _player.maxMana;
+            float currentManaFill = (float)_playerAbilitySystem.CurrentMana / _playerAbilitySystem.maxMana;
             if (currentManaFill > prevManaFill) prevManaFill = Mathf.Min(prevManaFill + fillSmoothness, currentManaFill);
             else if (currentManaFill < prevManaFill)
                 prevManaFill = Mathf.Max(prevManaFill - fillSmoothness, currentManaFill);
             manaBarFill.fillAmount = prevManaFill;
-            manaBarFillText.SetText($"{(int)_player.CurrentMana}/{_player.maxMana}");
+            manaBarFillText.SetText($"{(int)_playerAbilitySystem.CurrentMana}/{_playerAbilitySystem.maxMana}");
         }
 
         public void ToggleEnemyInfoPanel(bool isActive)

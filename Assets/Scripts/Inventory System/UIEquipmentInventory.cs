@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Player;
+﻿using Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

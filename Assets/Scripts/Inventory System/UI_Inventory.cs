@@ -11,11 +11,17 @@ namespace Inventory_System
         [SerializeField] private Transform     itemSlotContainer;
         [SerializeField] private Transform     itemSlotTemplate;
         private                  Player.Player _player;
+        private AbilitiesSystem _playerAbilitySystem;
         public                   GameObject    hoverInterface;
 
+        /// <summary>
+        /// Set the player, and the ability system variable
+        /// </summary>
+        /// <param name="player">The player</param>
         public void SetPlayer(Player.Player player)
         {
             _player = player;
+            _playerAbilitySystem = _player.GetComponent<AbilitiesSystem>();
         }
 
         public void SetInventory(Inventory inventory)
@@ -121,10 +127,10 @@ namespace Inventory_System
             {
                 case HelmetItem helmetItem:
                     var requirementString = $"Intelligence: {helmetItem.intelligenceRequirement}    Strength: {helmetItem.strengthRequirement}";
-                    if (_player.intelligence < helmetItem.intelligenceRequirement)
+                    if (_playerAbilitySystem.intelligence < helmetItem.intelligenceRequirement)
                         requirementString = requirementString.Replace($"{helmetItem.intelligenceRequirement}",
                             $"<color=red>{helmetItem.intelligenceRequirement}</color>");
-                    if (_player.strength < helmetItem.strengthRequirement)
+                    if (_playerAbilitySystem.strength < helmetItem.strengthRequirement)
                         requirementString = requirementString.Replace($"{helmetItem.strengthRequirement}",
                             $"<color=red>{helmetItem.strengthRequirement}</color>");
                     

@@ -14,11 +14,9 @@ namespace AI.States
     {
         private readonly Enemy           _enemy;
         private          Rigidbody       _rigidbody;
-        private readonly Seeker          _seeker;
         private readonly List<Transform> _patrolPoints;
         private readonly NavMeshAgent    _navMeshAgent;
 
-        private Path    _path;
         private Vector3 _currentTargetPosition;
         private float   _timer;
 

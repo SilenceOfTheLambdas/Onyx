@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Skills;
 using TMPro;
+using Player;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -28,34 +29,34 @@ namespace Enemies
 
         [SerializeField] private Skill attackSkill;
 
-        [Header("Enemy Statistics")] [Space]
-        
+        [Header("Enemy Statistics")]
+        [Space]
+
         [Tooltip("The level of this enemy, the level is used as a multiplier for the XP given on death")]
         public int enemyLevel = 1;
-        
+
         [Tooltip("The maximum amount of HP this enemy has")]
-        public  int maxHp;
+        public int maxHp;
 
         public int CurHp { get; private set; }
-        
+
         // These options are set via weapons
-        public int   damage     = 2; // The maximum amount of damage the enemy can do
+        public int damage = 2; // The maximum amount of damage the enemy can do
         public float attackRange = 1; // The maximum range in which the enemy can hit the player
         public float attackRate = 1; // How quick the enemy can attack the player
 
         [SerializeField] private List<Transform> patrolPoints;
         public List<Transform> PatrolPoints => patrolPoints;
 
-        [Header("Enemy AI Parameters")] [Space]
-        
-        [SerializeField] [Tooltip("The area in which the player can be detected")]
+        [Header("Enemy AI Parameters")]
+        [Space]
+        [Tooltip("The area in which the player can be detected")]
         public float playerDetectionRadius; // The radius of the circle used to detect the player
-
-        public                  float meleeAttackRange;
-        [SerializeField] public float chaseRange;
+        public float meleeAttackRange;
+        public float chaseRange;
 
         [SerializeField] private GameObject damageNumberDisplayPrefab;
-        
+
 
         /// <summary>
         /// This will be set according the the enemies level and their level,
@@ -64,23 +65,19 @@ namespace Enemies
         /// </summary>
         private int _xpToGive;
 
-        /// <summary>
-        /// The any force that needs to be applied to the rigidbody.
-        /// </summary>
-        private Vector2 _movementForce;
-
         // Is the enemy dead?
         [NonSerialized] public bool IsDead = false;
 
         [NonSerialized] private Player.Player _player;
+        private AbilitiesSystem _playerAbilitySystem;
 
-        private Animator        _animator;
-        
+        private Animator _animator;
+
         // Private
-        private                 float _damageOverTimeTimer;
-        private static readonly int   VelocityZ = Animator.StringToHash("VelocityZ");
-        private static readonly int   VelocityX = Animator.StringToHash("VelocityX");
-        private static readonly int   Speed     = Animator.StringToHash("Speed");
+        private float _damageOverTimeTimer;
+        private static readonly int VelocityZ = Animator.StringToHash("VelocityZ");
+        private static readonly int VelocityX = Animator.StringToHash("VelocityX");
+        private static readonly int Speed = Animator.StringToHash("Speed");
 
         private void Awake()
         {
@@ -89,6 +86,7 @@ namespace Enemies
             CurHp = maxHp;
             _xpToGive = (5 + damage) * enemyLevel;
             _animator = GetComponentInChildren<Animator>();
+            _playerAbilitySystem = _player.GetComponent<AbilitiesSystem>();
         }
 
         private void Update()
@@ -96,10 +94,10 @@ namespace Enemies
             // Animating
             var velocityZ = Vector3.Dot(GetComponent<NavMeshAgent>().velocity.normalized, transform.forward);
             var velocityX = Vector3.Dot(GetComponent<NavMeshAgent>().velocity.normalized, transform.right);
-            
+
             _animator.SetFloat(VelocityZ, velocityZ, 0.1f, Time.deltaTime);
             _animator.SetFloat(VelocityX, velocityX, 0.1f, Time.deltaTime);
-            
+
             _animator.SetFloat(Speed, GetComponent<NavMeshAgent>().velocity.magnitude);
         }
 
@@ -129,10 +127,13 @@ namespace Enemies
 
         public void TakeDamage(int damageTaken)
         {
-            GetComponent<DamageEffect>()?.Activate();
+            if (GetComponent<DamageEffect>() != null) {
+                GetComponent<DamageEffect>().Activate();
+            }
+
             // Display the amount of damage the player has dealt
             var damageNumberDisplay = Instantiate(damageNumberDisplayPrefab, transform.Find("Canvas"));
-            
+
             // Randomly set the anchored X position
             var rectTransform = damageNumberDisplay.GetComponent<RectTransform>().anchoredPosition3D;
             rectTransform = new Vector3(Random.Range(rectTransform.x - 5f, rectTransform.x + 5f), 0f, 0f);
@@ -140,7 +141,7 @@ namespace Enemies
 
             damageNumberDisplay.GetComponent<TextMeshProUGUI>().SetText($"-{damageTaken}"); // Update the damage text
             CurHp -= damageTaken;
-            
+
             GameManager.Instance.playerUi.ToggleEnemyInfoPanel(true);
             GameManager.Instance.playerUi.UpdateEnemyInformationPanel(this);
             if (CurHp <= 0) Die();
@@ -148,7 +149,7 @@ namespace Enemies
 
         private void Die()
         {
-            _player.AddXp(_xpToGive);
+            _playerAbilitySystem.AddXp(_xpToGive);
             IsDead = true; // set the enemy to deadness :)
             GameManager.Instance.playerUi.ToggleEnemyInfoPanel(false);
             Destroy(gameObject);
@@ -159,8 +160,7 @@ namespace Enemies
         /// </summary>
         public void Attack()
         {
-            var damageModifier = (_player.strengthPhysicalDamageIncreaseAmount * _player.strength);
-            _player.TakeDamage(damage - damageModifier);
+            _player.TakeDamage(damage);
         }
 
         #region Helper
