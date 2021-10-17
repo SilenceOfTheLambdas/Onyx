@@ -45,9 +45,6 @@ namespace Enemies
         public float attackRange = 1; // The maximum range in which the enemy can hit the player
         public float attackRate = 1; // How quick the enemy can attack the player
 
-        [SerializeField] private List<Transform> patrolPoints;
-        public List<Transform> PatrolPoints => patrolPoints;
-
         [Header("Enemy AI Parameters")]
         [Space]
         [Tooltip("The area in which the player can be detected")]

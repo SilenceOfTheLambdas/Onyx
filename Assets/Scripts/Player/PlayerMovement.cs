@@ -52,7 +52,8 @@ namespace Player
         private void Update()
         {
             // checks to see if we are clicking on terrain or an enemy, and acts accordingly
-            if (Mouse.current.leftButton.isPressed && (!(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen)) && !UsingBeamSkill)
+            if (Mouse.current.leftButton.isPressed && (!(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen)) && !UsingBeamSkill
+                && GetComponent<Player>().state != Player.State.Attacking)
             {
                 #region Move to mouse position
                 var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -76,8 +77,8 @@ namespace Player
                 // If we click on an enemy
                 if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Enemy"), out var enemy))
                 {
-                    if (enemy != null)
-                        if (Vector3.Distance(transform.position, enemy.transform.position) <= GameManager.Instance.player.GetComponent<PlayerEquipmentManager>()?.weaponItem.weaponRange)
+                    if (enemy != null && GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem != null)
+                        if (Vector3.Distance(transform.position, enemy.transform.position) <= GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange)
                             return;
                     
                     var positionToMoveTo = hit.point;

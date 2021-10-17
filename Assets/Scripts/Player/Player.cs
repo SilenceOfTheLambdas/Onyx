@@ -292,6 +292,7 @@ namespace Player
         public void StopAttackAnimation()
         {
             GetComponent<Animator>().SetBool("isAttack", false);
+            state = State.Normal;
         }
 
         /// <summary>

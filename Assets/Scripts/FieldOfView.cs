@@ -13,6 +13,8 @@ public class FieldOfView : MonoBehaviour
     public LayerMask obstructionMask;
 
     public bool canSeePlayer;
+    public bool hasALastKnownPosition;
+    public Vector3 lastKnownTargetPosition;
 
     private void Start()
     {
@@ -38,7 +40,7 @@ public class FieldOfView : MonoBehaviour
 
         if (rangeChecks.Length != 0)
         {
-            var     target            = rangeChecks[0].transform;
+            var target = rangeChecks[0].transform;
             var directionToTarget = (target.position - transform.position).normalized;
 
             if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
@@ -52,14 +54,23 @@ public class FieldOfView : MonoBehaviour
                     Quaternion rot = Quaternion.LookRotation(playerRef.transform.position - transform.position, transform.TransformDirection(Vector3.up));
                     transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 3);
                 }
-                else canSeePlayer = false;
+                else
+                {
+                    lastKnownTargetPosition = target.position;
+                    hasALastKnownPosition = true;
+                    canSeePlayer = false;
+                }
             }
             else
             {
+                hasALastKnownPosition = false;
                 canSeePlayer = false;
             }
         }
         else if (canSeePlayer)
+        {
+            hasALastKnownPosition = false;
             canSeePlayer = false;
+        }
     }
 }

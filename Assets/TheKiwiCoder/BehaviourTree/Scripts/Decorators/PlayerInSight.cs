@@ -1,7 +1,10 @@
 using TheKiwiCoder;
+using UnityEngine;
+
 public class PlayerInSight : ActionNode
 {
     private FieldOfView _fieldOfView;
+    
     protected override void OnStart()
     {
         _fieldOfView = context.gameObject.GetComponent<FieldOfView>();
@@ -16,6 +19,6 @@ public class PlayerInSight : ActionNode
         if (!_fieldOfView.canSeePlayer)
             return State.Failure;
         
-        return State.Failure;
+        return State.Running;
     }
 }

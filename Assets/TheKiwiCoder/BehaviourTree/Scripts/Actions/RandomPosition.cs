@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TheKiwiCoder;
 
@@ -15,8 +13,7 @@ public class RandomPosition : ActionNode
     }
 
     protected override State OnUpdate() {
-        blackboard.moveToPosition.x = Random.Range(min.x, max.x);
-        blackboard.moveToPosition.z = Random.Range(min.y, max.y);
+        blackboard.moveToPosition = Random.insideUnitSphere.normalized * Random.Range(min.x, min.y);
         return State.Success;
     }
 }
