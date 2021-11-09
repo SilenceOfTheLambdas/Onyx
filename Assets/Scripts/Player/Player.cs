@@ -37,19 +37,19 @@ namespace Player
         private int _curHp;
 
         public State state = State.Normal;
-        [NonSerialized] public Controls Controls;
-        [NonSerialized] public PlayerUi ui;
-        [NonSerialized] public Inventory Inventory;
-        [SerializeField] private UI_Inventory uiInventory;
-        [SerializeField] private LayerMask enemyHitableLayerMask;
+        [NonSerialized]     public  Controls        Controls;
+        [NonSerialized]     public  PlayerUi        ui;
+        [NonSerialized]     public  Inventory       Inventory;
+        [SerializeField]    private UI_Inventory    uiInventory;
+        [SerializeField]    private LayerMask       enemyHitableLayerMask;
 
         [Header("User Interface")]
         [SerializeField]
         private GameObject inventoryScreen; // Reference to the inventory UI
 
         [SerializeField] private GameObject skillTreeScreen;
-        public bool inventoryOpen; // is the player's inventory open?
-        public bool skillTreeOpen;
+        [HideInInspector] public bool inventoryOpen;
+        [HideInInspector] public bool skillTreeOpen;
 
         // Private variables
         private ParticleSystem _hitEffect;
@@ -176,7 +176,7 @@ namespace Player
                 _didThePlayerClickOnItemBeforeMoving = false;
             }
             //////////////////////////////////////////////////
-
+            
             // Attacking
             PlayerMeleeAttack();
         }
@@ -242,7 +242,7 @@ namespace Player
             if (!_playerEquipmentManager.hasWeaponEquipped) return;
 
             // Check if the player is hovering over an enemy
-            if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var _)) return;
+            /*if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var _)) return;*/
 
             // Check for attack rate timer
             if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
@@ -253,6 +253,7 @@ namespace Player
             {
                 // First we play the sword slash animation
                 GetComponent<Animator>().SetBool("isAttack", true);
+                GetComponent<Animator>().SetTrigger("SwordSlash");
             }
         }
 
@@ -291,8 +292,12 @@ namespace Player
 
         public void StopAttackAnimation()
         {
-            GetComponent<Animator>().SetBool("isAttack", false);
             state = State.Normal;
+        }
+
+        public void SetAttackingState()
+        {
+            state = State.Attacking;
         }
 
         /// <summary>

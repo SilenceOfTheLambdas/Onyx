@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Skills;
 using TMPro;
 using Player;
+using TheKiwiCoder;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -54,6 +55,8 @@ namespace Enemies
 
         [SerializeField] private GameObject damageNumberDisplayPrefab;
 
+        public delegate Node.State EnemyHitEvent();
+        public event EnemyHitEvent OnEnemyHit;
 
         /// <summary>
         /// This will be set according the the enemies level and their level,
@@ -71,10 +74,11 @@ namespace Enemies
         private Animator _animator;
 
         // Private
-        private float _damageOverTimeTimer;
-        private static readonly int VelocityZ = Animator.StringToHash("VelocityZ");
-        private static readonly int VelocityX = Animator.StringToHash("VelocityX");
-        private static readonly int Speed = Animator.StringToHash("Speed");
+        private                  float _damageOverTimeTimer;
+        private static readonly  int   VelocityZ = Animator.StringToHash("VelocityZ");
+        private static readonly  int   VelocityX = Animator.StringToHash("VelocityX");
+        private static readonly  int   Speed     = Animator.StringToHash("Speed");
+        [HideInInspector] public bool  wasHit;
 
         private void Awake()
         {
@@ -124,6 +128,8 @@ namespace Enemies
 
         public void TakeDamage(int damageTaken)
         {
+            OnEnemyHit?.Invoke();
+            wasHit = true;
             if (GetComponent<DamageEffect>() != null) {
                 GetComponent<DamageEffect>().Activate();
             }

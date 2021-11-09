@@ -13,7 +13,7 @@ public class ChasePlayer : ActionNode
     protected override void OnStart()
     {
         _targetObjectToChase = FindObjectOfType<Player.Player>().gameObject;
-        _navMeshAgent = context.agent;
+        _navMeshAgent = context.Agent;
         _navMeshAgent.stoppingDistance = stopDistance;
     }
 

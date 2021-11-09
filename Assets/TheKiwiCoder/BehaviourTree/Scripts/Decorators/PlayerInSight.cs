@@ -7,7 +7,7 @@ public class PlayerInSight : ActionNode
     
     protected override void OnStart()
     {
-        _fieldOfView = context.gameObject.GetComponent<FieldOfView>();
+        _fieldOfView = context.GameObject.GetComponent<FieldOfView>();
     }
 
     protected override void OnStop() {
