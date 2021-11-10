@@ -10,7 +10,7 @@ namespace Inventory_System
         [Tooltip("The amount of damage this weapon deals to an enemy when hit")]
         public int damage;
         
-        [Tooltip("The maximum range this weapon can be used")] [Range(1f, 2f)]
+        [Tooltip("The maximum range this weapon can be used")] [Range(2f, 10f)]
         public float weaponRange;
 
         [Tooltip("Attack speed of the weapon (Attack every n seconds)")][Range(0.1f, 2f)]

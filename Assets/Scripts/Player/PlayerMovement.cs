@@ -115,7 +115,7 @@ namespace Player
                 {
                     #region Rotate and face the cursor (in World Space) and stop moving
                     var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-                    if (Physics.Raycast(mRay, out var hit, Mathf.Infinity, cameraLayerMask))
+                    if (Physics.Raycast(mRay, out var hit, Mathf.Infinity))
                     {
                         var lookPosition = hit.point - transform.position;
                         lookPosition.y = 0;

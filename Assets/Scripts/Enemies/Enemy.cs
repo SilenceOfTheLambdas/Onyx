@@ -111,6 +111,18 @@ namespace Enemies
                 transform.LookAt(other.transform);
                 Destroy(other.gameObject);
             }
+
+            // If the enemy is hit by a player weapon
+            if (other.CompareTag("EquippedWeapon"))
+            {
+                var enemyHitDetection = other.GetComponent<EnemyHitDetection>();
+                if (enemyHitDetection != null)
+                {
+                    // Perform a range check
+                    if (Vector3.Distance(transform.position, _player.gameObject.transform.position) <= _player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange)
+                        TakeDamage(enemyHitDetection.playerAbilitySystem.CalculatePhysicalDamage());
+                }
+            }
         }
 
         private void OnTriggerStay(Collider other)

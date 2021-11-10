@@ -241,9 +241,6 @@ namespace Player
             // Check to see if the player has a weapon Equipped
             if (!_playerEquipmentManager.hasWeaponEquipped) return;
 
-            // Check if the player is hovering over an enemy
-            /*if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var _)) return;*/
-
             // Check for attack rate timer
             if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
             _lastAttackTime = Time.time;
@@ -287,6 +284,30 @@ namespace Player
             else
             {
                 state = State.Normal;
+            }
+        }
+
+        /// <summary>
+        /// Called by sword swing animation event, enables the box collider on the weapon
+        /// </summary>
+        public void ActivateEquippedWeaponHitbox()
+        {
+            if (_playerEquipmentManager.hasWeaponEquipped)
+            {
+                var equippedWeapon = GameObject.FindGameObjectWithTag("EquippedWeapon");
+                equippedWeapon.GetComponent<BoxCollider>().enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Called by sword swing animation event, disables the box collider on the weapon
+        /// </summary>
+        public void DeactivateEquippedWeaponHitbox()
+        {
+            if (_playerEquipmentManager.hasWeaponEquipped)
+            {
+                var equippedWeapon = GameObject.FindGameObjectWithTag("EquippedWeapon");
+                equippedWeapon.GetComponent<BoxCollider>().enabled = false;
             }
         }
 
