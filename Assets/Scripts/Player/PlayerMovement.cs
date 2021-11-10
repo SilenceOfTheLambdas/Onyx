@@ -84,23 +84,21 @@ namespace Player
 
                     #region Move towards enemy, and stop within weapon range
                     // If we click on an enemy
-                    if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Enemy"), out var enemy))
+                    if (Physics.Raycast(mRay, out var mRaycastHit))
                     {
-                        if (enemy != null && GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem != null)
-                            if (Vector3.Distance(transform.position, enemy.transform.position) <= GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange)
-                                return;
+                        if (!mRaycastHit.collider.CompareTag("Enemy")) return;
+                        
+                        var enemy = mRaycastHit.collider.gameObject;
+                        
+                        if (enemy == null) return;
 
                         var positionToMoveTo = hit.point;
-                        // If the player has a weapon equipped
-                        if (GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem != null)
+                        if (GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().hasWeaponEquipped)
                         {
-                            var weaponRange = GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem
-                                .weaponRange / 2;
-                            positionToMoveTo -= new Vector3(weaponRange - 0.2f, 0f, weaponRange - 0.2f);
-                        }
-                        if (GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem == null)
-                        {
-                            positionToMoveTo -= new Vector3(0.5f, 0, 0.5f);
+                            var weaponRange = GameManager.Instance.player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange / 2;
+                            positionToMoveTo = enemy.transform.position + new Vector3(weaponRange, 0f, weaponRange);
+                        } else {
+                            positionToMoveTo = enemy.transform.position + new Vector3(1f, 0f, 1f);
                         }
 
                         // Only move when the player is NOT attacking
