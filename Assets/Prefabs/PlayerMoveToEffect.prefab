@@ -27,7 +27,8 @@ Transform:
   m_GameObject: {fileID: 5245999464445920464}
   m_LocalRotation: {x: 0.70710576, y: -0, z: -0, w: 0.70710784}
   m_LocalPosition: {x: 1.2, y: 0.01, z: 0.7}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5914540951903784095}
   m_Father: {fileID: 0}
@@ -87,7 +88,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &5245999464445920471
 Animator:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -100,6 +101,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -111,9 +113,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5245999464445920470}
     m_Modifications:
+    - target: {fileID: 704761796879182803, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 892622632695637958, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 892622632695646898, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 892622632695646898, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 892622632713860640, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
       propertyPath: m_Name
@@ -165,6 +179,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1419301588244483014, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
       propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7842516452601542757, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7842516452601542757, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7842516452601542757, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7842516452601542757, guid: 34ba00aead6526c479f4eeed81994ebe, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -38,24 +38,14 @@ namespace Player
             if ((!(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen)) && !UsingBeamSkill)
             {
                 // checks to see if we are clicking on terrain or an enemy, and acts accordingly
-                if ((Mouse.current.leftButton.isPressed) && GetComponent<Player>().state != Player.State.Attacking)
+                if (Mouse.current.leftButton.isPressed && GetComponent<Player>().state != Player.State.Attacking)
                 {
-                    #region Move to mouse position and spawn move-to effect
+                    #region Move to mouse position
                     var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
                     if (Physics.Raycast(mRay, out var hit, Mathf.Infinity, cameraLayerMask))
                     {
-
-                        // If there is already a move to effect, destroy it
-                        var moveToEffectSpawnPoint = new Vector3(hit.point.x, hit.point.y + 0.01f, hit.point.z);
-                        
-                        if (_moveToEffectWorld)
-                        {
+                        if (_moveToEffectWorld != null)
                             Destroy(_moveToEffectWorld);
-                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
-                        }
-                        else
-                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
-
                         navMeshAgent.SetDestination(hit.point);
                     }
                     #endregion
@@ -84,6 +74,26 @@ namespace Player
                             navMeshAgent.SetDestination(positionToMoveTo);
                     }
                     #endregion
+                }
+                // If we clicked once, then move AND spawn the move-to effect
+                if (Mouse.current.leftButton.wasReleasedThisFrame && GetComponent<Player>().state != Player.State.Attacking)
+                {
+                    var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+                    if (Physics.Raycast(mRay, out var hit, Mathf.Infinity, cameraLayerMask))
+                    {
+
+                        // If there is already a move to effect, destroy it
+                        var moveToEffectSpawnPoint = new Vector3(hit.point.x, hit.point.y + 0.01f, hit.point.z);
+                        if (_moveToEffectWorld)
+                        {
+                            Destroy(_moveToEffectWorld);
+                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
+                        }
+                        else
+                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
+
+                        navMeshAgent.SetDestination(hit.point);
+                    }
                 }
 
                 // When the player hits the attack button
