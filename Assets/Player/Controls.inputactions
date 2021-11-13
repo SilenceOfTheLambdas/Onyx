@@ -11,7 +11,8 @@
                     "id": "719cbdd3-e3e6-43d1-8cf6-3615614770e2",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "SkillTree",
@@ -19,7 +20,8 @@
                     "id": "c2dd16f3-0a92-4d5f-96c9-5723f89d83fa",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Skill1",
@@ -27,7 +29,8 @@
                     "id": "5725b3e6-34bb-457f-9e30-0e16c94228ed",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Skill2",
@@ -35,7 +38,8 @@
                     "id": "8f29c30c-3ea0-4199-9733-cf278dc9fffc",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Skill3",
@@ -43,7 +47,8 @@
                     "id": "e53d982a-83c4-48a6-b4f9-d55b10a1ba2a",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Skill4",
@@ -51,7 +56,8 @@
                     "id": "c2372270-48de-4567-9bc8-0d913ca2bec7",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Skill5",
@@ -59,7 +65,8 @@
                     "id": "a0d68cda-59c4-43bf-803a-5a7bb732232f",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Camera Zoom",
@@ -67,15 +74,17 @@
                     "id": "e1bd9231-ad43-4cbb-a69e-1cafb3f1cebf",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Move",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "792f56e5-7a2e-4335-8fa5-5ed954ee3e59",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Attack",
@@ -83,7 +92,8 @@
                     "id": "883a1f46-7d13-41a4-8eb9-510c685c0fc5",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -179,7 +189,7 @@
                     "name": "",
                     "id": "c82fe73d-5169-4134-b0d6-d9701f0cfaf2",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
                     "action": "Move",

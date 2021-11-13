@@ -101,7 +101,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Move"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""792f56e5-7a2e-4335-8fa5-5ed954ee3e59"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -211,7 +211,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""c82fe73d-5169-4134-b0d6-d9701f0cfaf2"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Move"",

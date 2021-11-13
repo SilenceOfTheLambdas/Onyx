@@ -18,7 +18,6 @@ namespace Player
         private GameObject _moveToEffectWorld;
         private bool _rewindTime;
         private Animator _animator;
-        private InputAction _click;
         private PlayerEquipmentManager _playerEquipmentManager;
 
         [SerializeField]
@@ -31,29 +30,7 @@ namespace Player
         {
             _animator = GetComponent<Animator>();
             navMeshAgent = GetComponent<NavMeshAgent>();
-            _click = new InputAction(binding: "<Mouse>/leftButton");
             _playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
-            _click.performed += ctx =>
-            {
-                var mRay = Camera.main.ScreenPointToRay(Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
-                if (Physics.Raycast(mRay, out var mRaycastHit, Mathf.Infinity, cameraLayerMask))
-                {
-                    if (!navMeshAgent.Raycast(mRaycastHit.point, out var hit))
-                    {
-                        // If there is already a move to effect, destroy it
-                        var moveToEffectSpawnPoint = new Vector3(mRaycastHit.point.x, mRaycastHit.point.y + 0.01f, mRaycastHit.point.z);
-                        if (_moveToEffectWorld)
-                        {
-                            Destroy(_moveToEffectWorld);
-                        }
-                        else
-                            _moveToEffectWorld = Instantiate(pfMoveToEffect, moveToEffectSpawnPoint, Quaternion.identity);
-
-                        navMeshAgent.SetDestination(mRaycastHit.point);
-                    }
-                }
-            };
-            _click.Enable();
         }
 
         private void Update()
@@ -61,7 +38,7 @@ namespace Player
             if ((!(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen)) && !UsingBeamSkill)
             {
                 // checks to see if we are clicking on terrain or an enemy, and acts accordingly
-                if (Mouse.current.leftButton.isPressed && GetComponent<Player>().state != Player.State.Attacking)
+                if ((Mouse.current.leftButton.isPressed) && GetComponent<Player>().state != Player.State.Attacking)
                 {
                     #region Move to mouse position and spawn move-to effect
                     var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -70,6 +47,7 @@ namespace Player
 
                         // If there is already a move to effect, destroy it
                         var moveToEffectSpawnPoint = new Vector3(hit.point.x, hit.point.y + 0.01f, hit.point.z);
+                        
                         if (_moveToEffectWorld)
                         {
                             Destroy(_moveToEffectWorld);
@@ -126,10 +104,13 @@ namespace Player
                 }
             }
 
+            UpdateMoveToEffect();
+        }
+
+        private void LateUpdate()
+        {
             // Animating
             _animator.SetFloat(Speed, navMeshAgent.velocity.magnitude);
-
-            UpdateMoveToEffect();
         }
 
         #region Helper
