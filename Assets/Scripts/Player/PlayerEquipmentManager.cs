@@ -12,10 +12,12 @@ namespace Player
         private                  Inventory            _playerInventory;
         private                  EquipmentInventory   _equipmentInventory;
         public                   bool                 hasWeaponEquipped;
-        public                   WeaponItem           weaponItem; // Store the item in-case we need it back
+        public                   WeaponItem           weaponItem;
         public                   HelmetItem           head;
         public                   ChestItem            chest;
         public                   GameObject           boots;
+
+        [SerializeField] private Transform playerWeaponHolsterTransform;
 
         private Player _player;
         private AbilitiesSystem _playerAbilitySystem;
@@ -35,6 +37,9 @@ namespace Player
             weaponItem = item;
             hasWeaponEquipped = true;
             _equipmentInventory.AddItem(item);
+
+            // Spawn the player weapon item prefab
+            Instantiate(weaponItem.equippedWeaponPrefab, playerWeaponHolsterTransform);
         }
 
         public void EquipHelmet(HelmetItem helmetItem)
@@ -94,6 +99,9 @@ namespace Player
                 hasWeaponEquipped = false;
                 weaponItem = null;
                 _playerInventory.AddItem(item);
+
+                // Remove weapon from players' hands
+                Destroy(playerWeaponHolsterTransform.gameObject.GetComponentInChildren<EnemyHitDetection>().gameObject);
             }
 
             if (item is HelmetItem helmetItem)

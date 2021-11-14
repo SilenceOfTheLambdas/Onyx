@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.player.inventoryOpen == false)
+        if (!(GameManager.Instance.player.inventoryOpen || GameManager.Instance.player.skillTreeOpen))
         {
             var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(mRay, out var mRaycastHit))

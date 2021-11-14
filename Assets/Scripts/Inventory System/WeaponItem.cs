@@ -15,5 +15,9 @@ namespace Inventory_System
 
         [Tooltip("Attack speed of the weapon (Attack every n seconds)")][Range(0.1f, 2f)]
         public float attackRate = 1f;
+
+        [Space]
+        [Header("Weapon Prefab")] [Tooltip("The prefab of the weapon that spawns when this weapon is equipped")]
+        public GameObject equippedWeaponPrefab;
     }
 }

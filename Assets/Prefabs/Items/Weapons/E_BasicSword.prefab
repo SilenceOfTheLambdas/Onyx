@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 607021069283091916}
   - component: {fileID: 607021069283091919}
   m_Layer: 0
-  m_Name: Equipped_Sword
-  m_TagString: Untagged
+  m_Name: E_BasicSword
+  m_TagString: EquippedWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25,15 +25,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 607021069283091918}
-  m_LocalRotation: {x: -0.6919363, y: -0.026620349, z: 0.7028764, w: 0.16272789}
-  m_LocalPosition: {x: -0.32, y: 0.085, z: -0.005}
-  m_LocalScale: {x: 0.4658599, y: 0.4658599, z: 0.46585995}
-  m_ConstrainProportionsScale: 0
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 817252615153159724}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -10.823, y: -87.606, z: 164.312}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &607021069283091916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60f2d56ab653ed84f886456b742762cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAbilitySystem: {fileID: 0}
 --- !u!65 &607021069283091919
 BoxCollider:
   m_ObjectHideFlags: 0
