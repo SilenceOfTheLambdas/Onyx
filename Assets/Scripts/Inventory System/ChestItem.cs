@@ -41,5 +41,10 @@ namespace Inventory_System
 
         [Range(0, 20)] [Tooltip("The percentage reduction of Mana EVERY skill")]
         public int reducedManaCostOfSkillsAmount = 0;
+
+        public override void RandomlyGenerateItem()
+        {
+            
+        }
     }
 }

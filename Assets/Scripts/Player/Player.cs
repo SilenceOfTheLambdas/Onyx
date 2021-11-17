@@ -104,14 +104,12 @@ namespace Player
                 // Perform a raycast to detect if we are hovering over an item
                 if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out var _))
                     return;
-                else
-                {
-                    var itemWorld = other.gameObject.GetComponent<ItemWorld>();
-                    if (!itemWorld) return;
+                
+                var itemWorld = other.gameObject.GetComponent<ItemWorld>();
+                if (!itemWorld) return;
 
-                    Inventory.AddItem(itemWorld.GetItem());
-                    itemWorld.DestroySelf();
-                }
+                Inventory.AddItem(itemWorld.GetItem());
+                itemWorld.DestroySelf();
             }
 
             if (_didThePlayerClickOnItemBeforeMoving)

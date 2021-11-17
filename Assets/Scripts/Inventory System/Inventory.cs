@@ -64,7 +64,8 @@ namespace Inventory_System
                 {
                     itemList.Remove(itemInInventory);
                 }
-            } else
+            } 
+            else
             {
                 itemList.Remove(item);
             }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Player;
+using UnityEditor;
+using UnityEngine;
 
 namespace Inventory_System
 {
@@ -19,5 +21,36 @@ namespace Inventory_System
         [Space]
         [Header("Weapon Prefab")] [Tooltip("The prefab of the weapon that spawns when this weapon is equipped")]
         public GameObject equippedWeaponPrefab;
+
+        public bool randomGeneration = false;
+
+        public override void RandomlyGenerateItem()
+        {
+            randomGeneration = true;
+        }
     }
+    
+#if UNITY_EDITOR
+    [CustomEditor(typeof(WeaponItem))]
+    internal class WeaponItemEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            var weaponItem = (WeaponItem)target;
+            if (weaponItem == null) return;
+
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Weapon Item Details");
+            
+            base.DrawDefaultInspector();
+            
+            if (weaponItem.randomGeneration)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Weapon Item Random Generation");
+            }
+        }
+    }
+#endif
 }

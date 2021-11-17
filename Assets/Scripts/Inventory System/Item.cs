@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Inventory_System
 {
     [Serializable]
-    public class Item : ScriptableObject
+    public abstract class Item : ScriptableObject
     {
         [Tooltip("The name of this item")]
         public            string     itemName;
@@ -67,5 +67,7 @@ namespace Inventory_System
         {
             GameManager.Instance.player.Inventory.AddItem(this);
         }
+
+        public abstract void RandomlyGenerateItem();
     }
 }

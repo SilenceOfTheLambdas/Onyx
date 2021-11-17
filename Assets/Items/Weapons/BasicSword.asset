@@ -18,7 +18,8 @@ MonoBehaviour:
   itemWorldPrefab: {fileID: 7143024317894638291, guid: 094a3a39f30f2b84796424ceccedf740, type: 3}
   isStackable: 0
   amount: 0
-  damage: 35
+  damage: 15
   weaponRange: 2
   attackRate: 0.3
   equippedWeaponPrefab: {fileID: 607021069283091918, guid: d2a5e3ad6ca820849b008e1dec81f28f, type: 3}
+  randomGeneration: 0

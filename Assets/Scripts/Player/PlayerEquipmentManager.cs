@@ -7,7 +7,7 @@ namespace Player
     public class PlayerEquipmentManager : MonoBehaviour {
     
         [Header("User Interface")]
-        [SerializeField] private Image weaponSlotImage;
+        [SerializeField] private Image                weaponSlotImage;
         [SerializeField] private UIEquipmentInventory equipmentInventoryUI;
         private                  Inventory            _playerInventory;
         private                  EquipmentInventory   _equipmentInventory;

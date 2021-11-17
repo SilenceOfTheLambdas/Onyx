@@ -6,15 +6,17 @@ namespace Inventory_System
     public class ItemWorld : MonoBehaviour
     {
         private float _timer;
-        public static ItemWorld SpawnItemWorld(Vector3 position, Item item)
+        public static void SpawnItemWorld(Vector3 position, Item item, int amount = 1)
         {
-            var worldObject = Instantiate(item.itemWorldPrefab, position, Quaternion.identity);
-            worldObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-            var  itemWorld     = worldObject.GetComponent<ItemWorld>();
-            var newUniqueItem = Instantiate(item);
-            newUniqueItem.name = item.name;
-            itemWorld.SetItem(newUniqueItem);
-            return itemWorld;
+            for (var i = 0; i < amount; i++)
+            {
+                var worldObject = Instantiate(item.itemWorldPrefab, position, Quaternion.identity);
+                worldObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                var itemWorld     = worldObject.GetComponent<ItemWorld>();
+                var newUniqueItem = Instantiate(item);
+                newUniqueItem.name = item.name;
+                itemWorld.SetItem(newUniqueItem);
+            }
         }
 
         private Item _item;

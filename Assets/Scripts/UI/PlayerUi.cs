@@ -127,7 +127,7 @@ namespace UI
 
         public void UpdateEnemyInformationPanel(Enemy enemy)
         {
-            enemyNameplateText.SetText($"{enemy.enemyType}");
+            enemyNameplateText.SetText($"{enemy.enemyName}");
             enemyLevelText.SetText($"{enemy.enemyLevel}");
             enemyHpFill.fillAmount = (float)enemy.CurHp / enemy.maxHp;
             enemyHpText.SetText($"{enemy.CurHp}/{enemy.maxHp}");

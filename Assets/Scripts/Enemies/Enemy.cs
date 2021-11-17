@@ -13,38 +13,23 @@ namespace Enemies
     [RequireComponent(typeof(Rigidbody), typeof(NavMeshAgent))]
     public class Enemy : MonoBehaviour
     {
-        public enum EnemyType
-        {
-            Mage,
-            Soldier,
-            Warrior,
-            Knight,
-            Thief
-        }
-
-        /// <summary>
-        /// This will specify what items this enemy can carry,
-        /// the loot it can have, and the sprite set (how the enemy will look)
-        /// </summary>
-        public EnemyType enemyType;
-
+        public string enemyName;
+        public int CurHp { get; private set; }
+        
         [SerializeField] private Skill attackSkill;
 
         [Header("Enemy Statistics")]
         [Space]
-
         [Tooltip("The level of this enemy, the level is used as a multiplier for the XP given on death")]
         public int enemyLevel = 1;
 
         [Tooltip("The maximum amount of HP this enemy has")]
         public int maxHp;
-
-        public int CurHp { get; private set; }
-
+        
         // These options are set via weapons
-        public int damage = 2; // The maximum amount of damage the enemy can do
+        public int   damage      = 2; // The maximum amount of damage the enemy can do
         public float attackRange = 1; // The maximum range in which the enemy can hit the player
-        public float attackRate = 1; // How quick the enemy can attack the player
+        public float attackRate  = 1; // How quick the enemy can attack the player
 
         [Header("Enemy AI Parameters")]
         [Space]
@@ -52,7 +37,8 @@ namespace Enemies
         public float playerDetectionRadius; // The radius of the circle used to detect the player
         public float meleeAttackRange;
         public float chaseRange;
-
+        
+        [Space] [Header("References")]
         [SerializeField] private GameObject damageNumberDisplayPrefab;
 
         public delegate Node.State EnemyHitEvent();
@@ -167,7 +153,18 @@ namespace Enemies
             _playerAbilitySystem.AddXp(_xpToGive);
             IsDead = true; // set the enemy to deadness :)
             GameManager.Instance.playerUi.ToggleEnemyInfoPanel(false);
+            SpawnItemsOnDeath();
+            
+            // TODO: Change to play a death animation
             Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// Spawn items when this enemy is killed
+        /// </summary>
+        private void SpawnItemsOnDeath()
+        {
+            GetComponent<LootTable>().SpawnItems(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z));
         }
 
         /// <summary>
@@ -180,6 +177,7 @@ namespace Enemies
 
         #region Helper
 
+#if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             var enemyPosition = transform.position;
@@ -191,7 +189,7 @@ namespace Enemies
             Gizmos.color = Color.magenta;
             Gizmos.DrawWireSphere(enemyPosition, meleeAttackRange);
         }
-
+#endif
         #endregion
     }
 }
