@@ -9,13 +9,10 @@ namespace Player
     public class AbilitiesSystem : MonoBehaviour
     {
         #region Properties
-        public int CurrentMana
+        public float CurrentMana
         {
             get => _currentMana;
-            set
-            {
-                _currentMana = (int)Mathf.Clamp(value, 0f, maxMana);
-            }
+            private set => _currentMana = Mathf.Clamp(value, 0f, maxMana);
         }
         #endregion
 
@@ -26,7 +23,7 @@ namespace Player
 
         [Range(0, 20)]
         [Tooltip("The percentage of mana restored every second")]
-        public int manaRegenerationPercentage = 1;
+        public float manaRegenerationPercentage = 1;
         
         [SerializeField] private float manaRegenerationTime;
 
@@ -59,7 +56,7 @@ namespace Player
         public float levelXpModifier; // modifier applied to 'xpToNextLevel' when we level up
 
         private float _manaRegenTimer;
-        private int _currentMana;
+        private float _currentMana;
         private PlayerEquipmentManager _playerEquipmentManager;
 
         [Header("References")]
@@ -120,7 +117,7 @@ namespace Player
             CurrentMana -= amountOfManaToTake;
         }
 
-        public void IncreaseMana(int amount)
+        public void IncreaseMana(float amount)
         {
             if (CurrentMana + amount >= maxMana)
                 CurrentMana = maxMana;
@@ -133,12 +130,12 @@ namespace Player
             _manaRegenTimer += Time.deltaTime;
             if (_manaRegenTimer >= manaRegenerationTime)
             {
+                IncreaseMana((float)manaRegenerationPercentage / maxMana);
                 _manaRegenTimer = 0;
-                IncreaseMana((manaRegenerationPercentage / 100) * maxMana);
             }
         }
 
-        public void AttempToUseManaPotion(Inventory_System.Inventory inventory, ManaPotion manaPotion)
+        public void AttemptToUseManaPotion(Inventory inventory, ManaPotion manaPotion)
         {
             if (CurrentMana < maxMana)
             {
@@ -153,9 +150,21 @@ namespace Player
         /// <returns>The amount of damage to inflict on a target</returns>
         public int CalculatePhysicalDamage()
         {
-            var dmg = _playerEquipmentManager.weaponItem.damage; // the weapons damage is used as a base
-            dmg += (strengthPhysicalDamageIncreaseAmount * strength);
-            return dmg;
+            int damage = 0;
+            if (_playerEquipmentManager.hasWeaponEquipped)
+            {
+                damage = _playerEquipmentManager.weaponItem.damage; // the weapons damage is used as a base
+                damage += (strengthPhysicalDamageIncreaseAmount * strength);
+            }
+            return damage;
+        }
+
+        public int CalculateElementalDamage()
+        {
+            var skillsManager = GetComponent<SkillsManager>();
+            if (skillsManager.activeSkills.Count == 0)
+                return 0;
+            return intelligenceElementalDamageIncreaseAmount * intelligence;
         }
     }
 

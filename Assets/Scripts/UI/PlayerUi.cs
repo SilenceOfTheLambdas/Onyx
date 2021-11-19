@@ -112,7 +112,7 @@ namespace UI
         private void UpdateManaBar()
         {
             float prevManaFill    = manaBarFill.fillAmount;
-            float currentManaFill = (float)_playerAbilitySystem.CurrentMana / _playerAbilitySystem.maxMana;
+            float currentManaFill = _playerAbilitySystem.CurrentMana / _playerAbilitySystem.maxMana;
             if (currentManaFill > prevManaFill) prevManaFill = Mathf.Min(prevManaFill + fillSmoothness, currentManaFill);
             else if (currentManaFill < prevManaFill)
                 prevManaFill = Mathf.Max(prevManaFill - fillSmoothness, currentManaFill);

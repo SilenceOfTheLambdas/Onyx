@@ -26,6 +26,8 @@ namespace Player
             get => _curHp;
             private set => _curHp = Mathf.Clamp(value, 0, maxHp);
         }
+        
+        public int GoldCoinAmount { get; private set; }
 
         #endregion
 
@@ -93,6 +95,19 @@ namespace Player
             PlayerItemPickup(other);
         }
 
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Pickup"))
+            {
+                var itemWorld = other.gameObject.GetComponentInParent<ItemWorld>();
+                if (itemWorld)
+                {
+                    GoldCoinAmount += 1;
+                    itemWorld.DestroySelf();
+                }
+            }
+        }
+
         /// <summary>
         /// Detect if the player is within an ItemWorld's sphere collider, and if so; 
         /// perform a raycast and pickup the object if and when the player presses the left mouse button over the object.
@@ -109,7 +124,10 @@ namespace Player
                 
                 var itemWorld = other.gameObject.GetComponent<ItemWorld>();
                 if (!itemWorld) return;
-
+                
+                // Check if item is a gold coin
+                if (itemWorld.GetItem() as Coin)
+                    return;
                 Inventory.AddItem(itemWorld.GetItem());
                 itemWorld.DestroySelf();
             }
@@ -118,7 +136,11 @@ namespace Player
             {
                 var itemWorld = other.gameObject.GetComponent<ItemWorld>();
                 if (!itemWorld) return;
-
+                
+                // Check if item is a gold coin
+                if (itemWorld.GetItem() as Coin)
+                    return;
+                
                 Inventory.AddItem(itemWorld.GetItem());
                 itemWorld.DestroySelf();
             }
@@ -230,7 +252,7 @@ namespace Player
             if (item is ManaPotion manaPotion)
             {
 
-                _playerAbilitySystem.AttempToUseManaPotion(Inventory, manaPotion);
+                _playerAbilitySystem.AttemptToUseManaPotion(Inventory, manaPotion);
             }
 
             uiInventory.hoverInterface.SetActive(false);

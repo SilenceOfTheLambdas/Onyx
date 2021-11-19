@@ -93,7 +93,7 @@ namespace Enemies
             // If the enemy is hit with a projectile that IS NOT tagged enemy
             if (other.GetComponent<SkillProjectile>() && !other.gameObject.CompareTag("Enemy"))
             {
-                TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage);
+                TakeDamage(other.GetComponent<SkillProjectile>().Skill.amountOfDamage + _playerAbilitySystem.CalculateElementalDamage());
                 transform.LookAt(other.transform);
                 Destroy(other.gameObject);
             }
@@ -118,7 +118,7 @@ namespace Enemies
             {
                 if (_damageOverTimeTimer >= other.GetComponent<BeamManager>().Skill.dotTimeMultiplier)
                 {
-                    TakeDamage(other.GetComponent<BeamManager>().Skill.amountOfDamage);
+                    TakeDamage(other.GetComponent<BeamManager>().Skill.amountOfDamage + _playerAbilitySystem.CalculateElementalDamage());
                     _damageOverTimeTimer = 0f;
                 }
             }

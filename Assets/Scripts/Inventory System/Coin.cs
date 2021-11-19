@@ -11,7 +11,6 @@ namespace Inventory_System
     {
         public override void RandomlyGenerateItem()
         {
-            
         }
     }
 }
