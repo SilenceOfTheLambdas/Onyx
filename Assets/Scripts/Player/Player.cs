@@ -52,11 +52,13 @@ namespace Player
         [HideInInspector] public bool skillTreeOpen;
 
         // Private variables
-        private ParticleSystem _hitEffect;
-        private AbilitiesSystem _playerAbilitySystem;
-        private PlayerEquipmentManager _playerEquipmentManager;
-        private float _lastAttackTime; // last time we attacked
-        private bool _didThePlayerClickOnItemBeforeMoving;
+        private                 ParticleSystem         _hitEffect;
+        private                 AbilitiesSystem        _playerAbilitySystem;
+        private                 PlayerEquipmentManager _playerEquipmentManager;
+        private                 float                  _lastAttackTime; // last time we attacked
+        private                 bool                   _didThePlayerClickOnItemBeforeMoving;
+        private static readonly int                    SwordSlash  = Animator.StringToHash("SwordSlash");
+        private static readonly int                    IsAttacking = Animator.StringToHash("isAttacking");
 
         #endregion
 
@@ -236,25 +238,26 @@ namespace Player
 
         private void PlayerMeleeAttack()
         {
-            // Check to see if the player has a weapon Equipped
-            if (!_playerEquipmentManager.hasWeaponEquipped) return;
-
-            // Check for attack rate timer
-            if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
-            _lastAttackTime = Time.time;
-
             // Melee
-            if (Mouse.current.rightButton.IsPressed() && !(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen))
+            if (Mouse.current.rightButton.IsPressed() && !(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen)
+                && state != State.Attacking)
             {
-                // First we play the sword slash animation
-                GetComponent<Animator>().SetBool("isAttack", true);
-                GetComponent<Animator>().SetTrigger("SwordSlash");
+                // Check to see if the player has a weapon Equipped
+                if (!_playerEquipmentManager.hasWeaponEquipped) return;
+
+                // Check for attack rate timer
+                if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
+                _lastAttackTime = Time.time;
+                
+                // If everything is good, play the attack animation
+                GetComponent<Animator>().SetTrigger(SwordSlash);
             }
         }
 
         /// <summary>
         /// Called by the PlayerSwordSlash animation event. Does a raycast to check if we have hit an enemy, and if so, deal damage to that enemy.
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public void CheckAndDealDamageToEnemy()
         {
             if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var o))
