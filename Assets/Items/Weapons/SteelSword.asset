@@ -20,5 +20,6 @@ MonoBehaviour:
   amount: 0
   damage: 55
   weaponRange: 2.2
-  attackRate: 0.4
+  attackRate: 0.8
   equippedWeaponPrefab: {fileID: 607021069283091918, guid: ea91768908ca8824abc2a0ade087f0c4, type: 3}
+  randomGeneration: 0

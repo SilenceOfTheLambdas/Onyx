@@ -19,8 +19,9 @@ namespace Player
 
         [SerializeField] private Transform playerWeaponHolsterTransform;
 
-        private Player _player;
-        private AbilitiesSystem _playerAbilitySystem;
+        private                 Player          _player;
+        private                 AbilitiesSystem _playerAbilitySystem;
+        private static readonly int             AttackSpeedMultiplier = Animator.StringToHash("attackSpeedMultiplier");
 
         private void Start()
         {
@@ -37,6 +38,7 @@ namespace Player
             weaponItem = item;
             hasWeaponEquipped = true;
             _equipmentInventory.AddItem(item);
+            GetComponent<Animator>().SetFloat(AttackSpeedMultiplier, weaponItem.attackRate);
 
             // Spawn the player weapon item prefab
             Instantiate(weaponItem.equippedWeaponPrefab, playerWeaponHolsterTransform);

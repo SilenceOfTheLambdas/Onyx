@@ -71,7 +71,7 @@ namespace Inventory_System
                         if (item is WeaponItem weaponItem)
                             itemStats.SetText($"Damage: {weaponItem.damage}\n" +
                                               $"Range: {weaponItem.weaponRange}\n" +
-                                              $"Attack Speed: Once every {weaponItem.attackRate} seconds");
+                                              $"Attack Speed: x{weaponItem.attackRate}");
                     };
 
                     weaponSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
