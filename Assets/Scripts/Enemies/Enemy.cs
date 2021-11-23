@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using BehaviorDesigner.Runtime.Tasks;
 using Skills;
 using TMPro;
 using Player;
-using TheKiwiCoder;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -20,10 +19,10 @@ namespace Enemies
 
         [Header("Enemy Statistics")]
         [Space]
-        [Tooltip("The level of this enemy, the level is used as a multiplier for the XP given on death")]
+        [UnityEngine.Tooltip("The level of this enemy, the level is used as a multiplier for the XP given on death")]
         public int enemyLevel = 1;
 
-        [Tooltip("The maximum amount of HP this enemy has")]
+        [UnityEngine.Tooltip("The maximum amount of HP this enemy has")]
         public int maxHp;
         
         // These options are set via weapons
@@ -33,7 +32,7 @@ namespace Enemies
 
         [Header("Enemy AI Parameters")]
         [Space]
-        [Tooltip("The area in which the player can be detected")]
+        [UnityEngine.Tooltip("The area in which the player can be detected")]
         public float playerDetectionRadius; // The radius of the circle used to detect the player
         public float meleeAttackRange;
         public float chaseRange;
@@ -41,7 +40,7 @@ namespace Enemies
         [Space] [Header("References")]
         [SerializeField] private GameObject damageNumberDisplayPrefab;
 
-        public delegate Node.State EnemyHitEvent();
+        public delegate TaskStatus EnemyHitEvent();
         public event EnemyHitEvent OnEnemyHit;
 
         /// <summary>

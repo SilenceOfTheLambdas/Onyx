@@ -1,22 +1,19 @@
-using Enemies;
-using TheKiwiCoder;
+using BehaviorDesigner.Runtime.Tasks;
 using UnityEngine;
 
 namespace AI.Actions
 {
-    public class TurnAndFacePlayer : ActionNode
+    public class TurnAndFacePlayer : EnemyAction
     {
         private GameObject _targetObjectToChase;
-        protected override void OnStart() {
-            _targetObjectToChase = FindObjectOfType<Player.Player>().gameObject;
+        public override void OnStart()
+        {
+            _targetObjectToChase = GameManager.Instance.player.gameObject;
         }
 
-        protected override void OnStop() {
-        }
-
-        protected override State OnUpdate() {
-            context.GameObject.transform.LookAt(_targetObjectToChase.transform);
-            return State.Success;
+        public override TaskStatus OnUpdate() {
+            gameObject.transform.LookAt(_targetObjectToChase.transform);
+            return TaskStatus.Success;
         }
     }
 }

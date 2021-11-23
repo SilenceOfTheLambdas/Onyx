@@ -7,13 +7,13 @@ namespace Inventory_System
     public class Inventory : MonoBehaviour
     {
         public event EventHandler OnItemListChanged;
-        private readonly List<Item>   itemList;
-        private readonly Action<Item> useItemAction;
+        private readonly List<Item>   _itemList;
+        private readonly Action<Item> _useItemAction;
 
         public Inventory(Action<Item> useItemAction)
         {
-            this.useItemAction = useItemAction;
-            itemList = new List<Item>();
+            _useItemAction = useItemAction;
+            _itemList = new List<Item>();
         }
 
         public void AddItem(Item item)
@@ -21,7 +21,7 @@ namespace Inventory_System
             if (item.IsStackable())
             {
                 var itemAlreadyInInventory = false;
-                foreach (var inventoryItem in itemList)
+                foreach (var inventoryItem in _itemList)
                 {
                     if (inventoryItem.Equals(item))
                     {
@@ -32,18 +32,18 @@ namespace Inventory_System
 
                 if (!itemAlreadyInInventory)
                 {
-                    itemList.Add(item);
+                    _itemList.Add(item);
                 }
             } else
             {
-                itemList.Add(item);
+                _itemList.Add(item);
             }
             OnItemListChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public List<Item> GetItemList()
         {
-            return itemList;
+            return _itemList;
         }
 
         public void RemoveItem(Item item)
@@ -51,7 +51,7 @@ namespace Inventory_System
             if (item.IsStackable())
             {
                 Item itemInInventory = null;
-                foreach (var inventoryItem in itemList)
+                foreach (var inventoryItem in _itemList)
                 {
                     if (inventoryItem.Equals(item))
                     {
@@ -62,19 +62,19 @@ namespace Inventory_System
 
                 if (itemInInventory != null && itemInInventory.amount <= 0)
                 {
-                    itemList.Remove(itemInInventory);
+                    _itemList.Remove(itemInInventory);
                 }
             } 
             else
             {
-                itemList.Remove(item);
+                _itemList.Remove(item);
             }
             OnItemListChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void UseItem(Item item)
         {
-            useItemAction(item);
+            _useItemAction(item);
         }
     }
 }

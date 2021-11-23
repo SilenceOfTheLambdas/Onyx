@@ -24,7 +24,7 @@ namespace Player
         public int CurrentHp
         {
             get => _curHp;
-            private set => _curHp = Mathf.Clamp(value, 0, maxHp);
+            internal set => _curHp = Mathf.Clamp(value, 0, maxHp);
         }
         
         public int GoldCoinAmount { get; private set; }
@@ -212,6 +212,12 @@ namespace Player
                     _playerEquipmentManager.EquipWeapon(weaponItem);
                     Inventory.RemoveItem(item);
                 }
+                else
+                {
+                    _playerEquipmentManager.UnEquip(_playerEquipmentManager.weaponItem);
+                    _playerEquipmentManager.EquipWeapon(weaponItem); // Equip new weapon
+                    Inventory.RemoveItem(item);
+                }
             }
 
             if (item is HelmetItem helmetItem)
@@ -352,7 +358,8 @@ namespace Player
         public void TakeDamage(int damageTaken)
         {
             var damageModifier = (_playerAbilitySystem.strengthPhysicalDamageIncreaseAmount * _playerAbilitySystem.strength);
-            CurrentHp -= damageTaken - damageModifier;
+
+            CurrentHp -= damageTaken - (damageModifier / 100) * damageTaken;
 
             if (CurrentHp <= 0)
                 Die();

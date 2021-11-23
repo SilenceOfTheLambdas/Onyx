@@ -5,9 +5,6 @@ using UnityEngine.UI;
 namespace Player
 {
     public class PlayerEquipmentManager : MonoBehaviour {
-    
-        [Header("User Interface")]
-        [SerializeField] private Image                weaponSlotImage;
         [SerializeField] private UIEquipmentInventory equipmentInventoryUI;
         private                  Inventory            _playerInventory;
         private                  EquipmentInventory   _equipmentInventory;
@@ -49,20 +46,51 @@ namespace Player
             head = helmetItem;
             _playerAbilitySystem.strength += helmetItem.strengthAmount;
             _playerAbilitySystem.intelligence += helmetItem.intelligenceAmount;
-        
-            // Update Player Stats
-            var startMana = _playerAbilitySystem.CurrentMana;
-            if (helmetItem.strengthAmount < 0)
-                _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
-            else if (helmetItem.strengthAmount > 0)
-                _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
-        
-            if (helmetItem.intelligenceAmount < 0)
-                _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
-            else if (helmetItem.intelligenceAmount > 0)
-                _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
 
+            _playerAbilitySystem.strengthPhysicalDamageIncreaseAmount += helmetItem.physicalArmour;
+            _playerAbilitySystem.intelligenceElementalDamageIncreaseAmount += helmetItem.elementalArmour;
             _playerAbilitySystem.manaRegenerationPercentage += helmetItem.manaRegenerationPercentage;
+            
+            switch (helmetItem.strengthAmount)
+            {
+                // Update Player Stats
+                case < 0:
+                    _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                    break;
+                case > 0:
+                    _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                    break;
+            }
+        
+            switch (helmetItem.intelligenceAmount)
+            {
+                case < 0:
+                    _playerAbilitySystem.maxMana -= _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                    break;
+                case > 0:
+                    _playerAbilitySystem.maxMana += _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                    break;
+            }
+
+            switch (helmetItem.healthAmount)
+            {
+                case > 0:
+                    _player.maxHp += helmetItem.healthAmount;
+                    break;
+                case < 0:
+                    _player.maxHp -= helmetItem.healthAmount;
+                    break;
+            }
+
+            switch (helmetItem.manaAmount)
+            {
+                case > 0:
+                    _playerAbilitySystem.maxMana += helmetItem.manaAmount;
+                    break;
+                case < 0:
+                    _playerAbilitySystem.maxMana -= helmetItem.manaAmount;
+                    break;
+            }
         
             _equipmentInventory.AddItem(helmetItem);
         }
@@ -73,18 +101,50 @@ namespace Player
             _playerAbilitySystem.strength += chestItem.strengthAmount;
             _playerAbilitySystem.intelligence += chestItem.intelligenceAmount;
 
-            // Update Player Stats
-            var startMana = _playerAbilitySystem.CurrentMana;
-            if (chestItem.strengthAmount < 0)
-                _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
-            else if (chestItem.strengthAmount > 0)
-                _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
-        
-            if (chestItem.intelligenceAmount < 0)
-                _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
-            else if (chestItem.intelligenceAmount > 0)
-                _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence);
+            _playerAbilitySystem.strengthPhysicalDamageIncreaseAmount += chestItem.physicalArmour;
+            _playerAbilitySystem.intelligenceElementalDamageIncreaseAmount += chestItem.elementalArmour;
 
+            switch (chestItem.strengthAmount)
+            {
+                // Update Player Stats
+                case < 0:
+                    _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                    break;
+                case > 0:
+                    _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                    break;
+            }
+        
+            switch (chestItem.intelligenceAmount)
+            {
+                case < 0:
+                    _playerAbilitySystem.maxMana -= _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                    break;
+                case > 0:
+                    _playerAbilitySystem.maxMana += _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                    break;
+            }
+
+            switch (chestItem.healthAmount)
+            {
+                case > 0:
+                    _player.maxHp += chestItem.healthAmount;
+                    break;
+                case < 0:
+                    _player.maxHp -= chestItem.healthAmount;
+                    break;
+            }
+
+            switch (chestItem.manaAmount)
+            {
+                case > 0:
+                    _playerAbilitySystem.maxMana += chestItem.manaAmount;
+                    break;
+                case < 0:
+                    _playerAbilitySystem.maxMana -= chestItem.manaAmount;
+                    break;
+            }
+            
             if (_playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem != null)
                 _playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange += chestItem.additionalWeaponRangeAmount;
         
@@ -109,46 +169,118 @@ namespace Player
             if (item is HelmetItem helmetItem)
             {
                 head = null;
+
+                switch (helmetItem.strengthAmount)
+                {
+                    // Update Player Stats
+                    case < 0:
+                        _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                        break;
+                    case > 0:
+                        _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                        break;
+                }
+                
+                switch (helmetItem.intelligenceAmount)
+                {
+                    case < 0:
+                        _playerAbilitySystem.maxMana += _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                        break;
+                    case > 0:
+                        _playerAbilitySystem.maxMana -= _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                        break;
+                }
+
+
+                switch (helmetItem.healthAmount)
+                {
+                    case > 0:
+                        _player.maxHp -= helmetItem.healthAmount;
+                        break;
+                    case < 0:
+                        _player.maxHp += helmetItem.healthAmount;
+                        break;
+                }
+
+                switch (helmetItem.manaAmount)
+                {
+                    case > 0:
+                        _playerAbilitySystem.maxMana -= helmetItem.manaAmount;
+                        break;
+                    case < 0:
+                        _playerAbilitySystem.maxMana += helmetItem.manaAmount;
+                        break;
+                }
+            
+                _playerAbilitySystem.manaRegenerationPercentage -= helmetItem.manaRegenerationPercentage;
                 _playerAbilitySystem.strength -= helmetItem.strengthAmount;
                 _playerAbilitySystem.intelligence -= helmetItem.intelligenceAmount;
-            
-                // Update Player Stats
-                var startMana = _playerAbilitySystem.CurrentMana;
-                if (helmetItem.strengthAmount < 0)
-                    _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * helmetItem.strengthAmount);
-                else if (helmetItem.strengthAmount > 0)
-                    _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * helmetItem.strengthAmount);
-        
-                if (helmetItem.intelligenceAmount < 0)
-                    _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
-                else if (helmetItem.intelligenceAmount > 0)
-                    _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * helmetItem.intelligenceAmount);
-            
+
+                _playerAbilitySystem.strengthPhysicalDamageIncreaseAmount -= helmetItem.physicalArmour;
+                _playerAbilitySystem.intelligenceElementalDamageIncreaseAmount -= helmetItem.elementalArmour;
+
                 _playerInventory.AddItem(item);
             }
 
             if (item is ChestItem chestItem)
             {
-                this.chest = null;
+                chest = null;
+                
+                _playerAbilitySystem.strengthPhysicalDamageIncreaseAmount -= chestItem.physicalArmour;
+                _playerAbilitySystem.intelligenceElementalDamageIncreaseAmount -= chestItem.elementalArmour;
+
+                switch (chestItem.strengthAmount)
+                {
+                    // Update Player Stats
+                    case < 0:
+                        _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                        break;
+                    case > 0:
+                        _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * _playerAbilitySystem.strength);
+                        break;
+                }
+        
+                switch (chestItem.intelligenceAmount)
+                {
+                    case < 0:
+                        _playerAbilitySystem.maxMana += _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                        break;
+                    case > 0:
+                        _playerAbilitySystem.maxMana -= _playerAbilitySystem.intelligenceManaIncreaseAmount * _playerAbilitySystem.intelligence;
+                        break;
+                }
+
+                switch (chestItem.healthAmount)
+                {
+                    case > 0:
+                        _player.maxHp -= chestItem.healthAmount;
+                        break;
+                    case < 0:
+                        _player.maxHp += chestItem.healthAmount;
+                        break;
+                }
+
+                switch (chestItem.manaAmount)
+                {
+                    case > 0:
+                        _playerAbilitySystem.maxMana -= chestItem.manaAmount;
+                        break;
+                    case < 0:
+                        _playerAbilitySystem.maxMana += chestItem.manaAmount;
+                        break;
+                }
+                
                 _playerAbilitySystem.strength -= chestItem.strengthAmount;
                 _playerAbilitySystem.intelligence -= chestItem.intelligenceAmount;
-            
-                // Update Player Stats
-                var startMana = _playerAbilitySystem.CurrentMana;
-                if (chestItem.strengthAmount < 0)
-                    _player.maxHp += (_playerAbilitySystem.strengthHpIncreaseAmount * chestItem.strengthAmount);
-                else if (chestItem.strengthAmount > 0)
-                    _player.maxHp -= (_playerAbilitySystem.strengthHpIncreaseAmount * chestItem.strengthAmount);
-        
-                if (chestItem.intelligenceAmount < 0)
-                    _playerAbilitySystem.maxMana += (_playerAbilitySystem.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
-                else if (chestItem.intelligenceAmount > 0)
-                    _playerAbilitySystem.maxMana -= (_playerAbilitySystem.intelligenceManaIncreaseAmount * chestItem.intelligenceAmount);
-            
+
                 if (_playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem != null)
-                    _playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange -= chestItem.additionalWeaponRangeAmount;    
+                    _playerAbilitySystem.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange -= chestItem.additionalWeaponRangeAmount;
+                
                 _playerInventory.AddItem(item);
             }
+            // Double check to make sure player's HP is not over the maximum
+            if (_player.CurrentHp > _player.maxHp)
+                _player.CurrentHp = _player.maxHp;
         }
     }
 }

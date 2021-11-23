@@ -1,26 +1,24 @@
-using TheKiwiCoder;
+using BehaviorDesigner.Runtime.Tasks;
 using UnityEngine;
 
 namespace AI.Actions
 {
-    public class MeleeAttackPlayer : ActionNode
+    // ReSharper disable once UnusedType.Global
+    public class MeleeAttackPlayer : EnemyAction
     {
-        private                 Animator _animator;
-        private static readonly int      Attack = Animator.StringToHash("MeleeAttack");
-        protected override void OnStart()
+        private static readonly int Attack = Animator.StringToHash("Attack");
+        public override void OnStart()
         {
-            _animator = context.Agent.gameObject.GetComponentInChildren<Animator>();
-            _animator.SetBool(Attack, true);
+            Animator.SetTrigger(Attack);
         }
 
-        protected override void OnStop() 
+        public override TaskStatus OnUpdate()
         {
+            return TaskStatus.Running;
         }
 
-        protected override State OnUpdate()
+        public override void OnEnd()
         {
-            _animator.SetBool(Attack, true);
-            return State.Success;
         }
     }
 }

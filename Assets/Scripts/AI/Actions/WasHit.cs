@@ -1,29 +1,24 @@
-using System;
+using BehaviorDesigner.Runtime.Tasks;
 using Enemies;
-using TheKiwiCoder;
 
 namespace AI.Actions
 {
-    public class WasHit : ActionNode
+    public class WasHit : EnemyAction
     {
         private Enemy _enemy;
         
-        protected override void OnStart()
+        public override void OnStart()
         {
-            _enemy = context.Agent.GetComponent<Enemy>();
+            _enemy = NavMeshAgent.gameObject.GetComponent<Enemy>();
         }
 
-        protected override void OnStop() 
-        {
-        }
-
-        protected override State OnUpdate()
+        public override TaskStatus OnUpdate()
         {
             if (_enemy.wasHit)
             {
-                return State.Success;
+                return TaskStatus.Success;
             }
-            return State.Failure;
+            return TaskStatus.Failure;
         }
     }
 }

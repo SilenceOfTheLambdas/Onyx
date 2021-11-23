@@ -183,13 +183,13 @@ namespace Inventory_System
                         if (equippedItem.attackRate > weaponItem.attackRate)
                         {
                             attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate}",
-                                $"<color=red>{weaponItem.attackRate}</color> <size=75%>-{weaponItem.attackRate - equippedItem.attackRate}</size>");
+                                $"<color=red>{weaponItem.attackRate}</color> <size=75%>{weaponItem.attackRate - equippedItem.attackRate}</size>");
                         }
 
                         if (equippedItem.attackRate < weaponItem.attackRate)
                         {
                             attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate}",
-                                $"<color=green>{weaponItem.attackRate}</color> <size=75%>+{equippedItem.attackRate - weaponItem.attackRate}</size>");
+                                $"<color=green>{weaponItem.attackRate}</color> <size=75%>+{Mathf.Abs(equippedItem.attackRate - weaponItem.attackRate)}</size>");
                         }
                     }
 

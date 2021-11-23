@@ -1,34 +1,31 @@
+using BehaviorDesigner.Runtime.Tasks;
 using Enemies;
-using TheKiwiCoder;
 using UnityEngine;
 
 namespace AI.Actions
 {
-    public class IsPlayerInMeleeRange : ActionNode
+    [TaskDescription("Is the player object within the radius of the enemy's melee range?")]
+    public class IsPlayerInMeleeRange : EnemyConditional
     {
         private GameObject _player;
         private Enemy      _enemy;
         private Vector3    _enemyPosition;
-        protected override void OnStart()
+        public override void OnStart()
         {
-            _player = FindObjectOfType<Player.Player>().gameObject;
-            _enemy = context.Agent.GetComponent<Enemy>();
+            _player = GameManager.Instance.player.gameObject;
+            _enemy = gameObject.GetComponent<Enemy>();
         }
-
-        protected override void OnStop() {
-        }
-
-        protected override State OnUpdate()
+        public override TaskStatus OnUpdate()
         {
             if (_player)
             {
-                _enemyPosition = context.Agent.gameObject.transform.position;
-                return Vector3.Distance(_player.transform.position, _enemyPosition) <= _enemy.meleeAttackRange ? State.Success : State.Failure;
+                _enemyPosition = _enemy.gameObject.transform.position;
+                return Vector3.Distance(_player.transform.position, _enemyPosition) <= _enemy.meleeAttackRange ? TaskStatus.Success : TaskStatus.Failure;
             }
 
-            if (!_player) return State.Failure;
+            if (!_player) return TaskStatus.Failure;
 
-            return State.Running;
+            return TaskStatus.Running;
         }
     }
 }

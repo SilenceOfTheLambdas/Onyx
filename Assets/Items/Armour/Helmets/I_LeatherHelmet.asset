@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc72b9ad2fe54d259066207d9a3e97c6, type: 3}
+  m_Name: I_LeatherHelmet
+  m_EditorClassIdentifier: 
+  itemName: Primitive Leather Helmet
+  itemDescription: A very basic and primitive leather helmet, lightweight but offers
+    low amounts of physical armour.
+  sprite: {fileID: 2026731443, guid: 3b2d672d5d7af6643868f5b907b7e38c, type: 3}
+  itemWorldPrefab: {fileID: 7028762890653462072, guid: fc50c6c0db4402c43937c386c91f76e9, type: 3}
+  isStackable: 0
+  amount: 1
+  strengthRequirement: 2
+  intelligenceRequirement: 4
+  physicalArmour: 0
+  elementalArmour: 0
+  healthAmount: 0
+  manaAmount: 0
+  strengthAmount: 0
+  intelligenceAmount: 0
+  manaRegenerationPercentage: 0

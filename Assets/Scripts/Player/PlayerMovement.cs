@@ -35,7 +35,7 @@ namespace Player
 
         private void Update()
         {
-            if ((!(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen)) && !UsingBeamSkill)
+            if (!(GetComponent<Player>().inventoryOpen || GetComponent<Player>().skillTreeOpen) && !UsingBeamSkill)
             {
                 // checks to see if we are clicking on terrain or an enemy, and acts accordingly
                 if (Mouse.current.leftButton.isPressed && GetComponent<Player>().state != Player.State.Attacking)

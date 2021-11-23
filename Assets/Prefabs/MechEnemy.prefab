@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 5693749227097997055}
   - component: {fileID: 634155100953451292}
   - component: {fileID: 5871167822348309446}
-  - component: {fileID: 9071858969850699352}
+  - component: {fileID: 3052746701642907086}
   m_Layer: 8
   m_Name: MechEnemy
   m_TagString: Enemy
@@ -255,6 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 767ef7582aebade438c26219b3e4dacd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dropTable: []
 --- !u!114 &634155100953451292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,7 +295,7 @@ MonoBehaviour:
   blinkIntensity: 10
   blinkDuration: 0.2
   blinkTimer: 0
---- !u!114 &9071858969850699352
+--- !u!114 &3052746701642907086
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -303,10 +304,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 634155100953451293}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58c6f9b140a52a14881ec09eaebb66eb, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tree: {fileID: 11400000, guid: 8845d7d7930c6a8458e33aaf5d940847, type: 2}
+  startWhenEnabled: 1
+  asynchronousLoad: 0
+  pauseWhenDisabled: 0
+  restartWhenComplete: 0
+  logTaskChanges: 0
+  group: 0
+  resetValuesOnRestart: 0
+  externalBehavior: {fileID: 11400000, guid: 665b1e15f4fec2e439215d6326cb629b, type: 2}
+  mBehaviorSource:
+    behaviorName: Behavior
+    behaviorDescription: 
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: 
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects: []
+        byteData: 
+        byteDataArray: 
+      Version: 
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!1 &761520871890365167
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using Inventory_System;
@@ -63,9 +64,7 @@ namespace Player
         public PlayerUi playerUi;
         
         #region Events
-        public delegate void ValueChanged();
         public delegate void LevelChanged();
-        /*public static event ValueChanged OnManaChanged;*/
         public static event LevelChanged OnLevelUp;
         #endregion
 
@@ -130,7 +129,7 @@ namespace Player
             _manaRegenTimer += Time.deltaTime;
             if (_manaRegenTimer >= manaRegenerationTime)
             {
-                IncreaseMana((float)manaRegenerationPercentage / maxMana);
+                IncreaseMana((manaRegenerationPercentage / 100) * maxMana);
                 _manaRegenTimer = 0;
             }
         }
