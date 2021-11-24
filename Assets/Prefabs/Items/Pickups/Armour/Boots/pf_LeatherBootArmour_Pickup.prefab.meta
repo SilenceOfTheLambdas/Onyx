@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: d223739fb460e304aa453935f61af012
+guid: 56bb10799150e2846a33d856bdc6b4ef
 labels:
+- Armour
 - Item
-- Weapon
-NativeFormatImporter:
+- Pickup
+PrefabImporter:
   externalObjects: {}
-  mainObjectFileID: 11400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

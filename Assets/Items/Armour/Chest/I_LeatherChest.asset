@@ -26,6 +26,5 @@ MonoBehaviour:
   manaAmount: 0
   strengthAmount: 1
   intelligenceAmount: 0
-  healthOnHitAmount: 0
-  additionalWeaponRangeAmount: 0
-  reducedManaCostOfSkillsAmount: 0
+  healthOnHitAmount: 20
+  additionalWeaponRangeAmount: 3

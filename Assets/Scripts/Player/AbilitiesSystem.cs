@@ -39,6 +39,12 @@ namespace Player
         [Tooltip("The amount of Physical Damage to add towards attacks per Strength level")]
         public int strengthPhysicalDamageIncreaseAmount = 5;
 
+        [Tooltip("The percentage of health (HP) gained when the player lands a successful hit on an enemy")]
+        public int healthOnHitAmount;
+
+        [Range(0, 10)] [Tooltip("The percentage increase of the players movement speed")]
+        public float moveSpeedIncreaseAmount;
+        
         [Space]
         [Tooltip("Intelligence: for each level: +intelligenceManaIncreaseAmount Mana and +intelligenceElementalDamageIncreaseAmount to elemental damage")]
         public int intelligence = 0;
@@ -48,6 +54,9 @@ namespace Player
 
         [Tooltip("The amount of Elemental Damage to add towards Skill attacks per Intelligence level")]
         public int intelligenceElementalDamageIncreaseAmount = 8;
+
+        [Range(0, 20)] [Tooltip("The percentage reduction (rounded) of Mana EVERY skill")]
+        public int reducedManaCostOfSkillsAmount = 0;
 
         [Space] [Header("Experience")]
         public int skillPoints = 1;

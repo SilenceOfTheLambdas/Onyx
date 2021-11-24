@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
+    [RequireComponent(typeof(NavMeshAgent), typeof(Animator), typeof(PlayerEquipmentManager))]
+    [RequireComponent(typeof(AbilitiesSystem))]
     public class PlayerMovement : MonoBehaviour
     {
         [SerializeField] private LayerMask cameraLayerMask;
@@ -14,11 +15,12 @@ namespace Player
         public NavMeshAgent navMeshAgent;
 
 
-        [NonSerialized] public bool UsingBeamSkill;
-        private GameObject _moveToEffectWorld;
-        private bool _rewindTime;
-        private Animator _animator;
-        private PlayerEquipmentManager _playerEquipmentManager;
+        [NonSerialized] public bool                   UsingBeamSkill;
+        private                GameObject             _moveToEffectWorld;
+        private                bool                   _rewindTime;
+        private                Animator               _animator;
+        private                PlayerEquipmentManager _playerEquipmentManager;
+        private                AbilitiesSystem        _playerAbilitiesSystem;
 
         [SerializeField]
         [Tooltip("How quickly the player turns when the attack key is pressed")]
@@ -31,6 +33,7 @@ namespace Player
             _animator = GetComponent<Animator>();
             navMeshAgent = GetComponent<NavMeshAgent>();
             _playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+            _playerAbilitiesSystem = GetComponent<AbilitiesSystem>();
         }
 
         private void Update()

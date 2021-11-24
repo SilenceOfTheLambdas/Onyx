@@ -220,28 +220,23 @@ namespace Player
                 }
             }
 
-            if (item is HelmetItem helmetItem)
+            if (item is ArmourItem armourItem)
             {
-                if (_playerEquipmentManager.head == null)
+                // first check base stats
+                if (_playerAbilitySystem.strength >= armourItem.strengthRequirement
+                    && _playerAbilitySystem.intelligence >= armourItem.intelligenceRequirement)
                 {
-                    // Check to see if we have the correct requirements
-                    if (_playerAbilitySystem.strength >= helmetItem.strengthRequirement &&
-                        _playerAbilitySystem.intelligence >= helmetItem.intelligenceRequirement)
+                    switch (armourItem)
                     {
-                        _playerEquipmentManager.EquipHelmet(helmetItem);
-                        Inventory.RemoveItem(item);
-                    }
-                }
-            }
-
-            if (item is ChestItem chestItem)
-            {
-                if (_playerEquipmentManager.chest == null)
-                {
-                    if (_playerAbilitySystem.strength >= chestItem.strengthRequirement && _playerAbilitySystem.intelligence >= chestItem.intelligenceRequirement)
-                    {
-                        _playerEquipmentManager.EquipChest(chestItem);
-                        Inventory.RemoveItem(item);
+                        // ## Helmet Item ##
+                        case HelmetItem when _playerEquipmentManager.head != null:
+                        case ChestItem when _playerEquipmentManager.chest != null:
+                        case BootItem when _playerEquipmentManager.head != null:
+                            return;
+                        default:
+                            _playerEquipmentManager.EquipArmour(armourItem);
+                            Inventory.RemoveItem(item);
+                            break;
                     }
                 }
             }
@@ -279,40 +274,6 @@ namespace Player
                 
                 // If everything is good, play the attack animation
                 GetComponent<Animator>().SetTrigger(SwordSlash);
-            }
-        }
-
-        /// <summary>
-        /// Called by the PlayerSwordSlash animation event. Does a raycast to check if we have hit an enemy, and if so, deal damage to that enemy.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public void CheckAndDealDamageToEnemy()
-        {
-            if (SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(enemyHitableLayerMask, out var o))
-            {
-                if (o != null)
-                {
-                    var enemy = o.GetComponent<Enemy>();
-
-                    // Check if enemy is dead
-                    if (enemy.IsDead) return;
-
-                    // Check weapon range
-                    if (Vector3.Distance(transform.position, enemy.transform.position) <=
-                        _playerEquipmentManager.weaponItem.weaponRange)
-                    {
-
-                        // Stop moving
-                        GetComponent<PlayerMovement>().navMeshAgent.ResetPath();
-
-                        state = State.Attacking;
-                        enemy.TakeDamage(_playerAbilitySystem.CalculatePhysicalDamage());
-                    }
-                }
-            }
-            else
-            {
-                state = State.Normal;
             }
         }
 
@@ -359,7 +320,7 @@ namespace Player
         {
             var damageModifier = (_playerAbilitySystem.strengthPhysicalDamageIncreaseAmount * _playerAbilitySystem.strength);
 
-            CurrentHp -= damageTaken - (damageModifier / 100) * damageTaken;
+            CurrentHp -= (damageTaken - (damageModifier / 100) * damageTaken);
 
             if (CurrentHp <= 0)
                 Die();

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc48e74beec0434896b0afd037b02365, type: 3}
+  m_Name: I_LeatherBoots
+  m_EditorClassIdentifier: 
+  itemName: Leather Boots
+  itemDescription: Worn and heavily used; these boots won't provide much, but it's
+    better than nothing.
+  sprite: {fileID: 1926612948, guid: 3b2d672d5d7af6643868f5b907b7e38c, type: 3}
+  itemWorldPrefab: {fileID: 7028762890653462072, guid: 56bb10799150e2846a33d856bdc6b4ef, type: 3}
+  isStackable: 0
+  amount: 1
+  strengthRequirement: 1
+  intelligenceRequirement: 0
+  physicalArmour: 7
+  elementalArmour: 0
+  healthAmount: 5
+  manaAmount: 0
+  strengthAmount: 0
+  intelligenceAmount: 0
+  moveSpeedIncrease: 3.35

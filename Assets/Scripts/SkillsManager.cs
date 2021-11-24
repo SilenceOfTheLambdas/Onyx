@@ -130,7 +130,8 @@ public class SkillsManager : MonoBehaviour
         skill.InCoolDown = true;
         skill.HasBeenUsed = true;
         var projectile = Instantiate(skill.skillEffect, skillSpawnPoint.position, Quaternion.Euler(new Vector2(0, 0)));
-        _playerAbilitiesSystem.RemoveMana(skill.manaCost);
+        var reductionAmount = _playerAbilitiesSystem.reducedManaCostOfSkillsAmount / 100 * skill.manaCost; // TODO: Might need fixed?
+        _playerAbilitiesSystem.RemoveMana(skill.manaCost - reductionAmount);
 
         var mRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(mRay, out var mRaycastHit, Mathf.Infinity))

@@ -104,8 +104,14 @@ namespace Enemies
                 if (enemyHitDetection != null)
                 {
                     // Perform a range check
-                    if (Vector3.Distance(transform.position, _player.gameObject.transform.position) <= _player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange)
+                    if (Vector3.Distance(transform.position, _player.gameObject.transform.position) <=
+                        _player.GetComponent<PlayerEquipmentManager>().weaponItem.weaponRange)
+                    {
                         TakeDamage(enemyHitDetection.playerAbilitySystem.CalculatePhysicalDamage());
+                        
+                        // ## Health-on-Hit
+                        _player.CurrentHp += _playerAbilitySystem.healthOnHitAmount / 100 * _player.maxHp;
+                    }
                 }
             }
         }

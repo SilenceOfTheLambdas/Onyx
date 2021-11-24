@@ -119,7 +119,8 @@ namespace Inventory_System
                                            $"Mana: {helmetItem.manaAmount}\n" +
                                            $"Strength: {helmetItem.strengthAmount}\n" +
                                            $"Intelligence: {helmetItem.intelligenceAmount}\n" +
-                                           $"Mana Regen: {helmetItem.manaRegenerationPercentage}%");
+                                           $"Mana Regen: {helmetItem.manaRegenerationPercentage}%\n" +
+                                           $"Skills Mana Cost: {helmetItem.reducedManaCostOfSkillsAmount}%");
                             itemRequirements.SetText($"Intelligence: {helmetItem.intelligenceRequirement}   Strength: {helmetItem.strengthRequirement}");
                         }
                     };
@@ -170,13 +171,62 @@ namespace Inventory_System
                                            $"Strength: {chestItem.strengthAmount}\n" +
                                            $"Intelligence: {chestItem.intelligenceAmount}\n" +
                                            $"Health On Hit: {chestItem.healthOnHitAmount}\n" +
-                                           $"Weapon Range: {chestItem.additionalWeaponRangeAmount}\n" +
-                                           $"Skills Mana Cost: {chestItem.reducedManaCostOfSkillsAmount}%");
+                                           $"Weapon Range: {chestItem.additionalWeaponRangeAmount}\n");
                             itemRequirements.SetText($"Intelligence: {chestItem.intelligenceRequirement}   Strength: {chestItem.strengthRequirement}");
                         }
                     };
 
                     chestSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(false);
+                    };
+                }
+                
+                if (item is BootItem)
+                {
+                    var bootsSlot      = _itemSlotContainer.Find("bootsSlot");
+                    var bootsSlotImage = bootsSlot.Find("image").GetComponent<Image>();
+                    bootsSlot.GetComponent<Button_UI>().enabled = true;
+                    bootsSlotImage.sprite = item.GetSprite();
+                    bootsSlotImage.gameObject.SetActive(true);
+
+                    bootsSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+                    {
+                        // Un-equip the item
+                        _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
+                        bootsSlot.GetComponent<Button_UI>().enabled = false;
+                        bootsSlotImage.gameObject.SetActive(false);
+                    };
+
+                    // Display item stats when hovering over
+                    bootsSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
+                    {
+                        hoverInterface.SetActive(true);
+                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
+                        var itemDescription = hoverInterface.transform.Find("itemDescription")
+                            .GetComponent<TextMeshProUGUI>();
+                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+                        var itemRequirements = hoverInterface.transform.Find("itemRequirements")
+                            .GetComponent<TextMeshProUGUI>();
+                    
+                        // Set item name
+                        itemName.SetText($"{item.itemName}");
+                        itemDescription.SetText($"{item.itemDescription}");
+                        
+                        if (item is BootItem bootItem)
+                        {
+                            itemStats.SetText($"Physical Armour: {bootItem.physicalArmour}\n" +
+                                           $"Elemental Armour: {bootItem.elementalArmour}\n" +
+                                           $"Health: {bootItem.healthAmount}\n" +
+                                           $"Mana: {bootItem.manaAmount}\n" +
+                                           $"Strength: {bootItem.strengthAmount}\n" +
+                                           $"Intelligence: {bootItem.intelligenceAmount}\n" +
+                                           $"Skills Mana Cost: {bootItem.moveSpeedIncrease}%");
+                            itemRequirements.SetText($"Intelligence: {bootItem.intelligenceRequirement}   Strength: {bootItem.strengthRequirement}");
+                        }
+                    };
+
+                    bootsSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
                     {
                         hoverInterface.SetActive(false);
                     };
