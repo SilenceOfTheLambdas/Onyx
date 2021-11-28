@@ -99,7 +99,6 @@ public class SkillTreeSkillManager : MonoBehaviour
                 skillsManager.UpgradeSkill(_activatedSkill);
                 // Update the tree UI
                 _levelText.SetText($"{_activatedSkill.skillLevel}");
-                _playerAbilitySystem.skillPoints -= _activatedSkill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
                 playerUi.UpdateSkillPointsText();
             };
         }

@@ -176,6 +176,37 @@ namespace Player
         }
     }
 
+    [Serializable]
+    public struct ItemAbility
+    {
+        [Serializable]
+        public struct ItemAbilityCost
+        {
+            public enum Costs
+            {
+                Mana,
+                Health,
+                Both
+            }
+
+            public Costs costType;
+            public int   amount;
+        }
+        public enum Abilities
+        {
+            None,
+            BloodSwap,
+            IncreaseRarityOfItems
+        }
+
+        public Abilities       ability;
+        [Multiline]
+        public string          abilityDescription;
+        public ItemAbilityCost abilityCost;
+        [Tooltip("The chance this ability will spawn in this item (only applicable when GenerateRandomItem is true")]
+        public float     chanceToSpawn;
+    }
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(AbilitiesSystem))]
     internal class AbilitiesSystemEditor : Editor

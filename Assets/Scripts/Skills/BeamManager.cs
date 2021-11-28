@@ -29,6 +29,7 @@ namespace Skills
             {
                 BeamSpawnPoint.rotation = _originalRotation;
                 GameManager.Instance.player.GetComponent<PlayerMovement>().UsingBeamSkill = false;
+                Skill.InCoolDown = true;
                 Destroy(gameObject);
             }
         }

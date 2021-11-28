@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc72b9ad2fe54d259066207d9a3e97c6, type: 3}
   m_Name: I_LeatherHelmet_2
   m_EditorClassIdentifier: 
+  itemRarity: 1
   itemName: Leather Helmet
   itemDescription: A more advanced leather helmet, used by wizards when out in the
     field. Restores a moderate amount of Mana.
@@ -19,6 +20,7 @@ MonoBehaviour:
   itemWorldPrefab: {fileID: 7028762890653462072, guid: fc50c6c0db4402c43937c386c91f76e9, type: 3}
   isStackable: 0
   amount: 1
+  randomlyGenerateStats: 1
   strengthRequirement: 1
   intelligenceRequirement: 2
   physicalArmour: 1
@@ -27,4 +29,25 @@ MonoBehaviour:
   manaAmount: 20
   strengthAmount: 0
   intelligenceAmount: 1
-  manaRegenerationPercentage: 4
+  minStrengthRequirement: 0
+  maxStrengthRequirement: 1
+  minIntelligenceRequirement: 1
+  maxIntelligenceRequirement: 2
+  minPhysicalArmour: 0
+  maxPhysicalArmour: 7
+  minElementalArmour: 0
+  maxElementalArmour: 12
+  minHealthAmount: 0
+  maxHealthAmount: 10
+  minManaAmount: 0
+  maxManaAmount: 17
+  minStrengthAmount: 0
+  maxStrengthAmount: 2
+  minIntelligenceAmount: 0
+  maxIntelligenceAmount: 1
+  manaRegenerationPercentage: 0
+  reducedManaCostOfSkillsAmount: 0
+  minManaRegenAmount: 1
+  maxManaRegenAmount: 12
+  minReducedManaCostOfSkillsAmount: 1
+  maxReducedManaCostOfSkillsAmount: 11

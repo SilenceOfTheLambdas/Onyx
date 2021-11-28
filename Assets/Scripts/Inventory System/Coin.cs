@@ -9,8 +9,5 @@ namespace Inventory_System
     [CreateAssetMenu(fileName = "New Coin", menuName = "Items/Create Coin", order = 100)]
     public class Coin : Item
     {
-        public override void RandomlyGenerateItem()
-        {
-        }
     }
 }

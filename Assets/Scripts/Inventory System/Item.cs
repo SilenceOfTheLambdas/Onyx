@@ -3,9 +3,19 @@ using UnityEngine;
 
 namespace Inventory_System
 {
+    public enum ItemRarity
+    {
+        Common,
+        Rare,
+        Epic,
+        Unique
+    }
+    
     [Serializable]
     public abstract class Item : ScriptableObject
     {
+        public ItemRarity itemRarity;
+        
         [Tooltip("The name of this item")]
         public            string     itemName;
         [Tooltip("Description")]
@@ -15,8 +25,9 @@ namespace Inventory_System
         public            Sprite     sprite;
         [Tooltip("The prefab object when spawned on the ground")]
         public            GameObject itemWorldPrefab;
-        public            bool       isStackable;
-        public            int        amount;
+        public bool isStackable;
+        public int  amount;
+        public bool randomlyGenerateStats;
 
         public Sprite GetSprite() => sprite;
 
@@ -68,6 +79,6 @@ namespace Inventory_System
             GameManager.Instance.player.Inventory.AddItem(this);
         }
 
-        public abstract void RandomlyGenerateItem();
+        public virtual void RandomlyGenerateItem(){}
     }
 }

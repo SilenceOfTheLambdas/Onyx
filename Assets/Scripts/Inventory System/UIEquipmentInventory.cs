@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using System.Linq;
+using Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,200 +39,144 @@ namespace Inventory_System
         {
             foreach (var item in _inventory.GetItemList())
             {
-                if (item is WeaponItem)
+                switch (item)
                 {
-                    var weaponSlot      = _itemSlotContainer.Find("weaponSlot");
-                    var weaponSlotImage = weaponSlot.Find("image").GetComponent<Image>();
-                    weaponSlot.GetComponent<Button_UI>().enabled = true;
-                    weaponSlotImage.sprite = item.GetSprite();
-                    weaponSlotImage.gameObject.SetActive(true);
-
-                    weaponSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+                    case WeaponItem:
                     {
-                        // Un-equip the item
-                        CursorController.Instance.SetCursor(CursorController.CursorTypes.Dequip);
-                        _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
-                        weaponSlot.GetComponent<Button_UI>().enabled = false;
-                        weaponSlotImage.gameObject.SetActive(false);
-                    };
+                        var weaponSlot      = _itemSlotContainer.Find("weaponSlot");
+                        var weaponSlotImage = weaponSlot.Find("image").GetComponent<Image>();
+                        weaponSlot.GetComponent<Button_UI>().enabled = true;
+                        weaponSlotImage.sprite = item.GetSprite();
+                        weaponSlotImage.gameObject.SetActive(true);
 
-                    // Display item stats when hovering over
-                    weaponSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
-                    {
-                        hoverInterface.SetActive(true);
-                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-                        var itemDescription = hoverInterface.transform.Find("itemDescription")
-                            .GetComponent<TextMeshProUGUI>();
-                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
-                    
-                        // Set item name
-                        itemName.SetText($"{item.itemName}");
-                        itemDescription.SetText($"{item.itemDescription}");
-                        
-                        if (item is WeaponItem weaponItem)
-                            itemStats.SetText($"Damage: {weaponItem.damage}\n" +
-                                              $"Range: {weaponItem.weaponRange}\n" +
-                                              $"Attack Speed: x{weaponItem.attackRate}");
-                    };
-
-                    weaponSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
-                    {
-                        hoverInterface.SetActive(false);
-                    };
-                }
-
-                if (item is HelmetItem)
-                {
-                    var headSlot      = _itemSlotContainer.Find("headSlot");
-                    var headSlotImage = headSlot.Find("image").GetComponent<Image>();
-                    headSlot.GetComponent<Button_UI>().enabled = true;
-                    headSlotImage.sprite = item.GetSprite();
-                    headSlotImage.gameObject.SetActive(true);
-
-                    headSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
-                    {
-                        // Un-equip the item
-                        _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
-                        headSlot.GetComponent<Button_UI>().enabled = false;
-                        headSlotImage.gameObject.SetActive(false);
-                    };
-
-                    // Display item stats when hovering over
-                    headSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
-                    {
-                        hoverInterface.SetActive(true);
-                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-                        var itemDescription = hoverInterface.transform.Find("itemDescription")
-                            .GetComponent<TextMeshProUGUI>();
-                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
-                        var itemRequirements = hoverInterface.transform.Find("itemRequirements")
-                            .GetComponent<TextMeshProUGUI>();
-                    
-                        // Set item name
-                        itemName.SetText($"{item.itemName}");
-                        itemDescription.SetText($"{item.itemDescription}");
-                        
-                        if (item is HelmetItem helmetItem)
+                        weaponSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
                         {
-                            itemStats.SetText($"Physical Armour: {helmetItem.physicalArmour}\n" +
-                                           $"Elemental Armour: {helmetItem.elementalArmour}\n" +
-                                           $"Health: {helmetItem.healthAmount}\n" +
-                                           $"Mana: {helmetItem.manaAmount}\n" +
-                                           $"Strength: {helmetItem.strengthAmount}\n" +
-                                           $"Intelligence: {helmetItem.intelligenceAmount}\n" +
-                                           $"Mana Regen: {helmetItem.manaRegenerationPercentage}%\n" +
-                                           $"Skills Mana Cost: {helmetItem.reducedManaCostOfSkillsAmount}%");
-                            itemRequirements.SetText($"Intelligence: {helmetItem.intelligenceRequirement}   Strength: {helmetItem.strengthRequirement}");
-                        }
-                    };
+                            // Un-equip the item
+                            CursorController.Instance.SetCursor(CursorController.CursorTypes.Dequip);
+                            _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
+                            weaponSlot.GetComponent<Button_UI>().enabled = false;
+                            weaponSlotImage.gameObject.SetActive(false);
+                        };
 
-                    headSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
-                    {
-                        hoverInterface.SetActive(false);
-                    };
-                }
-
-                if (item is ChestItem)
-                {
-                    var chestSlot      = _itemSlotContainer.Find("chestSlot");
-                    var chestSlotImage = chestSlot.Find("image").GetComponent<Image>();
-                    chestSlot.GetComponent<Button_UI>().enabled = true;
-                    chestSlotImage.sprite = item.GetSprite();
-                    chestSlotImage.gameObject.SetActive(true);
-
-                    chestSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
-                    {
-                        // Un-equip the item
-                        _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
-                        chestSlot.GetComponent<Button_UI>().enabled = false;
-                        chestSlotImage.gameObject.SetActive(false);
-                    };
-
-                    // Display item stats when hovering over
-                    chestSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
-                    {
-                        hoverInterface.SetActive(true);
-                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-                        var itemDescription = hoverInterface.transform.Find("itemDescription")
-                            .GetComponent<TextMeshProUGUI>();
-                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
-                        var itemRequirements = hoverInterface.transform.Find("itemRequirements")
-                            .GetComponent<TextMeshProUGUI>();
-                    
-                        // Set item name
-                        itemName.SetText($"{item.itemName}");
-                        itemDescription.SetText($"{item.itemDescription}");
-                        
-                        if (item is ChestItem chestItem)
+                        // Display item stats when hovering over
+                        weaponSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
                         {
-                            itemStats.SetText($"Physical Armour: {chestItem.physicalArmour}\n" +
-                                           $"Elemental Armour: {chestItem.elementalArmour}\n" +
-                                           $"Health: {chestItem.healthAmount}\n" +
-                                           $"Mana: {chestItem.manaAmount}\n" +
-                                           $"Strength: {chestItem.strengthAmount}\n" +
-                                           $"Intelligence: {chestItem.intelligenceAmount}\n" +
-                                           $"Health On Hit: {chestItem.healthOnHitAmount}\n" +
-                                           $"Weapon Range: {chestItem.additionalWeaponRangeAmount}\n");
-                            itemRequirements.SetText($"Intelligence: {chestItem.intelligenceRequirement}   Strength: {chestItem.strengthRequirement}");
-                        }
-                    };
+                            GenerateItemTooltip(item, weaponSlot.position);
+                        };
 
-                    chestSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
-                    {
-                        hoverInterface.SetActive(false);
-                    };
-                }
-                
-                if (item is BootItem)
-                {
-                    var bootsSlot      = _itemSlotContainer.Find("bootsSlot");
-                    var bootsSlotImage = bootsSlot.Find("image").GetComponent<Image>();
-                    bootsSlot.GetComponent<Button_UI>().enabled = true;
-                    bootsSlotImage.sprite = item.GetSprite();
-                    bootsSlotImage.gameObject.SetActive(true);
-
-                    bootsSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
-                    {
-                        // Un-equip the item
-                        _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
-                        bootsSlot.GetComponent<Button_UI>().enabled = false;
-                        bootsSlotImage.gameObject.SetActive(false);
-                    };
-
-                    // Display item stats when hovering over
-                    bootsSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
-                    {
-                        hoverInterface.SetActive(true);
-                        var itemName  = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-                        var itemDescription = hoverInterface.transform.Find("itemDescription")
-                            .GetComponent<TextMeshProUGUI>();
-                        var itemStats = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
-                        var itemRequirements = hoverInterface.transform.Find("itemRequirements")
-                            .GetComponent<TextMeshProUGUI>();
-                    
-                        // Set item name
-                        itemName.SetText($"{item.itemName}");
-                        itemDescription.SetText($"{item.itemDescription}");
-                        
-                        if (item is BootItem bootItem)
+                        weaponSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
                         {
-                            itemStats.SetText($"Physical Armour: {bootItem.physicalArmour}\n" +
-                                           $"Elemental Armour: {bootItem.elementalArmour}\n" +
-                                           $"Health: {bootItem.healthAmount}\n" +
-                                           $"Mana: {bootItem.manaAmount}\n" +
-                                           $"Strength: {bootItem.strengthAmount}\n" +
-                                           $"Intelligence: {bootItem.intelligenceAmount}\n" +
-                                           $"Skills Mana Cost: {bootItem.moveSpeedIncrease}%");
-                            itemRequirements.SetText($"Intelligence: {bootItem.intelligenceRequirement}   Strength: {bootItem.strengthRequirement}");
-                        }
-                    };
-
-                    bootsSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                            UI_Inventory.Instance.hoverInterface.SetActive(false);
+                        };
+                        break;
+                    }
+                    case HelmetItem:
                     {
-                        hoverInterface.SetActive(false);
-                    };
+                        var headSlot      = _itemSlotContainer.Find("headSlot");
+                        var headSlotImage = headSlot.Find("image").GetComponent<Image>();
+                        headSlot.GetComponent<Button_UI>().enabled = true;
+                        headSlotImage.sprite = item.GetSprite();
+                        headSlotImage.gameObject.SetActive(true);
+
+                        headSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+                        {
+                            // Un-equip the item
+                            _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
+                            headSlot.GetComponent<Button_UI>().enabled = false;
+                            headSlotImage.gameObject.SetActive(false);
+                        };
+
+                        // Display item stats when hovering over
+                        headSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () => { GenerateItemTooltip(item, headSlot.position); };
+
+                        headSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                        {
+                            UI_Inventory.Instance.hoverInterface.SetActive(false);
+                        };
+                        break;
+                    }
+                    case ChestItem:
+                    {
+                        var chestSlot      = _itemSlotContainer.Find("chestSlot");
+                        var chestSlotImage = chestSlot.Find("image").GetComponent<Image>();
+                        chestSlot.GetComponent<Button_UI>().enabled = true;
+                        chestSlotImage.sprite = item.GetSprite();
+                        chestSlotImage.gameObject.SetActive(true);
+
+                        chestSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+                        {
+                            // Un-equip the item
+                            _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
+                            chestSlot.GetComponent<Button_UI>().enabled = false;
+                            chestSlotImage.gameObject.SetActive(false);
+                        };
+
+                        // Display item stats when hovering over
+                        chestSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
+                        {
+                            GenerateItemTooltip(item, chestSlot.position);
+                        };
+
+                        chestSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                        {
+                            UI_Inventory.Instance.hoverInterface.SetActive(false);
+                        };
+                        break;
+                    }
+                    case BootItem:
+                    {
+                        var bootsSlot      = _itemSlotContainer.Find("bootsSlot");
+                        var bootsSlotImage = bootsSlot.Find("image").GetComponent<Image>();
+                        bootsSlot.GetComponent<Button_UI>().enabled = true;
+                        bootsSlotImage.sprite = item.GetSprite();
+                        bootsSlotImage.gameObject.SetActive(true);
+
+                        bootsSlot.GetComponent<Button_UI>().MouseRightClickFunc = () =>
+                        {
+                            // Un-equip the item
+                            _player.GetComponent<PlayerEquipmentManager>().UnEquip(item);
+                            bootsSlot.GetComponent<Button_UI>().enabled = false;
+                            bootsSlotImage.gameObject.SetActive(false);
+                        };
+
+                        // Display item stats when hovering over
+                        bootsSlot.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
+                        {
+                            GenerateItemTooltip(item, bootsSlot.position);
+                        };
+
+                        bootsSlot.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
+                        {
+                            UI_Inventory.Instance.hoverInterface.SetActive(false);
+                        };
+                        break;
+                    }
                 }
             }
+        }
+
+        private void GenerateItemTooltip(Item item, Vector3 slotPosition)
+        {
+            UI_Inventory.Instance.hoverInterface.SetActive(true);
+            UI_Inventory.Instance.hoverInterface.GetComponent<Image>().sprite = UI_Inventory.Instance.itemRarityHoverImages
+                .First(key => key.key.ToLower().Equals($"{item.itemRarity}".ToLower())).image;
+            
+            UI_Inventory.Instance.hoverInterface.transform.position = slotPosition
+                + new Vector3(0, UI_Inventory.Instance.hoverInterface.GetComponent<Image>().sprite.rect.yMax - 20, 0);
+            
+            CursorController.Instance.SetCursor(CursorController.CursorTypes.Equip);
+            var itemName = UI_Inventory.Instance.hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
+            var itemDescription =
+                UI_Inventory.Instance.hoverInterface.transform.Find("itemDescription").GetComponent<TextMeshProUGUI>();
+
+            // Set item name
+            itemName.SetText($"{item.itemName}");
+            // Check for certain keywords and add colour to them
+            itemDescription.SetText($"{UI_Inventory.GetItemDescription(item)}");
+            // Set the stats for the item
+            // Set the stats for the item
+            UI_Inventory.Instance.SetItemStats(item);
+            UI_Inventory.Instance.SetItemRequirements(item);
         }
     }
 }

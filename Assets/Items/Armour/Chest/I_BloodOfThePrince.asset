@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6592df6a67e422a8dfb7c3d50984276, type: 3}
+  m_Name: I_BloodOfThePrince
+  m_EditorClassIdentifier: 
+  itemRarity: 3
+  itemName: Blood of The Prince
+  itemDescription: '"Through hard times, comes great sacrifice" - Prince Blah Face'
+  sprite: {fileID: 1903503391, guid: 3b2d672d5d7af6643868f5b907b7e38c, type: 3}
+  itemWorldPrefab: {fileID: 7028762890653462072, guid: f60d3d047d5f5d548b46f3d39194f3bb, type: 3}
+  isStackable: 0
+  amount: 1
+  randomlyGenerateStats: 0
+  levelRequirement: 22
+  strengthRequirement: 15
+  intelligenceRequirement: 2
+  physicalArmour: 12
+  elementalArmour: 10
+  healthAmount: 0
+  manaAmount: 0
+  strengthAmount: 5
+  intelligenceAmount: 5
+  specialAbility:
+    ability: 1
+    abilityDescription: Your healh of now mana, and your mana is now health.
+    abilityCost:
+      costType: 2
+      amount: 15
+    chanceToSpawn: 1
+  lowerLevelRequirement: 0
+  upperLevelRequirement: 0
+  minStrengthRequirement: 0
+  maxStrengthRequirement: 10
+  minIntelligenceRequirement: 0
+  maxIntelligenceRequirement: 0
+  minPhysicalArmour: 0
+  maxPhysicalArmour: 20
+  minElementalArmour: 1
+  maxElementalArmour: 4
+  minHealthAmount: 4
+  maxHealthAmount: 15
+  minManaAmount: 11
+  maxManaAmount: 22
+  minStrengthAmount: 0
+  maxStrengthAmount: 1
+  minIntelligenceAmount: 0
+  maxIntelligenceAmount: 1
+  itemAbilityPool: []
+  healthOnHitAmount: 99
+  additionalWeaponRangeAmount: 5
+  minHealthOnHitAmount: 0
+  maxHealthOnHitAmount: 10
+  minAdditionalWeaponRangeAmount: 0
+  maxAdditionalWeaponRangeAmount: 1

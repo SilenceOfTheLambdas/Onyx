@@ -12,7 +12,8 @@ namespace Inventory_System
 
         private void Start()
         {
-            ItemWorld.SpawnItemWorld(transform.position, item);
+            // ItemWorld.SpawnItemWorld(transform.position, item);
+            item.itemWorldPrefab.GetComponent<ItemWorld>().SpawnItemWorld(transform.position, item);
             Destroy(gameObject);
         }
     }

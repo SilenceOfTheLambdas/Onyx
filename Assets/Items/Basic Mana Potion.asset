@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9eba1f73d3843c59a8836ec2180fc8f, type: 3}
   m_Name: Basic Mana Potion
   m_EditorClassIdentifier: 
+  itemRarity: 0
   itemName: Small Mana Potion
   itemDescription: A simple mana potion that restores a small amount of Mana.
-  sprite: {fileID: 21300000, guid: 2b52299714f7a124d82309a4b35c7b2a, type: 3}
+  sprite: {fileID: 1410158796, guid: 3b2d672d5d7af6643868f5b907b7e38c, type: 3}
   itemWorldPrefab: {fileID: 7028762890653462072, guid: dc4d9fcdcda204747ab0384a6c89a450, type: 3}
   isStackable: 1
   amount: 1
+  randomlyGenerateStats: 0
   restoreAmount: 10

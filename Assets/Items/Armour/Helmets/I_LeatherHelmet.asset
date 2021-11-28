@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc72b9ad2fe54d259066207d9a3e97c6, type: 3}
   m_Name: I_LeatherHelmet
   m_EditorClassIdentifier: 
+  itemRarity: 0
   itemName: Primitive Leather Helmet
   itemDescription: A very basic and primitive leather helmet, lightweight but offers
     low amounts of physical armour.
@@ -19,6 +20,7 @@ MonoBehaviour:
   itemWorldPrefab: {fileID: 7028762890653462072, guid: fc50c6c0db4402c43937c386c91f76e9, type: 3}
   isStackable: 0
   amount: 1
+  randomlyGenerateStats: 1
   strengthRequirement: 2
   intelligenceRequirement: 4
   physicalArmour: 0
@@ -27,4 +29,25 @@ MonoBehaviour:
   manaAmount: 0
   strengthAmount: 0
   intelligenceAmount: 0
+  minStrengthRequirement: 0
+  maxStrengthRequirement: 0
+  minIntelligenceRequirement: 0
+  maxIntelligenceRequirement: 0
+  minPhysicalArmour: 1
+  maxPhysicalArmour: 4
+  minElementalArmour: 2
+  maxElementalArmour: 6
+  minHealthAmount: -2
+  maxHealthAmount: 3
+  minManaAmount: -6
+  maxManaAmount: 3
+  minStrengthAmount: 0
+  maxStrengthAmount: 1
+  minIntelligenceAmount: 0
+  maxIntelligenceAmount: 2
   manaRegenerationPercentage: 0
+  reducedManaCostOfSkillsAmount: 0
+  minManaRegenAmount: 0
+  maxManaRegenAmount: 3
+  minReducedManaCostOfSkillsAmount: 0
+  maxReducedManaCostOfSkillsAmount: 5

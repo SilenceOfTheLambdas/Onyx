@@ -55,7 +55,7 @@ public class SkillsManager : MonoBehaviour
                     }
                     break;
                 case SkillType.Beam:
-                    if (CheckForCorrectSkillInput(skill) && !skill.InCoolDown && CheckIfPlayerHasEnoughMana(skill))
+                    if (CheckForCorrectSkillInput(skill) && !skill.InCoolDown && !GameManager.Instance.player.GetComponent<PlayerMovement>().UsingBeamSkill && CheckIfPlayerHasEnoughMana(skill))
                         CastBeam(skill);
 
                     if (skill.InCoolDown)
@@ -87,10 +87,13 @@ public class SkillsManager : MonoBehaviour
         if (activeSkills.Contains(skill))
         {
             var activeSkill = activeSkills.Find(active => active.name == skill.name);
+            
             // Check to see if the skill is NOT already at max level
-            if (activeSkill.skillLevel == activeSkill.maximumSkillLevel) return;
-            activeSkill.skillLevel += amount;
-
+            if (activeSkill.skillLevel < activeSkill.maximumSkillLevel)
+            {
+                activeSkill.skillLevel += amount;
+                _playerAbilitiesSystem.skillPoints -= activeSkill.requiredNumberOfSkillPointsToUnlockOrUpgrade;
+            }
         }
     }
 
@@ -153,8 +156,8 @@ public class SkillsManager : MonoBehaviour
         beamManager.Skill = skill;
         beamManager.BeamSpawnPoint = skillSpawnPoint;
 
-        skill.InCoolDown = true;
-        skill.HasBeenUsed = true;
         _playerAbilitiesSystem.RemoveMana(skill.manaCost);
+        skill.HasBeenUsed = true;
+        // skill.InCoolDown = true;
     }
 }

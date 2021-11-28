@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc48e74beec0434896b0afd037b02365, type: 3}
   m_Name: I_LeatherBoots
   m_EditorClassIdentifier: 
+  itemRarity: 3
   itemName: Leather Boots
   itemDescription: Worn and heavily used; these boots won't provide much, but it's
     better than nothing.
@@ -19,6 +20,7 @@ MonoBehaviour:
   itemWorldPrefab: {fileID: 7028762890653462072, guid: 56bb10799150e2846a33d856bdc6b4ef, type: 3}
   isStackable: 0
   amount: 1
+  randomlyGenerateStats: 1
   strengthRequirement: 1
   intelligenceRequirement: 0
   physicalArmour: 7
@@ -27,4 +29,22 @@ MonoBehaviour:
   manaAmount: 0
   strengthAmount: 0
   intelligenceAmount: 0
-  moveSpeedIncrease: 3.35
+  minStrengthRequirement: 0
+  maxStrengthRequirement: 0
+  minIntelligenceRequirement: 0
+  maxIntelligenceRequirement: 0
+  minPhysicalArmour: 3
+  maxPhysicalArmour: 7
+  minElementalArmour: 0
+  maxElementalArmour: 2
+  minHealthAmount: 0
+  maxHealthAmount: 10
+  minManaAmount: 2
+  maxManaAmount: 8
+  minStrengthAmount: 2
+  maxStrengthAmount: 7
+  minIntelligenceAmount: 2
+  maxIntelligenceAmount: 5
+  moveSpeedIncrease: 0
+  minMoveSpeedIncrease: 0
+  maxMoveSpeedIncrease: 10

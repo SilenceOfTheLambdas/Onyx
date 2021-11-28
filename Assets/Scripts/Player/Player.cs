@@ -175,6 +175,8 @@ namespace Player
 
                 if (inventoryOpen)
                     CursorController.Instance.SetCursor(CursorController.CursorTypes.Default);
+                if (!inventoryOpen)
+                    uiInventory.hoverInterface.SetActive(false);
             }
 
             if (Controls.Player.SkillTree.triggered && !inventoryOpen)
@@ -207,31 +209,37 @@ namespace Player
         {
             if (item is WeaponItem weaponItem)
             {
-                if (!_playerEquipmentManager.hasWeaponEquipped)
+                if (_playerAbilitySystem.curLevel >= weaponItem.levelRequirement
+                    && _playerAbilitySystem.strength >= weaponItem.strengthRequirement
+                    && _playerAbilitySystem.intelligence >= weaponItem.intelligenceRequirement)
                 {
-                    _playerEquipmentManager.EquipWeapon(weaponItem);
-                    Inventory.RemoveItem(item);
-                }
-                else
-                {
-                    _playerEquipmentManager.UnEquip(_playerEquipmentManager.weaponItem);
-                    _playerEquipmentManager.EquipWeapon(weaponItem); // Equip new weapon
-                    Inventory.RemoveItem(item);
+                    if (!_playerEquipmentManager.hasWeaponEquipped)
+                    {
+                        _playerEquipmentManager.EquipWeapon(weaponItem);
+                        Inventory.RemoveItem(item);
+                    }
+                    else
+                    {
+                        _playerEquipmentManager.UnEquip(_playerEquipmentManager.weaponItem);
+                        _playerEquipmentManager.EquipWeapon(weaponItem); // Equip new weapon
+                        Inventory.RemoveItem(item);
+                    }
                 }
             }
 
             if (item is ArmourItem armourItem)
             {
-                // first check base stats
+                // first check item requirements
                 if (_playerAbilitySystem.strength >= armourItem.strengthRequirement
-                    && _playerAbilitySystem.intelligence >= armourItem.intelligenceRequirement)
+                    && _playerAbilitySystem.intelligence >= armourItem.intelligenceRequirement
+                    && _playerAbilitySystem.curLevel >= armourItem.levelRequirement)
                 {
                     switch (armourItem)
                     {
                         // ## Helmet Item ##
                         case HelmetItem when _playerEquipmentManager.head != null:
                         case ChestItem when _playerEquipmentManager.chest != null:
-                        case BootItem when _playerEquipmentManager.head != null:
+                        case BootItem when _playerEquipmentManager.boots != null:
                             return;
                         default:
                             _playerEquipmentManager.EquipArmour(armourItem);

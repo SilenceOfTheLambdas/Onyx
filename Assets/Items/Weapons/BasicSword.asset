@@ -12,14 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac4c27831c74428783ec65fb811e7140, type: 3}
   m_Name: BasicSword
   m_EditorClassIdentifier: 
+  itemRarity: 3
   itemName: Basic Sword
   itemDescription: A very simple and primitive sword.
   sprite: {fileID: 21300000, guid: da791e3d026f93143b33bfd8bac10ab6, type: 3}
   itemWorldPrefab: {fileID: 7143024317894638291, guid: 094a3a39f30f2b84796424ceccedf740, type: 3}
   isStackable: 0
   amount: 0
+  randomlyGenerateStats: 1
+  levelRequirement: 0
+  strengthRequirement: 0
+  intelligenceRequirement: 0
   damage: 15
   weaponRange: 2
   attackRate: 1
   equippedWeaponPrefab: {fileID: 607021069283091918, guid: d2a5e3ad6ca820849b008e1dec81f28f, type: 3}
-  randomGeneration: 0
+  lowerLevelRequirement: 0
+  upperLevelRequirement: 3
+  minStrengthRequirement: 0
+  maxStrengthRequirement: 0
+  minIntelligenceRequirement: 0
+  maxIntelligenceRequirement: 0
+  minPhysicalDamage: 7
+  maxPhysicalDamage: 14
+  minWeaponRange: -0.42
+  maxWeaponRange: 0.3
+  minAttackRate: 1.2
+  maxAttackRate: 0.9

@@ -9,10 +9,6 @@ namespace Inventory_System
         
         [Tooltip("The amount of HP to restore to the player")]
         public int restoreAmount;
-
-        public override void RandomlyGenerateItem()
-        {
-            
-        }
+        
     }
 }

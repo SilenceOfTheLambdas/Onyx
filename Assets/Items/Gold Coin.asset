@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d9ebc3c0dc4150b00380ed09ec7418, type: 3}
   m_Name: Gold Coin
   m_EditorClassIdentifier: 
+  itemRarity: 0
   itemName: Gold Coin
   itemDescription: A basic form of currency dating back over 2000 years. Can be used
     to purchase new items.
@@ -19,3 +20,4 @@ MonoBehaviour:
   itemWorldPrefab: {fileID: 251802018406864821, guid: e824177f775b20740b9e829f7183d796, type: 3}
   isStackable: 1
   amount: 1
+  randomlyGenerateStats: 0

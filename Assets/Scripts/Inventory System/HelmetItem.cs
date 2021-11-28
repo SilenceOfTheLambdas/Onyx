@@ -12,10 +12,27 @@ namespace Inventory_System
         
         [Range(0, 20)] [Tooltip("The percentage reduction of Mana EVERY skill")]
         public int reducedManaCostOfSkillsAmount = 0;
+        
+        [Space] [Header("Random Helmet Statistics")]
 
+        [Range(0, 20)] [InspectorName("Min Mana Regen")]
+        public int minManaRegenAmount;
+        
+        [Range(0, 20)] [InspectorName("Max Mana Regen")]
+        public int maxManaRegenAmount;
+
+        [Range(0, 20)] [InspectorName("Min Skill Cost Reduction")]
+        public int minReducedManaCostOfSkillsAmount;
+        
+        [Range(0, 20)] [InspectorName("Max Skill Cost Reduction")]
+        public int maxReducedManaCostOfSkillsAmount;
+        
         public override void RandomlyGenerateItem()
         {
-            
+            base.RandomlyGenerateItem();
+            manaRegenerationPercentage = Random.Range(minManaRegenAmount, maxManaRegenAmount);
+            reducedManaCostOfSkillsAmount =
+                Random.Range(minReducedManaCostOfSkillsAmount, maxReducedManaCostOfSkillsAmount);
         }
     }
 }

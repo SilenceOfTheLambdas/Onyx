@@ -22,7 +22,9 @@ public class LootTable : MonoBehaviour
     private void DropItem(LootItem lootItem, Vector3 dropPosition, int amount)
     {
         var randomDirection = Random.insideUnitSphere.normalized;
-        ItemWorld.SpawnItemWorld(dropPosition + randomDirection * 1f, lootItem.item, amount);
+        lootItem.item.itemWorldPrefab.GetComponent<ItemWorld>()
+            .SpawnItemWorld(dropPosition + randomDirection * 1f, lootItem.item, amount);
+        // ItemWorld.SpawnItemWorld(dropPosition + randomDirection * 1f, lootItem.item, amount);
     }
 }
 

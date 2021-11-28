@@ -1,18 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Player;
+using SuperuserUtils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Inventory_System
 {
-    public class UI_Inventory : MonoBehaviour
+    public class UI_Inventory : GenericSingletonClass<UI_Inventory>
     {
-        private                  Inventory     _inventory;
-        [SerializeField] private Transform     itemSlotContainer;
-        [SerializeField] private Transform     itemSlotTemplate;
-        private                  Player.Player _player;
-        private AbilitiesSystem _playerAbilitySystem;
-        public                   GameObject    hoverInterface;
+        private                  Inventory                  _inventory;
+        [SerializeField] private Transform                  itemSlotContainer;
+        [SerializeField] private Transform                  itemSlotTemplate;
+        [SerializeField] private Sprite                     itemSlotBackgroundFocused;
+        [SerializeField] public  Vector2                    hoverOverlayPositionOffset;
+        public                   GameObject                 hoverInterface;
+        public                   List<ItemRarityHoverImage> itemRarityHoverImages;
+        private                  Player.Player              _player;
+        private                  AbilitiesSystem            _playerAbilitySystem;
+        private                  Sprite                     _itemSlotBackgroundOriginal;
+
+        private void Start()
+        {
+            _itemSlotBackgroundOriginal = itemSlotTemplate.Find("background").GetComponent<Image>().sprite;
+        }
 
         /// <summary>
         /// Set the player, and the ability system variable
@@ -76,6 +90,14 @@ namespace Inventory_System
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseOverOnceTooltipFunc = () =>
                 {
                     hoverInterface.SetActive(true);
+                    
+                    itemSlotRectTransform.Find("background").GetComponent<Image>().sprite =
+                        itemSlotBackgroundFocused;
+
+                    hoverInterface.GetComponent<Image>().sprite = itemRarityHoverImages
+                        .First(key => key.key.ToLower().Equals($"{item.itemRarity}".ToLower())).image;
+
+                    hoverInterface.transform.position = itemSlotRectTransform.position + (Vector3) hoverOverlayPositionOffset;
                     CursorController.Instance.SetCursor(CursorController.CursorTypes.Equip);
                     var itemName = hoverInterface.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
                     var itemDescription =
@@ -92,6 +114,7 @@ namespace Inventory_System
 
                 itemSlotRectTransform.GetComponent<Button_UI>().MouseOutOnceTooltipFunc = () =>
                 {
+                    itemSlotRectTransform.Find("background").GetComponent<Image>().sprite = _itemSlotBackgroundOriginal;
                     CursorController.Instance.SetCursor(CursorController.CursorTypes.Default);
                     hoverInterface.SetActive(false);
                 };
@@ -112,37 +135,55 @@ namespace Inventory_System
             }
         }
 
-        private void SetItemRequirements(Item item)
+        public void SetItemRequirements(Item item)
         {
             var itemRequirementsText =
                 hoverInterface.transform.Find("itemRequirements").GetComponent<TextMeshProUGUI>();
-            var playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
+            string requirementString;
             switch (item)
             {
-                case HelmetItem helmetItem:
-                    var requirementString = $"Intelligence: {helmetItem.intelligenceRequirement}    Strength: {helmetItem.strengthRequirement}";
-                    if (_playerAbilitySystem.intelligence < helmetItem.intelligenceRequirement)
-                        requirementString = requirementString.Replace($"{helmetItem.intelligenceRequirement}",
-                            $"<color=red>{helmetItem.intelligenceRequirement}</color>");
-                    if (_playerAbilitySystem.strength < helmetItem.strengthRequirement)
-                        requirementString = requirementString.Replace($"{helmetItem.strengthRequirement}",
-                            $"<color=red>{helmetItem.strengthRequirement}</color>");
+                case ArmourItem armourItem:
+                    requirementString = $"Level:{armourItem.levelRequirement} Intelligence:{armourItem.intelligenceRequirement} Strength:{armourItem.strengthRequirement}";
+                    if (_playerAbilitySystem.curLevel < armourItem.levelRequirement)
+                        requirementString = requirementString.Replace($"{armourItem.levelRequirement}",
+                            $"<color=red>{armourItem.levelRequirement}</color>");
+                    if (_playerAbilitySystem.intelligence < armourItem.intelligenceRequirement)
+                        requirementString = requirementString.Replace($"{armourItem.intelligenceRequirement}",
+                            $"<color=red>{armourItem.intelligenceRequirement}</color>");
+                    if (_playerAbilitySystem.strength < armourItem.strengthRequirement)
+                        requirementString = requirementString.Replace($"{armourItem.strengthRequirement}",
+                            $"<color=red>{armourItem.strengthRequirement}</color>");
+                    
+                    itemRequirementsText.SetText($"{requirementString}");
+                    break;
+                case WeaponItem weaponItem:
+                    requirementString = $"Level:{weaponItem.levelRequirement} Intelligence:{weaponItem.intelligenceRequirement} Strength:{weaponItem.strengthRequirement}";
+                    if (_playerAbilitySystem.curLevel < weaponItem.levelRequirement)
+                        requirementString = requirementString.Replace($"{weaponItem.levelRequirement}",
+                            $"<color=red>{weaponItem.levelRequirement}</color>");
+                    if (_playerAbilitySystem.intelligence < weaponItem.intelligenceRequirement)
+                        requirementString = requirementString.Replace($"{weaponItem.intelligenceRequirement}",
+                            $"<color=red>{weaponItem.intelligenceRequirement}</color>");
+                    if (_playerAbilitySystem.strength < weaponItem.strengthRequirement)
+                        requirementString = requirementString.Replace($"{weaponItem.strengthRequirement}",
+                            $"<color=red>{weaponItem.strengthRequirement}</color>");
                     
                     itemRequirementsText.SetText($"{requirementString}");
                     break;
             }
         }
 
-        private void SetItemStats(Item item)
+        public void SetItemStats(Item item)
         {
             var    itemStats       = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
             var    playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
             switch (item)
             {
                 case WeaponItem weaponItem:
-                    var damageString      = $"Damage: {weaponItem.damage}";
-                    var rangeString       = $"Range: {weaponItem.weaponRange}";
-                    var attackSpeedString = $"Attack Rate: {weaponItem.attackRate}";
+                    var damageString         = $"<b>Damage:</b> {weaponItem.damage}";
+                    var rangeString          = $"<b>Range:</b> {weaponItem.weaponRange:F}".Replace("-", "");
+                    var attackSpeedString    = $"<b>Attack Rate:</b> {weaponItem.attackRate:F}";
+                    var specialAbilityString = $"<b>Unique Ability:</b> <i>{weaponItem.specialAbility.ability.ToString()}</i>";
                     if (playerEquipment.hasWeaponEquipped)
                     {
                         var equippedItem = playerEquipment.weaponItem;
@@ -157,39 +198,49 @@ namespace Inventory_System
                         if (equippedItem.damage < weaponItem.damage)
                         {
                             damageString = damageString.Replace($"{weaponItem.damage}",
-                                $"<color=green>{weaponItem.damage}</color> <size=75%>+{weaponItem.damage - equippedItem.damage}</size>");
+                                $"<color=green>{weaponItem.damage:F}</color> <size=75%>+{weaponItem.damage - equippedItem.damage}</size>");
                         }
 
                         // Weapon Range
                         if (equippedItem.weaponRange > weaponItem.weaponRange)
                         {
-                            rangeString = rangeString.Replace($"{weaponItem.weaponRange}",
-                                $"<color=red>{weaponItem.weaponRange}</color> <size=75%>-{equippedItem.weaponRange - weaponItem.weaponRange}</size>");
+                            rangeString = rangeString.Replace($"{weaponItem.weaponRange:F}",
+                                $"<color=red>{weaponItem.weaponRange:F}</color> <size=75%>-{(float)equippedItem.weaponRange - (float)weaponItem.weaponRange:F}</size>");
                         }
 
                         if (equippedItem.weaponRange < weaponItem.weaponRange)
                         {
-                            rangeString = rangeString.Replace($"{weaponItem.weaponRange}",
-                                $"<color=green>{weaponItem.weaponRange}</color> <size=75%>+{weaponItem.weaponRange - equippedItem.weaponRange}</size>");
+                            rangeString = rangeString.Replace($"{weaponItem.weaponRange:F}",
+                                $"<color=green>{weaponItem.weaponRange:F}</color> <size=75%>+{weaponItem.weaponRange - equippedItem.weaponRange:F}</size>");
                         }
 
                         // Weapon attack speed
-                        if (equippedItem.attackRate > weaponItem.attackRate)
-                        {
-                            attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate}",
-                                $"<color=red>{weaponItem.attackRate}</color> <size=75%>{weaponItem.attackRate - equippedItem.attackRate}</size>");
-                        }
-
                         if (equippedItem.attackRate < weaponItem.attackRate)
                         {
-                            attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate}",
-                                $"<color=green>{weaponItem.attackRate}</color> <size=75%>+{Mathf.Abs(equippedItem.attackRate - weaponItem.attackRate)}</size>");
+                            attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate:F}",
+                                $"<color=red>{weaponItem.attackRate:F}</color> <size=75%>+{weaponItem.attackRate - equippedItem.attackRate:F}</size>");
+                        }
+
+                        if (equippedItem.attackRate > weaponItem.attackRate)
+                        {
+                            attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate:F}",
+                                $"<color=green>{weaponItem.attackRate:F}</color> <size=75%>-{equippedItem.attackRate - weaponItem.attackRate:F}</size>");
                         }
                     }
 
-                    itemStats.SetText($"{damageString}\n" +
-                                      $"{rangeString}\n" +
-                                      $"{attackSpeedString}");
+                    if (weaponItem.itemRarity == ItemRarity.Unique)
+                    {
+                        itemStats.SetText($"{specialAbilityString}\n" +
+                                          $"{damageString}\n" +
+                                          $"{rangeString}\n" +
+                                          $"{attackSpeedString}\n");
+                    }
+                    else
+                    {
+                        itemStats.SetText($"{damageString}\n" +
+                                          $"{rangeString}\n" +
+                                          $"{attackSpeedString}");
+                    }
                     break;
                 case ArmourItem armourItem:
                     var physicalArmourString  = $"Physical Armour: {armourItem.physicalArmour}";
@@ -198,6 +249,7 @@ namespace Inventory_System
                     var manaString            = $"Mana: {armourItem.manaAmount}";
                     var strengthString        = $"Strength: {armourItem.strengthAmount}";
                     var intelligenceString    = $"Intelligence: {armourItem.intelligenceAmount}";
+                    var specialAbility        = $"Unique Ability: {armourItem.specialAbility.ability.ToString()}";
 
                     switch (armourItem)
                     {
@@ -294,14 +346,14 @@ namespace Inventory_System
                                 {
                                     manaRegenerationAmount = manaRegenerationAmount.Replace(
                                         $"{helmetItem.manaRegenerationPercentage}",
-                                        $"<color=red>{helmetItem.manaRegenerationPercentage}%</color> <size=75%>-{equippedItem.manaRegenerationPercentage - helmetItem.manaRegenerationPercentage}%</size>");
+                                        $"<color=red>{helmetItem.manaRegenerationPercentage}</color> <size=75%>-{equippedItem.manaRegenerationPercentage - helmetItem.manaRegenerationPercentage}%</size>");
                                 }
 
                                 if (equippedItem.manaRegenerationPercentage < helmetItem.manaRegenerationPercentage)
                                 {
                                     manaRegenerationAmount = manaRegenerationAmount.Replace(
                                         $"{helmetItem.manaRegenerationPercentage}",
-                                        $"<color=green>{helmetItem.manaRegenerationPercentage}%</color> <size=75%>+{helmetItem.manaRegenerationPercentage - equippedItem.manaRegenerationPercentage}%</size>");
+                                        $"<color=green>{helmetItem.manaRegenerationPercentage}</color> <size=75%>+{helmetItem.manaRegenerationPercentage - equippedItem.manaRegenerationPercentage}%</size>");
                                 }
 
                                 // Reduced Mana Cost of skills
@@ -309,25 +361,40 @@ namespace Inventory_System
                                 {
                                     reducedManaCostString = reducedManaCostString.Replace(
                                         $"{helmetItem.reducedManaCostOfSkillsAmount}",
-                                        $"<color=red>{helmetItem.reducedManaCostOfSkillsAmount}%</color> <size=75%>-{equippedItem.reducedManaCostOfSkillsAmount - helmetItem.reducedManaCostOfSkillsAmount}</size");
+                                        $"<color=red>{helmetItem.reducedManaCostOfSkillsAmount}</color> <size=75%>-{equippedItem.reducedManaCostOfSkillsAmount - helmetItem.reducedManaCostOfSkillsAmount}</size>");
                                 }
 
                                 if (equippedItem.reducedManaCostOfSkillsAmount < helmetItem.reducedManaCostOfSkillsAmount)
                                 {
                                     reducedManaCostString = reducedManaCostString.Replace(
                                         $"{helmetItem.reducedManaCostOfSkillsAmount}",
-                                        $"<color=green>{helmetItem.reducedManaCostOfSkillsAmount}%</color> <size=75%>+{helmetItem.reducedManaCostOfSkillsAmount - equippedItem.reducedManaCostOfSkillsAmount}</size>");
+                                        $"<color=green>{helmetItem.reducedManaCostOfSkillsAmount}</color> <size=75%>+{helmetItem.reducedManaCostOfSkillsAmount - equippedItem.reducedManaCostOfSkillsAmount}</size>");
                                 }
                             }
-                        
-                            itemStats.SetText($"{physicalArmourString}\n" +
-                                              $"{elementalArmourString}\n" +
-                                              $"{healthString}\n" +
-                                              $"{manaString}\n" +
-                                              $"{strengthString}\n" +
-                                              $"{intelligenceString}\n" +
-                                              $"{manaRegenerationAmount}\n" +
-                                              $"{reducedManaCostString}");
+
+                            if (helmetItem.itemRarity == ItemRarity.Unique)
+                            {
+                                itemStats.SetText($"{physicalArmourString}\n" +
+                                                  $"{elementalArmourString}\n" +
+                                                  $"{healthString}\n" +
+                                                  $"{manaString}\n" +
+                                                  $"{strengthString}\n" +
+                                                  $"{intelligenceString}\n" +
+                                                  $"{specialAbility}\n" +
+                                                  $"{manaRegenerationAmount}\n" +
+                                                  $"{reducedManaCostString}");
+                            }
+                            else
+                            {
+                                itemStats.SetText($"{physicalArmourString}\n" +
+                                                  $"{elementalArmourString}\n" +
+                                                  $"{healthString}\n" +
+                                                  $"{manaString}\n" +
+                                                  $"{strengthString}\n" +
+                                                  $"{intelligenceString}\n" +
+                                                  $"{manaRegenerationAmount}\n" +
+                                                  $"{reducedManaCostString}");   
+                            }
                             break;
                         }
                         case ChestItem chestItem:
@@ -448,20 +515,35 @@ namespace Inventory_System
                                         $"<color=green>{chestItem.additionalWeaponRangeAmount}</color> <size=75%>+{chestItem.additionalWeaponRangeAmount - equippedItem.additionalWeaponRangeAmount}</size>");
                                 }
                             }
-                        
-                            itemStats.SetText($"{physicalArmourString}\n" +
-                                              $"{elementalArmourString}\n" +
-                                              $"{healthString}\n" +
-                                              $"{manaString}\n" +
-                                              $"{strengthString}\n" +
-                                              $"{intelligenceString}\n" +
-                                              $"{healthOnHitAmountString}\n" +
-                                              $"{weaponRangeString}\n");
+
+                            if (chestItem.itemRarity == ItemRarity.Unique)
+                            {
+                                itemStats.SetText($"{physicalArmourString}\n" +
+                                                  $"{elementalArmourString}\n" +
+                                                  $"{healthString}\n" +
+                                                  $"{manaString}\n" +
+                                                  $"{strengthString}\n" +
+                                                  $"{intelligenceString}\n" +
+                                                  $"{specialAbility}\n" +
+                                                  $"{healthOnHitAmountString}\n" +
+                                                  $"{weaponRangeString}\n");
+                            }
+                            else
+                            {
+                                itemStats.SetText($"{physicalArmourString}\n" +
+                                                  $"{elementalArmourString}\n" +
+                                                  $"{healthString}\n" +
+                                                  $"{manaString}\n" +
+                                                  $"{strengthString}\n" +
+                                                  $"{intelligenceString}\n" +
+                                                  $"{healthOnHitAmountString}\n" +
+                                                  $"{weaponRangeString}\n");   
+                            }
                             break;
                         }
                         case BootItem bootItem:
                         {
-                            var moveSpeedIncreaseString = $"Move Speed Increase: {bootItem.moveSpeedIncrease}%";
+                            var moveSpeedIncreaseString = $"Move Speed Increase: {bootItem.moveSpeedIncrease:F}%";
 
                             // ## If we already have boots equipped, compare. ##
                             if (playerEquipment.boots != null)
@@ -561,14 +643,28 @@ namespace Inventory_System
                                         $"<color=green>{bootItem.moveSpeedIncrease}</color> <size=75%>+{bootItem.moveSpeedIncrease - equippedItem.moveSpeedIncrease}</size>");
                                 }
                             }
-                        
-                            itemStats.SetText($"{physicalArmourString}\n" +
-                                              $"{elementalArmourString}\n" +
-                                              $"{healthString}\n" +
-                                              $"{manaString}\n" +
-                                              $"{strengthString}\n" +
-                                              $"{intelligenceString}\n" +
-                                              $"{moveSpeedIncreaseString}\n");
+
+                            if (bootItem.itemRarity == ItemRarity.Unique)
+                            {
+                                itemStats.SetText($"{physicalArmourString}\n" +
+                                                  $"{elementalArmourString}\n" +
+                                                  $"{healthString}\n" +
+                                                  $"{manaString}\n" +
+                                                  $"{strengthString}\n" +
+                                                  $"{intelligenceString}\n" +
+                                                  $"{specialAbility}\n" +
+                                                  $"{moveSpeedIncreaseString}\n");
+                            }
+                            else
+                            {
+                                itemStats.SetText($"{physicalArmourString}\n" +
+                                                  $"{elementalArmourString}\n" +
+                                                  $"{healthString}\n" +
+                                                  $"{manaString}\n" +
+                                                  $"{strengthString}\n" +
+                                                  $"{intelligenceString}\n" +
+                                                  $"{moveSpeedIncreaseString}\n");
+                            }
                             break;
                         }
                     }
@@ -586,12 +682,19 @@ namespace Inventory_System
             }
         }
 
-        private static string GetItemDescription(Item item)
+        public static string GetItemDescription(Item item)
         {
             var description = item.itemDescription.Replace("HP", "<color=red>HP</color>");
             description = description.Replace("Mana", "<color=blue>Mana</color>");
             
             return description;
         }
+    }
+
+    [Serializable]
+    public struct ItemRarityHoverImage
+    {
+        public string key;
+        public Sprite image;
     }
 }

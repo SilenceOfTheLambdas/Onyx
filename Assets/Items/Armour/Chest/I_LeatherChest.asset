@@ -12,19 +12,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6592df6a67e422a8dfb7c3d50984276, type: 3}
   m_Name: I_LeatherChest
   m_EditorClassIdentifier: 
+  itemRarity: 0
   itemName: Basic Leather Chest Armour
   itemDescription: A primitive and basic chest armour.
   sprite: {fileID: -1550230519, guid: 3b2d672d5d7af6643868f5b907b7e38c, type: 3}
   itemWorldPrefab: {fileID: 7028762890653462072, guid: f60d3d047d5f5d548b46f3d39194f3bb, type: 3}
   isStackable: 0
   amount: 1
-  strengthRequirement: 0
-  intelligenceRequirement: 0
-  physicalArmour: 4
-  elementalArmour: 0
-  healthAmount: 15
-  manaAmount: 0
-  strengthAmount: 1
-  intelligenceAmount: 0
-  healthOnHitAmount: 20
-  additionalWeaponRangeAmount: 3
+  randomlyGenerateStats: 1
+  levelRequirement: 0
+  strengthRequirement: 99
+  intelligenceRequirement: 99
+  physicalArmour: 30
+  elementalArmour: 30
+  healthAmount: 50
+  manaAmount: 50
+  strengthAmount: 20
+  intelligenceAmount: 20
+  specialAbility:
+    ability: 0
+    abilityDescription: 
+    abilityCost:
+      costType: 2
+      amount: 15
+    chanceToSpawn: 0
+  lowerLevelRequirement: 0
+  upperLevelRequirement: 0
+  minStrengthRequirement: 0
+  maxStrengthRequirement: 10
+  minIntelligenceRequirement: 0
+  maxIntelligenceRequirement: 0
+  minPhysicalArmour: 0
+  maxPhysicalArmour: 20
+  minElementalArmour: 1
+  maxElementalArmour: 4
+  minHealthAmount: 4
+  maxHealthAmount: 15
+  minManaAmount: 11
+  maxManaAmount: 22
+  minStrengthAmount: 0
+  maxStrengthAmount: 1
+  minIntelligenceAmount: 0
+  maxIntelligenceAmount: 1
+  itemAbilityPool: []
+  healthOnHitAmount: 99
+  additionalWeaponRangeAmount: 5
+  minHealthOnHitAmount: 0
+  maxHealthOnHitAmount: 10
+  minAdditionalWeaponRangeAmount: 0
+  maxAdditionalWeaponRangeAmount: 1
