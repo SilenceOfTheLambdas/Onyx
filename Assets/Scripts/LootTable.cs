@@ -42,6 +42,4 @@ public class LootItem
 
     [Tooltip("The maximum spawn amount of this item")]
     public int maxSpawnAmount;
-
-    [SerializeField] public bool randomlyGenerateItem = false;
 }

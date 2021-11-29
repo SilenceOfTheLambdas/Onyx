@@ -19,13 +19,13 @@ MonoBehaviour:
   itemWorldPrefab: {fileID: 7143024317894638291, guid: 094a3a39f30f2b84796424ceccedf740, type: 3}
   isStackable: 0
   amount: 0
-  randomlyGenerateStats: 1
+  randomlyGenerateStats: 0
   levelRequirement: 0
   strengthRequirement: 0
   intelligenceRequirement: 0
   damage: 55
   weaponRange: 2.2
-  attackRate: 0.8
+  attackRate: 0.4
   specialAbility:
     ability: 0
     abilityDescription: 

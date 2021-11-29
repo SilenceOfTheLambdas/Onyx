@@ -176,6 +176,7 @@ namespace Inventory_System
         public void SetItemStats(Item item)
         {
             var    itemStats       = hoverInterface.transform.Find("ItemStats").GetComponent<TextMeshProUGUI>();
+            itemStats.SetText(""); // Reset Item Stats Text Box
             var    playerEquipment = _player.GetComponent<PlayerEquipmentManager>();
             switch (item)
             {
@@ -215,13 +216,13 @@ namespace Inventory_System
                         }
 
                         // Weapon attack speed
-                        if (equippedItem.attackRate < weaponItem.attackRate)
+                        if (equippedItem.attackRate > weaponItem.attackRate)
                         {
                             attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate:F}",
                                 $"<color=red>{weaponItem.attackRate:F}</color> <size=75%>+{weaponItem.attackRate - equippedItem.attackRate:F}</size>");
                         }
 
-                        if (equippedItem.attackRate > weaponItem.attackRate)
+                        if (equippedItem.attackRate < weaponItem.attackRate)
                         {
                             attackSpeedString = attackSpeedString.Replace($"{weaponItem.attackRate:F}",
                                 $"<color=green>{weaponItem.attackRate:F}</color> <size=75%>-{equippedItem.attackRate - weaponItem.attackRate:F}</size>");
@@ -490,7 +491,7 @@ namespace Inventory_System
                                 {
                                     healthOnHitAmountString = healthOnHitAmountString.Replace(
                                         $"{chestItem.healthOnHitAmount}",
-                                        $"<color=red>{chestItem.healthOnHitAmount}</color> <size=75%>-{equippedItem.healthOnHitAmount - chestItem.healthOnHitAmount}</size");
+                                        $"<color=red>{chestItem.healthOnHitAmount}</color> <size=75%>-{equippedItem.healthOnHitAmount - chestItem.healthOnHitAmount}</size>");
                                 }
 
                                 if (equippedItem.healthOnHitAmount < chestItem.healthOnHitAmount)
@@ -505,7 +506,7 @@ namespace Inventory_System
                                 {
                                     weaponRangeString = weaponRangeString.Replace(
                                         $"{chestItem.additionalWeaponRangeAmount}",
-                                        $"<color=red>{chestItem.additionalWeaponRangeAmount}</color> <size=75%>-{equippedItem.additionalWeaponRangeAmount - chestItem.additionalWeaponRangeAmount}</size");
+                                        $"<color=red>{chestItem.additionalWeaponRangeAmount}</color> <size=75%>-{equippedItem.additionalWeaponRangeAmount - chestItem.additionalWeaponRangeAmount}</size>");
                                 }
 
                                 if (equippedItem.additionalWeaponRangeAmount < chestItem.additionalWeaponRangeAmount)

@@ -177,7 +177,8 @@ namespace Enemies
         /// </summary>
         public void Attack()
         {
-            _player.TakeDamage(damage);
+            if (Vector3.Distance(transform.position, _player.transform.position) <= meleeAttackRange)
+                _player.TakeDamage(damage);
         }
 
         #region Helper

@@ -1,5 +1,6 @@
 #region Imports
 using System;
+using System.Collections;
 using Enemies;
 using UnityEngine;
 using Inventory_System;
@@ -54,13 +55,14 @@ namespace Player
         [HideInInspector] public bool skillTreeOpen;
 
         // Private variables
-        private                 ParticleSystem         _hitEffect;
-        private                 AbilitiesSystem        _playerAbilitySystem;
-        private                 PlayerEquipmentManager _playerEquipmentManager;
-        private                 float                  _lastAttackTime; // last time we attacked
-        private                 bool                   _didThePlayerClickOnItemBeforeMoving;
-        private static readonly int                    SwordSlash  = Animator.StringToHash("SwordSlash");
-        private static readonly int                    IsAttacking = Animator.StringToHash("isAttacking");
+        private                  ParticleSystem         _hitEffect;
+        private                  AbilitiesSystem        _playerAbilitySystem;
+        private                  PlayerEquipmentManager _playerEquipmentManager;
+        private                  float                  _lastAttackTime; // last time we attacked
+        private                  bool                   _didThePlayerClickOnItemBeforeMoving;
+        private static readonly  int                    SwordSlash  = Animator.StringToHash("SwordSlash");
+        private static readonly  int                    IsAttacking = Animator.StringToHash("isAttacking");
+        [SerializeField] private float                 animationFinishTime;
 
         #endregion
 
@@ -100,7 +102,7 @@ namespace Player
             if (other.gameObject.CompareTag("Pickup"))
             {
                 var itemWorld = other.gameObject.GetComponentInParent<ItemWorld>();
-                if (itemWorld)
+                if (itemWorld.GetItem() as Coin)
                 {
                     GoldCoinAmount += 1;
                     itemWorld.DestroySelf();
@@ -119,7 +121,7 @@ namespace Player
             if (Mouse.current.leftButton.IsPressed())
             {
                 // Perform a raycast to detect if we are hovering over an item
-                if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out var _))
+                if (!SuperuserUtils.SuperuserUtils.Instance.IsTheMouseHoveringOverGameObject(LayerMask.GetMask("Pickup"), out _))
                     return;
                 
                 var itemWorld = other.gameObject.GetComponent<ItemWorld>();
@@ -127,8 +129,11 @@ namespace Player
                 
                 // Check if item is a gold coin
                 if (itemWorld.GetItem() as Coin)
+                {
                     return;
+                }
                 Inventory.AddItem(itemWorld.GetItem());
+                Debug.Log("Picked Up Item!");
                 itemWorld.DestroySelf();
             }
 
@@ -139,9 +144,12 @@ namespace Player
                 
                 // Check if item is a gold coin
                 if (itemWorld.GetItem() as Coin)
+                {
                     return;
+                }
                 
                 Inventory.AddItem(itemWorld.GetItem());
+                Debug.Log("Picked Up Item!");
                 itemWorld.DestroySelf();
             }
         }
@@ -203,6 +211,17 @@ namespace Player
             
             // Attacking
             PlayerMeleeAttack();
+
+            if (_playerEquipmentManager.hasWeaponEquipped)
+            {
+                if (state == State.Attacking &&
+                    GetComponent<Animator>().GetCurrentAnimatorStateInfo(1).normalizedTime >=
+                    _playerEquipmentManager.weaponItem.attackRate)
+                {
+                    state = State.Normal;
+                }
+            }
+            
         }
 
         private void UseItem(Item item)
@@ -277,12 +296,23 @@ namespace Player
                 if (!_playerEquipmentManager.hasWeaponEquipped) return;
 
                 // Check for attack rate timer
-                if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate)) return;
+                // if (!(Time.time - _lastAttackTime >= _playerEquipmentManager.weaponItem.attackRate))
+                // {
+                //     // StopCoroutine(InitializeAttackAnimation());
+                //     return;
+                // }
                 _lastAttackTime = Time.time;
                 
                 // If everything is good, play the attack animation
                 GetComponent<Animator>().SetTrigger(SwordSlash);
+                StartCoroutine(InitializeAttackAnimation());
             }
+        }
+
+        private IEnumerator InitializeAttackAnimation()
+        {
+            yield return new WaitForSeconds(0.1f);
+            state = State.Attacking;
         }
 
         /// <summary>
